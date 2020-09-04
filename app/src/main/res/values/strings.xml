@@ -1,3 +1,145 @@
 <resources>
     <string name="app_name">HelpingApp</string>
+    <!-- After Splash Screen-->
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+
+    <!-- Login screen -->
+
+    <string name="et_username">Username</string>
+    <string name="et_password">Password</string>
+    <string name="forgot_password">Forgot Password ?</string>
+    <string name="or_cont">or continue with</string>
+    <string name="register_with">register with</string>
+    <string name="or">or</string>
+    <string name="create">Create</string>
+    <string name="informationcode">We will send a information code to your Phone</string>
+    <string name="verify">Verify</string>
+    <string name="already_have_ac">Already have a account</string>
+    <string name="phone">PHONE</string>
+    <string name="facebook">FACEBOOK</string>
+    <string name="google">GOOGLE</string>
+    <string name="email_login">EMAIL</string>
+
+    <!-- profile fragment -->
+
+    <string name="following">Following</string>
+    <string name="followers">Followers</string>
+    <string name="helping">Helping</string>
+    <string name="reviews">Reviews</string>
+    <string name="reply">Reply</string>
+    <string name="report">Report</string>
+    <string name="bio">About me/ Bio space -</string>
+
+
+    <!-- add/edit profile -->
+
+    <string name="fullname">Full Name</string>
+    <string name="enter_name">Enter your name here</string>
+    <string name="bio_profile">Bio</string>
+    <string name="contact">Contact</string>
+    <string name="email">Email</string>
+    <string name="city">City</string>
+    <string name="dob">Date of Birth</string>
+    <string name="gender">Gender</string>
+    <string name="profession">Profession</string>
+    <string name="write_about_you">Write about you...</string>
+    <string name="mobile">+91 - XXXXXXX0801</string>
+    <string name="email_hint">example@gmail.com</string>
+    <string name="search">Search</string>
+    <string name="dob_hint">_/_/_</string>
+    <string name="select">Select</string>
+    <string name="save">SAVE</string>
+
+    <!-- Home -->
+    <string name="search_select">Select &amp; Search in Categories :</string>
+
+    <!-- Add Ping-->
+    <string name="add_your_ping">ADD YOUR PING DETAILS</string>
+    <string name="ping_heading">PING HEADING</string>
+    <string name="add_feature">ADD FEATURED IMAGES</string>
+    <string name="describe">DESCRIBE</string>
+    <string name="back">BACK</string>
+    <string name="next">NEXT</string>
+    <string name="add_location">ADD LOCATION</string>
+    <string name="location">LOCATION</string>
+    <string name="countryName">Country</string>
+    <string name="submit">Submit</string>
+    <string name="resendButton">Resend OTP</string>
+    <string name="enterYourPhone">Enter Your Phone no:</string>
+
+    <!-- review details &ammp; privacy -->
+    <string name="review_details">REVIEW DETAIL &amp; PRIVACY</string>
+    <string name="verified_cont">VERIFIED CONTACT</string>
+    <string name="verified_email">VERIFIED EMAIL</string>
+    <string name="show">Show Contact</string>
+    <string name="enable_personal_chat">Enable Personal Chat</string>
+    <string name="enable_comment">Enable Comment On Post</string>
+    <string name="show_post_comment">Show Post Comment To All</string>
+    <string name="done">DONE</string>
+
+    <string name="my_ping">My Ping</string>
+
+    <!-- chats -->
+    <string name="chats">Chats</string>
+    <!-- other_profile -->
+
+    <string name="follow">FOLLOW</string>
+    <string name="comment">COMMENT</string>
+    <string name="chat">CHAT</string>
+
+    <!-- chat messge -->
+    <string name="type_msg">Write your message...</string>
+    <string name="send">SEND</string>
+
+    <!--facebook elements-->
+    <string name="facebook_app_id">280522139843852</string>
+    <string name="fb_login_protocol_scheme">fb280522139843852</string>
+
+
+    <string-array name="genderarray">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_blog">MainActivity</string>
+    <string name="home">Home</string>
+    <string name="title_chat">Chat</string>
+    <string name="title_add">+ADD</string>
+    <string name="title_myping">MY PING</string>
+    <string name="title_profile">PROFILE</string>
+    <string name="loremipsum">Lorem ipsum dolor sit amet, consectetur.</string>
+
+
+    <string name="switch_camera_button_alt">Switch camera</string>
+
+    <string name="gallery_button_alt">Gallery</string>
+
+    <string name="back_button_alt">Back</string>
+
+    <string name="share_button_alt">Share</string>
+
+    <string name="share_hint">Share using</string>
+
+    <string name="capture_mode_camera">Camera</string>
+
+    <string name="capture_mode_hdr">HDR</string>
+
+    <string name="capture_mode_night">Night</string>
+
+    <string name="delete_button_alt">Delete</string>
+
+    <string name="delete_dialog">Delete current photo?</string>
+
+    <string name="delete_title">Confirm</string>
+    <string name="user_name">USER NAME</string>
+    <string name="title_activity_home">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <!--    <string name="default_web_client_id">426985050820-q4847bev8o9ascc7mtvp19s1urd75m5a.apps.googleusercontent.com</string>-->
+
+
 </resources>

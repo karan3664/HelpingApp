@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.aryupay.helpingapp.ui.fragments.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_chat"
+        android:name="com.aryupay.helpingapp.ui.fragments.ChatFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_chat" />
+
+    <fragment
+        android:id="@+id/navigation_ping"
+        android:name="com.aryupay.helpingapp.ui.fragments.MyPingFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_my_ping" />
+
+    <activity
+        android:id="@+id/navigation_profile"
+        android:name="com.aryupay.helpingapp.ui.profile.ProfileActivity"
+        android:label="Profile"
+        tools:layout="@layout/activity_profile" />
+    <activity
+        android:id="@+id/navigation_Add"
+        android:name="com.aryupay.helpingapp.ui.AddBlogActivity"
+        android:label="Add Blog"
+        tools:layout="@layout/activity_add_blog" />
+
+</navigation>

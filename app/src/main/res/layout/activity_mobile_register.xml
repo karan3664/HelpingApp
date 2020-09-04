@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.MobileRegisterActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="155.26dp"
+            android:layout_height="155.26dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="47dp"
+            android:elevation="16dp"
+            android:src="@drawable/phone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_64sdp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/_5sdp"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="14dp"
+                    android:fontFamily="@font/segoe_ui"
+                    android:text="Country"
+                    android:textColor="@color/pink_color"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:id="@+id/et_countryCode"
+                    android:layout_width="37dp"
+                    android:layout_height="37dp"
+                    android:layout_marginTop="@dimen/_11sdp"
+                    android:background="@drawable/circle"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="+91"
+                    android:textColor="@android:color/black"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView3"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_margin="@dimen/_5sdp"
+                android:gravity="start"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="14dp"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/segoe_ui"
+                    android:gravity="center"
+                    android:text="Enter your phone no."
+                    android:textColor="@color/pink_color"
+                    android:textSize="10sp"
+                    app:layout_constraintStart_toEndOf="@+id/textView"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+
+                <RelativeLayout
+                    android:id="@+id/relativeLayout"
+                    android:layout_width="146dp"
+                    android:layout_height="37dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/_11sdp"
+                    android:background="@drawable/profile_edittext_bg"
+                    android:drawableEnd="@drawable/ic_contact"
+
+                    android:gravity="center_horizontal|center_vertical"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="@+id/textView3"
+                    app:layout_constraintStart_toEndOf="@+id/editText"
+                    app:layout_constraintTop_toBottomOf="@+id/textView">
+
+                    <EditText
+                        android:id="@+id/et_mobno"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="@dimen/_16sdp"
+                        android:background="@null"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:hint="XXXXXX0801"
+                        android:minLines="1"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_alignTop="@+id/et_mobno"
+
+                        android:layout_alignBottom="@+id/et_mobno"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="0dp"
+
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginBottom="3dp"
+                        android:src="@drawable/ic_contact" />
+                </RelativeLayout>
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="194dp"
+            android:layout_height="12dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="We will send a confirmation code to your phone"
+            android:textColor="@color/sky_blue_color"
+            android:textSize="9sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_sumbitOtp"
+                android:layout_width="101dp"
+                android:layout_height="22dp"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/button_pink_bg"
+                android:fontFamily="@font/segoe_ui_bold"
+                android:text="Submit"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toStartOf="@+id/appCompatButton2"
+                app:layout_constraintStart_toStartOf="@+id/textView3"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+            <Button
+                android:id="@+id/btnResend"
+                android:layout_width="101dp"
+                android:layout_height="22dp"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/button_pink_bg"
+                android:fontFamily="@font/segoe_ui_bold"
+                android:text="Resend"
+                android:textColor="@android:color/white"
+                android:textSize="10sp"
+                app:layout_constraintEnd_toEndOf="@+id/textView3"
+                app:layout_constraintStart_toEndOf="@+id/appCompatButton"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.mukesh.OtpView
+                android:id="@+id/otp_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:hint="*"
+                android:inputType="number"
+                android:itemBackground="@drawable/circle"
+                android:textColor="@color/sky_blue_color"
+                app:itemCount="4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.485"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatButton2"
+                app:lineColor="@android:color/transparent"
+                app:viewType="line" />
+
+            <Button
+                android:id="@+id/btnVerifyOTP"
+                android:layout_width="205dp"
+                android:layout_height="45dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/register_page_btn_bg"
+                android:fontFamily="@font/segoe_ui_bold"
+                android:text="Verify"
+                android:textColor="@android:color/white"
+                android:enabled="false"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/otp_view" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

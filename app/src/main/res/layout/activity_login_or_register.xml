@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_color"
+    tools:context=".ui.LoginOrRegisterActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/_155sdp"
+            android:layout_height="@dimen/_155sdp"
+            android:src="@drawable/eyu" />
+
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="@dimen/_205sdp"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="11dp"
+            android:background="@drawable/login_btn_bg"
+            android:elevation="@dimen/_3sdp"
+            android:text="@string/login"
+            android:textAllCaps="false"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/_12sdp"
+            android:textStyle="bold" />
+
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="@dimen/_205sdp"
+            android:layout_height="@dimen/_45sdp"
+            android:layout_marginBottom="@dimen/_46sdp"
+            android:background="@drawable/register_btn_bg"
+            android:elevation="@dimen/_3sdp"
+            android:text="@string/register"
+            android:textAllCaps="false"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/_12sdp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

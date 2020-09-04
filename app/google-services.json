@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "426985050820",
+    "firebase_url": "https://helpingapp-286912.firebaseio.com",
+    "project_id": "helpingapp-286912",
+    "storage_bucket": "helpingapp-286912.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:426985050820:android:7c67b20c5a77d035756f91",
+        "android_client_info": {
+          "package_name": "com.aryupay.helpingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "426985050820-eq2ctsood8ihcoafat4ee6hc1u4r3vpa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aryupay.helpingapp",
+            "certificate_hash": "38b5a6943398df1af06590fcdbf9bf875b85c1be"
+          }
+        },
+        {
+          "client_id": "426985050820-mv2onuire0eo3ts7p0o77uh3lngci2mt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCaaEuxoFg09Bc7rSV9JH7E0ydvk472MI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "426985050820-mv2onuire0eo3ts7p0o77uh3lngci2mt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
