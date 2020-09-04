@@ -1,8 +1,10 @@
 package com.aryupay.helpingapp.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,11 +18,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aryupay.helpingapp.R;
+import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.bloglist.Blog;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
+import com.aryupay.helpingapp.modal.bloglist.Image;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -40,6 +46,7 @@ public class HomeFragment extends Fragment {
     private ArrayList<Integer> Like = new ArrayList<>();
     private ArrayList<Integer> Comments = new ArrayList<>();
     private ArrayList<Integer> Views = new ArrayList<>();
+    private ArrayList<Image> Images = new ArrayList<>();
     LoginModel loginModel;
 
     String token;
@@ -91,6 +98,7 @@ public class HomeFragment extends Fragment {
                     Like = object.getMessage().getLikes();
                     Comments = object.getMessage().getComments();
                     Views = object.getMessage().getViews();
+                    Images = object.getMessage().getImages();
 
                     myCustomAdapter = new MyCustomAdapter(blogArrayList);
                     rvBlogList.setAdapter(myCustomAdapter);
@@ -163,7 +171,22 @@ public class HomeFragment extends Fragment {
             holder.tvTotalComment.setText(Comments.get(position) + "");
             holder.tvTotalView.setText(Views.get(position) + "");
             holder.tvTotalLikes.setText(Like.get(position) + "");
+            if (Images.get(position) != null) {
+                Glide.with(getContext())
+                        .load(BuildConstants.Main_Image + Images.get(position).getPath().replace("public", "storage"))
+                        .centerCrop()
+                        .placeholder(R.drawable.placeholder)
+                        .into(holder.ivEmployee);
+            }
 
+            holder.CVReview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(getContext(), DetailBlogsActivity.class);
+                    i.putExtra("blogid", datum.getId() + "");
+                    startActivity(i);
+                }
+            });
         }
 
         @Override
@@ -174,9 +197,10 @@ public class HomeFragment extends Fragment {
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             CircleImageView ivEmployee;
-            TextView tvName, catName, tvTime,tvSubHeading, tvHeading, tvTotalView, tvTotalLikes, tvTotalComment, tvLocation;
+            TextView tvName, catName, tvTime, tvSubHeading, tvHeading, tvTotalView, tvTotalLikes, tvTotalComment, tvLocation;
             RelativeLayout rlCategory;
             ImageView favStar;
+            CardView CVReview;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -194,6 +218,7 @@ public class HomeFragment extends Fragment {
                 tvLocation = view.findViewById(R.id.tvLocation);
                 rlCategory = view.findViewById(R.id.rlCategory);
                 favStar = view.findViewById(R.id.favStar);
+                CVReview = view.findViewById(R.id.CVReview);
 
             }
 

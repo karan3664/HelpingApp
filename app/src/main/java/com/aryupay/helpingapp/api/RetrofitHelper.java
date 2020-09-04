@@ -5,6 +5,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.aryupay.helpingapp.modal.blogdetails.BlogDetailsModel;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.city.CityModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
@@ -39,6 +40,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 
 
@@ -121,6 +123,9 @@ public class RetrofitHelper {
 
         @GET("verifyotp")
         Call<JsonObject> verifyotp(@Header("Authorization") String token);
+
+        @GET("view_blog/{blog_id}")
+        Call<BlogDetailsModel> BlogDetailsModel(@Path("blog_id") String blog_id, @Header("Authorization") String token);
 
 
         @FormUrlEncoded

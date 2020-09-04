@@ -91,9 +91,7 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
 
         if (!checkPermission()) {
 //            openGPSSettings();
-            Intent i = new Intent(SplashActivity.this, LoginOrRegisterActivity.class);
-            startActivity(i);
-            finish();
+
             requestPermission();
 
 //                    return;
@@ -115,14 +113,12 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
 
         }
         TelephonyManager mTelephony = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(SplashActivity.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(SplashActivity.this, READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
             return;
         }
 
-
     }
-
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION);
@@ -188,6 +184,7 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
                 break;
         }
     }
+
 
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
