@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.aryupay.helpingapp.R;
+import com.aryupay.helpingapp.ui.addBlog.AddBlogActivity;
 import com.aryupay.helpingapp.ui.fragments.ChatFragment;
 import com.aryupay.helpingapp.ui.fragments.HomeFragment;
 import com.aryupay.helpingapp.ui.fragments.MyPingFragment;
@@ -15,10 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 public class HomeActivity extends AppCompatActivity  implements BottomNavigationView.OnNavigationItemSelectedListener {
 

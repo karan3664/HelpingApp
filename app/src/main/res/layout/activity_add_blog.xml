@@ -4,6 +4,216 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.AddBlogActivity">
+    tools:context=".ui.addBlog.AddBlogActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:isScrollContainer="true"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_40sdp"
+                    android:background="@drawable/appbarbackground"
+                    android:elevation="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_marginLeft="@dimen/_12sdp"
+                        android:layout_marginTop="@dimen/_13sdp"
+                        android:src="@drawable/close" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@string/add_your_ping"
+                        android:textColor="@color/black_color"
+                        android:textSize="@dimen/_12sdp"
+                        android:textStyle="bold">
+
+                    </TextView>
+                </RelativeLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_45sdp"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_30sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:background="@drawable/add_ping_edittext_bg">
+
+                        <EditText
+                            android:id="@+id/et_heading"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:inputType="text"
+                            android:paddingLeft="@dimen/_5sdp"
+                            android:paddingRight="@dimen/_5sdp"
+                            android:textColor="@color/black_color"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_24sdp"
+                        android:background="@color/white_color"
+                        android:text="@string/ping_heading"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="@dimen/_10sdp">
+
+                    </TextView>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_250sdp"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_50sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:background="@drawable/add_ping_edittext_bg">
+
+                        <EditText
+                            android:id="@+id/et_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:gravity="start"
+                            android:inputType="text|textMultiLine"
+                            android:maxLines="8"
+                            android:paddingLeft="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_10sdp"
+                            android:paddingRight="@dimen/_10sdp"
+                            android:textColor="@color/black_color"
+                            android:textStyle="normal" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_43sdp"
+                        android:background="@color/white_color"
+                        android:text="@string/describe"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="@dimen/_10sdp">
+
+                    </TextView>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_45sdp"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_30sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:background="@drawable/add_ping_edittext_bg">
+
+                        <EditText
+                            android:id="@+id/et_category"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:inputType="text"
+                            android:editable="false"
+                            android:focusable="false"
+                            android:paddingLeft="@dimen/_5sdp"
+                            android:paddingRight="@dimen/_5sdp"
+                            android:textColor="@color/black_color"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_24sdp"
+                        android:background="@color/white_color"
+                        android:text="Select Category"
+                        android:textColor="@color/dark_grey"
+                        android:textSize="@dimen/_10sdp">
+
+                    </TextView>
+                </FrameLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:orientation="horizontal">
+                    <Button
+                        android:id="@+id/btnBack"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="@dimen/_45sdp"
+                        android:background="@drawable/btn_back_bg"
+                        android:elevation="@dimen/_3sdp"
+                        android:text="@string/back"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white_color"
+                        android:textSize="@dimen/_14sdp"
+                        android:textStyle="bold" />
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_weight="2">-->
+
+<!--                       -->
+<!--                    </LinearLayout>-->
+                    <Button
+                        android:id="@+id/btnNext"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="@dimen/_45sdp"
+                        android:background="@drawable/next_btn_bg"
+                        android:elevation="@dimen/_3sdp"
+                        android:text="@string/next"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white_color"
+                        android:textSize="@dimen/_14sdp"
+                        android:textStyle="bold" />
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginLeft="@dimen/_2sdp"-->
+<!--                        android:layout_weight="2">-->
+
+<!--                       -->
+<!--                    </LinearLayout>-->
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

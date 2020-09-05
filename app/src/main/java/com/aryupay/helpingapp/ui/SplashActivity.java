@@ -41,6 +41,7 @@ import com.google.android.gms.location.LocationServices;
 import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_PHONE_STATE;
 
@@ -124,20 +125,20 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION);
         int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
         int result2 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_PHONE_STATE);
-//        int result3 = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_SECURE_SETTINGS);
+        int result3 = ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA);
 //        int result4 = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_SETTINGS);
 
         return result == PackageManager.PERMISSION_GRANTED &&
                 result1 == PackageManager.PERMISSION_GRANTED &&
-                result2 == PackageManager.PERMISSION_GRANTED;
-//                result3 == PackageManager.PERMISSION_GRANTED &&
+                result2 == PackageManager.PERMISSION_GRANTED &&
+                result3 == PackageManager.PERMISSION_GRANTED ;
 //                result4 == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermission() {
 
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION,
-                READ_EXTERNAL_STORAGE, READ_PHONE_STATE
+                READ_EXTERNAL_STORAGE, READ_PHONE_STATE, CAMERA
         }, PERMISSION_REQUEST_CODE);
 
     }
@@ -151,8 +152,9 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
                     boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     boolean cameraAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     boolean telepone = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+                    boolean camera = grantResults[3] == PackageManager.PERMISSION_GRANTED;
 
-                    if (locationAccepted && cameraAccepted && telepone) {
+                    if (locationAccepted && cameraAccepted && telepone && camera) {
                         startActivity(new Intent(this, this.getClass()));
 //                        updateUI(location);
                         finish();
@@ -168,7 +170,7 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                    requestPermissions(new String[]{ACCESS_FINE_LOCATION, READ_EXTERNAL_STORAGE, READ_PHONE_STATE},
+                                                    requestPermissions(new String[]{ACCESS_FINE_LOCATION, READ_EXTERNAL_STORAGE, READ_PHONE_STATE, CAMERA},
                                                             PERMISSION_REQUEST_CODE);
                                                 }
                                             }
@@ -184,7 +186,6 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
                 break;
         }
     }
-
 
 
     private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {

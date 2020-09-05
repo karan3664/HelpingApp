@@ -30,7 +30,7 @@
         tools:layout="@layout/activity_profile" />
     <activity
         android:id="@+id/navigation_Add"
-        android:name="com.aryupay.helpingapp.ui.AddBlogActivity"
+        android:name="com.aryupay.helpingapp.ui.addBlog.AddBlogActivity"
         android:label="Add Blog"
         tools:layout="@layout/activity_add_blog" />
 

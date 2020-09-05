@@ -5,6 +5,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.aryupay.helpingapp.modal.addblog.AddBlogModel;
 import com.aryupay.helpingapp.modal.blogdetails.BlogDetailsModel;
 import com.aryupay.helpingapp.modal.blogdetails.CommentsBlogModel;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
@@ -25,11 +26,14 @@ import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -40,8 +44,11 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 
@@ -169,6 +176,23 @@ public class RetrofitHelper {
         @FormUrlEncoded
         @POST("comment_blog/{blog_id}")
         Call<JsonObject> comment_blog(@Path("blog_id") String blog_id, @Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
+
+        @FormUrlEncoded
+        @POST("blog")
+        Call<AddBlogModel> Addblog(@Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
+        @Multipart
+        @POST("file/{blog_id}")
+        Call<JsonObject> uploadFile(@Path("blog_id") String blog_id, @Part MultipartBody.Part file, @Header("Authorization") String token);
+
+        @Multipart
+        @POST("file/{blog_id}")
+        Call<JsonObject> upload(
+                @Path("blog_id") String blog_id,
+                @Header("Authorization") String authorization,
+                @PartMap Map<String, RequestBody> map
+        );
 
     }
 
