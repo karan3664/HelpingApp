@@ -244,7 +244,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         intent.putExtra("password", et_password.getText().toString() + "");
                         intent.putExtra("otp", object.getData().getOtp() + "");
                         intent.putExtra("token", object.getData().getToken() + "");
-                        intent.putExtra("one", "1");
+                        intent.putExtra("one", true);
                         startActivity(intent);
                     }
 

@@ -78,12 +78,15 @@
                         android:background="@drawable/home_search_white_bg">
 
                         <com.google.android.material.chip.Chip
+                            android:id="@+id/chipSearch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/segoe_ui"
                             android:gravity="center"
                             android:text="All"
+                            app:chipIcon="@drawable/ic_star"
                             android:textAlignment="center"
+                            app:chipIconEnabled="false"
                             android:textColor="@color/white_color"
                             app:chipBackgroundColor="@color/sky_blue_color" />
 
@@ -139,6 +142,7 @@
                     app:singleSelection="false">
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipAll"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/segoe_ui"
@@ -149,6 +153,7 @@
                         app:chipBackgroundColor="@color/sky_blue_color" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipUrgent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/segoe_ui"
@@ -159,6 +164,7 @@
                         app:chipBackgroundColor="@color/dark_grey" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipInformation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/segoe_ui"
@@ -169,6 +175,7 @@
                         app:chipBackgroundColor="@color/dark_grey" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipGeneral"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/segoe_ui"
@@ -179,6 +186,7 @@
                         app:chipBackgroundColor="@color/dark_grey" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipFav"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/segoe_ui"

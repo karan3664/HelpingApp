@@ -212,7 +212,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     reg.putExtra("email", user.getEmail() + "");
                     startActivity(reg);
 
-                    Toast.makeText(LoginActivity.this, "User Signed In", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(LoginActivity.this, "User Signed In", Toast.LENGTH_SHORT).show();
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.getException());

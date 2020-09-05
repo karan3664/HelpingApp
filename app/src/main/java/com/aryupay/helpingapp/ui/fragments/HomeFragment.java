@@ -27,6 +27,7 @@ import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.bumptech.glide.Glide;
+import com.google.android.material.chip.Chip;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
     RecyclerView rvBlogList;
 
     private MyCustomAdapter myCustomAdapter;
@@ -50,6 +51,7 @@ public class HomeFragment extends Fragment {
     LoginModel loginModel;
 
     String token;
+    Chip chipAll, chipUrgent, chipInformation, chipGeneral, chipFav, chipSearch;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -75,6 +77,20 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rvBlogList.setLayoutManager(layoutManager);
         rvBlogList.setHasFixedSize(true);
+
+        chipAll = rootView.findViewById(R.id.chipAll);
+        chipUrgent = rootView.findViewById(R.id.chipUrgent);
+        chipInformation = rootView.findViewById(R.id.chipInformation);
+        chipGeneral = rootView.findViewById(R.id.chipGeneral);
+        chipFav = rootView.findViewById(R.id.chipFav);
+        chipSearch = rootView.findViewById(R.id.chipSearch);
+
+        chipAll.setOnClickListener(this);
+        chipUrgent.setOnClickListener(this);
+        chipInformation.setOnClickListener(this);
+        chipGeneral.setOnClickListener(this);
+        chipFav.setOnClickListener(this);
+
         BlogList();
         return rootView;
     }
@@ -116,6 +132,109 @@ public class HomeFragment extends Fragment {
             }
         });
 
+    }
+
+    private void CategoryBlogList(String category) {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("location", "Atmakur,Andhra Pradesh");
+
+
+        Call<BlogListModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).CategoryBlog(category, "Bearer " + token, hashMap);
+        marqueCall.enqueue(new Callback<BlogListModel>() {
+            @Override
+            public void onResponse(@NonNull Call<BlogListModel> call, @NonNull Response<BlogListModel> response) {
+                BlogListModel object = response.body();
+                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                if (object != null) {
+
+
+                    blogArrayList = object.getMessage().getBlog();
+                    Like = object.getMessage().getLikes();
+                    Comments = object.getMessage().getComments();
+                    Views = object.getMessage().getViews();
+                    Images = object.getMessage().getImages();
+
+                    myCustomAdapter = new MyCustomAdapter(blogArrayList);
+                    rvBlogList.setAdapter(myCustomAdapter);
+                    myCustomAdapter.notifyDataSetChanged();
+
+                } else {
+//                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<BlogListModel> call, @NonNull Throwable t) {
+                t.printStackTrace();
+
+                Log.e("ChatV_Response", t.getMessage() + "");
+            }
+        });
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.chipAll:
+                chipSearch.setText("ALL");
+                chipSearch.setChipIconEnabled(false);
+                chipSearch.setChipBackgroundColorResource(R.color.sky_blue_color);
+                chipAll.setChipBackgroundColorResource(R.color.sky_blue_color);
+                chipUrgent.setChipBackgroundColorResource(R.color.dark_grey);
+                chipInformation.setChipBackgroundColorResource(R.color.dark_grey);
+                chipGeneral.setChipBackgroundColorResource(R.color.dark_grey);
+                chipFav.setChipBackgroundColorResource(R.color.dark_grey);
+//                CategoryBlogList("all");
+                BlogList();
+                break;
+            case R.id.chipUrgent:
+                chipSearch.setText("URGENT");
+                chipSearch.setChipIconEnabled(false);
+                chipSearch.setChipBackgroundColorResource(R.color.colorPrimary);
+                chipAll.setChipBackgroundColorResource(R.color.dark_grey);
+                chipUrgent.setChipBackgroundColorResource(R.color.colorPrimary);
+                chipInformation.setChipBackgroundColorResource(R.color.dark_grey);
+                chipGeneral.setChipBackgroundColorResource(R.color.dark_grey);
+                chipFav.setChipBackgroundColorResource(R.color.dark_grey);
+                CategoryBlogList("urgent");
+
+                break;
+            case R.id.chipInformation:
+                chipSearch.setText("INFORMATION");
+                chipSearch.setChipIconEnabled(false);
+                chipSearch.setChipBackgroundColorResource(R.color.pink_color);
+                chipAll.setChipBackgroundColorResource(R.color.dark_grey);
+                chipUrgent.setChipBackgroundColorResource(R.color.dark_grey);
+                chipInformation.setChipBackgroundColorResource(R.color.pink_color);
+                chipGeneral.setChipBackgroundColorResource(R.color.dark_grey);
+                chipFav.setChipBackgroundColorResource(R.color.dark_grey);
+                CategoryBlogList("information");
+                break;
+            case R.id.chipGeneral:
+                chipSearch.setText("GENERAL");
+                chipSearch.setChipIconEnabled(false);
+                chipSearch.setChipBackgroundColorResource(R.color.green_color);
+                chipAll.setChipBackgroundColorResource(R.color.dark_grey);
+                chipUrgent.setChipBackgroundColorResource(R.color.dark_grey);
+                chipInformation.setChipBackgroundColorResource(R.color.dark_grey);
+                chipGeneral.setChipBackgroundColorResource(R.color.green_color);
+                chipFav.setChipBackgroundColorResource(R.color.dark_grey);
+                CategoryBlogList("general");
+                break;
+            case R.id.chipFav:
+                chipSearch.setText("FAV");
+                chipSearch.setChipIconEnabled(true);
+                chipSearch.setChipBackgroundColorResource(R.color.phone_login_color);
+                chipAll.setChipBackgroundColorResource(R.color.dark_grey);
+                chipUrgent.setChipBackgroundColorResource(R.color.dark_grey);
+                chipInformation.setChipBackgroundColorResource(R.color.dark_grey);
+                chipGeneral.setChipBackgroundColorResource(R.color.dark_grey);
+                chipFav.setChipBackgroundColorResource(R.color.phone_login_color);
+                CategoryBlogList("fav");
+                break;
+
+        }
     }
 
     public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyViewHolder> {
@@ -174,7 +293,7 @@ public class HomeFragment extends Fragment {
             if (Images.get(position) != null) {
                 Glide.with(getContext())
                         .load(BuildConstants.Main_Image + Images.get(position).getPath().replace("public", "storage"))
-                        .centerCrop()
+//                        .centerCrop()
                         .placeholder(R.drawable.placeholder)
                         .into(holder.ivEmployee);
             }

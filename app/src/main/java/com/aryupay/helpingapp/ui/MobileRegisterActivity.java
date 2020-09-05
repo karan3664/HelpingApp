@@ -41,7 +41,8 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
     OtpView otp_view;
     Button btnResend, btnVerifyOTP, btn_sumbitOtp;
 
-    String otp, mobile, name, password, token, one = "0";
+    String otp, mobile, name, password, token;
+    Boolean one = false ;
     protected ViewDialog viewDialog;
 
     @Override
@@ -70,7 +71,7 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
             password = i.getStringExtra("password");
             mobile = i.getStringExtra("mobile");
             token = i.getStringExtra("token");
-            one = i.getStringExtra("one");
+            one = i.getBooleanExtra("one", false);
 
             et_mobno.setText(mobile);
         }
@@ -116,7 +117,7 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
                 if (object != null) {
 
                     if (response.isSuccessful()) {
-                        if (one.matches("1")) {
+                        if (one == true) {
                             HashMap<String, String> hashMap = new HashMap<>();
 
                             hashMap.put("name", name + "");
@@ -183,6 +184,7 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
     public void GetOTP() {
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("contact", et_mobno.getText().toString() + "");
+        showProgressDialog();
         Call<PhoneSignupModel> postCodeModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).PhoneSignupModel(hashMap);
         postCodeModelCall.enqueue(new Callback<PhoneSignupModel>() {
             @Override
@@ -193,8 +195,13 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
                 if (object != null) {
                     Log.e("TAG", "Postcode_Response : " + new Gson().toJson(response.body()));
                     if (response.isSuccessful()) {
+                        Toast.makeText(MobileRegisterActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
                         otp = object.getData().getOtp() + "";
                         token = object.getData().getToken() + "";
+                    }
+                    else {
+                        Toast.makeText(MobileRegisterActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
+
                     }
 
                 } else {

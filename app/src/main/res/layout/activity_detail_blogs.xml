@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_color"
     android:orientation="vertical"
     tools:context=".ui.fragments.activity.DetailBlogsActivity">
 
@@ -14,7 +15,7 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:isScrollContainer="true">
 
             <LinearLayout
@@ -257,6 +258,7 @@
                                     android:src="@drawable/phone" />
 
                                 <ImageView
+                                    android:id="@+id/ivFav"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:layout_marginLeft="5dp"
@@ -294,10 +296,12 @@
 
 
                 <LinearLayout
+                    android:id="@+id/llDetailContain"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -343,6 +347,90 @@
                         </LinearLayout>
                     </androidx.core.widget.NestedScrollView>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llCommentSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cvOpenComment"
+                        android:layout_width="match_parent"
+                        android:layout_height="38dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal">
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/userProfileComment"
+                                android:layout_width="21dp"
+                                android:layout_height="21dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="10dp"
+                                android:src="@drawable/placeholder" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="20dp"
+                                android:fontFamily="@font/segoe_ui"
+                                android:text="Write your comment here..." />
+
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvCommnetList"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:isScrollContainer="true"
+                        android:padding="8dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llAddComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:visibility="gone"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="48.21dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/add_comment_edittext_bg">
+
+                        <EditText
+                            android:id="@+id/edtComment"
+                            android:layout_width="282dp"
+                            android:layout_height="48.21dp"
+                            android:layout_marginLeft="15dp"
+                            android:background="@null"
+                            android:hint="Write your comment..." />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnCommentSave"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:layout_gravity="end"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/roundedbackground"
+                        android:backgroundTint="@color/sky_blue_color"
+                        android:fontFamily="@font/segoe_ui"
+                        android:text="SEND"
+                        android:textColor="@color/white_color" />
+                </LinearLayout>
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
@@ -350,6 +438,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/llBottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
@@ -358,6 +447,7 @@
         android:orientation="vertical">
 
         <ImageView
+            android:id="@+id/ivLike"
             android:layout_width="40.77dp"
             android:layout_height="40.77dp"
             android:layout_gravity="center"

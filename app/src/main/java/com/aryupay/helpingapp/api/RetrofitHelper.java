@@ -6,9 +6,11 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.aryupay.helpingapp.modal.blogdetails.BlogDetailsModel;
+import com.aryupay.helpingapp.modal.blogdetails.CommentsBlogModel;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.city.CityModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
 import com.aryupay.helpingapp.modal.phonesignup.PhoneSignupModel;
 import com.aryupay.helpingapp.modal.profession.ProfessionModel;
 import com.aryupay.helpingapp.modal.register.RegisterModel;
@@ -127,6 +129,21 @@ public class RetrofitHelper {
         @GET("view_blog/{blog_id}")
         Call<BlogDetailsModel> BlogDetailsModel(@Path("blog_id") String blog_id, @Header("Authorization") String token);
 
+        @GET("comment_blog/{blog_id}")
+        Call<CommentsBlogModel> CommentsBlogModel(@Path("blog_id") String blog_id, @Header("Authorization") String token);
+
+        @GET("like_blog/{blog_id}")
+        Call<JsonObject> like_blog(@Path("blog_id") String blog_id, @Header("Authorization") String token);
+
+        @GET("favourite/{blog_id}")
+        Call<JsonObject> favourite(@Path("blog_id") String blog_id, @Header("Authorization") String token);
+
+        @GET("myping")
+        Call<MyPingBlogModel> MyPingBlogModel(@Header("Authorization") String token);
+
+        @GET("myping/{category}")
+        Call<MyPingBlogModel> MyPingBlogModelCategory(@Path("category") String category, @Header("Authorization") String token);
+
 
         @FormUrlEncoded
         @POST("login")
@@ -143,6 +160,15 @@ public class RetrofitHelper {
         @FormUrlEncoded
         @PATCH("blogs")
         Call<BlogListModel> BlogListModel(@Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
+        @FormUrlEncoded
+        @PATCH("blogs/{category}")
+        Call<BlogListModel> CategoryBlog(@Path("category") String category, @Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
+
+        @FormUrlEncoded
+        @POST("comment_blog/{blog_id}")
+        Call<JsonObject> comment_blog(@Path("blog_id") String blog_id, @Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
 
     }
 
