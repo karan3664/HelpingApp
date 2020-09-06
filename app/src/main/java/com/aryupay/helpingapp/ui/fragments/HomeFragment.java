@@ -1,9 +1,12 @@
 package com.aryupay.helpingapp.ui.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,6 +33,9 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.gson.Gson;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -263,6 +269,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
         }
 
+        @SuppressLint("SetTextI18n")
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onBindViewHolder(MyCustomAdapter.MyViewHolder holder, final int position) {
 
@@ -277,7 +285,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             holder.tvHeading.setText(datum.getHeading() + "");
             holder.tvSubHeading.setText(datum.getDescription() + "");
             holder.tvLocation.setText(datum.getLocation() + "");
-            holder.tvTime.setText(datum.getTime() + "");
+
+            try {
+                LocalDate today = LocalDate.now();
+                LocalDate birthday = null;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//                    birthday = LocalDate.parse(datum.getTime() + "");
+//                    Period p = Period.between(birthday, today);
+
+                    LocalDate start = LocalDate.parse(datum.getTime());
+                    LocalDate end = LocalDate.now();
+
+                    System.out.println(ChronoUnit.DAYS.between(start, end));
+
+                    holder.tvTime.setText(ChronoUnit.DAYS.between(start, end)+ "");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if (datum.getCategory().matches("general")) {
                 holder.rlCategory.setBackgroundResource(R.drawable.general_cat_bg);
             } else if (datum.getCategory().matches("urgent")) {

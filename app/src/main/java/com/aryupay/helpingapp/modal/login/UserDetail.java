@@ -31,7 +31,7 @@ public class UserDetail {
     private Integer professionId;
     @SerializedName("photo")
     @Expose
-    private Object photo;
+    private String photo;
     @SerializedName("otp")
     @Expose
     private String otp;
@@ -130,11 +130,11 @@ public class UserDetail {
         this.professionId = professionId;
     }
 
-    public Object getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Object photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 

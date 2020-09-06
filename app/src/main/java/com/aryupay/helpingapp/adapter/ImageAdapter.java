@@ -64,23 +64,6 @@ public class ImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     .load(imageList.get(position).getImage())
                     .placeholder(R.drawable.placeholder)
                     .centerCrop()
-                    .skipMemoryCache(true) //2
-                    .diskCacheStrategy(DiskCacheStrategy.NONE) //3
-//                    .transform(CircleCrop()) //4
-                    .listener(new RequestListener<Drawable>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                                Log.e("Error==>", e.getMessage() + "");
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            Log.e("Error==>", resource + "");
-
-                            return false;
-                        }
-                    })
                     .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(viewHolder.image);
 

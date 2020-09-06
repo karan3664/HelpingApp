@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,7 +36,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.provider.MediaStore;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -71,16 +70,20 @@ public class AddImagesActivity extends AppCompatActivity {
     String mCurrentPhotoPath;
     SelectedImageAdapter selectedImageAdapter;
     ImageAdapter imageAdapter;
-    String[] projection = {MediaStore.MediaColumns.DATA};
+    String[] projection = {android.provider.MediaStore.MediaColumns.DATA};
     File image;
 
     Button done, btnNext, btnBack;
     String id;
     protected ViewDialog viewDialog;
     LoginModel loginModel;
-    String token, blogid;
+    String token, blogid, uriz;
     String ImageNameFile = "";
 
+    private String[] arrPath;
+    private boolean[] thumbnailsselection;
+    private int ids[];
+    private int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +132,9 @@ public class AddImagesActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        getAllImages();
+//        loadSavedImages(this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS));
+
+//        getAllImages();
         setImageList();
         setSelectedImageList();
 //        if (isStoragePermissionGranted()) {
@@ -190,26 +195,87 @@ public class AddImagesActivity extends AppCompatActivity {
     // get all images from external storage
     public void getAllImages() {
         imageList.clear();
-        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-        while (cursor.moveToNext()) {
-            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+//        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.INTERNAL_CONTENT_URI, projection, null,null, null);
+//        while (cursor.moveToNext()) {
+//            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+//            ImageModel ImageModel = new ImageModel();
+//            ImageModel.setImage(absolutePathOfImage);
+//            imageList.add(ImageModel);
+//        }
+//        cursor.close();
+        // which image properties are we querying
+        String result;
+        Cursor cursor = getContentResolver().query(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
+        if (cursor == null) {
+            result = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
             ImageModel ImageModel = new ImageModel();
-            ImageModel.setImage(absolutePathOfImage);
+            ImageModel.setImage(result);
             imageList.add(ImageModel);
+            cursor.close();
         }
-        cursor.close();
+//        return result;
     }
 
+    public void loadSavedImages(File dir) {
+        imageList.clear();
+        if (dir.exists()) {
+            File[] files = dir.listFiles();
+            for (File file : files) {
+                String absolutePath = file.getAbsolutePath();
+                String extension = absolutePath.substring(absolutePath.lastIndexOf("."));
+                if (extension.equals(".jpg")) {
+                    loadImage(file);
+//                    ImageModel ImageModel = new ImageModel();
+//                    ImageModel.setImage(file + "");
+//                    imageList.add(ImageModel);
+                }
+            }
+        }
+    }
 
+    private static String getDateFromUri(Uri uri) {
+        String[] split = uri.getPath().split("/");
+        String fileName = split[split.length - 1];
+        String fileNameNoExt = fileName.split("\\.")[0];
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String dateString = format.format(new Date(Long.parseLong(fileNameNoExt)));
+        return dateString;
+    }
+
+    public  void loadImage(File file) {
+//        PictureItem newItem = new PictureItem();
+//        newItem.uri = Uri.fromFile(file);
+//        newItem.date = getDateFromUri(newItem.uri);
+//        addItem(newItem);
+        ImageModel ImageModel = new ImageModel();
+        ImageModel.setImage(String.valueOf(file));
+        imageList.add(ImageModel);
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadSavedImages(AddImagesActivity.this.getExternalFilesDir(Environment.DIRECTORY_DCIM));
+                imageRecyclerView.notifyAll();
+            }
+        });
+    }
     // start the image capture Intent
     public void takePicture() {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         // Continue only if the File was successfully created;
         File photoFile = createImageFile();
         if (photoFile != null) {
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+            cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
             startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
@@ -289,7 +355,7 @@ public class AddImagesActivity extends AppCompatActivity {
         Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+                String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(android.provider.MediaStore.MediaColumns.DATA));
                 if (absolutePathOfImage != null) {
                     checkImage(absolutePathOfImage);
                 } else {

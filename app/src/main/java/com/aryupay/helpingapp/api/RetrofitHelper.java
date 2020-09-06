@@ -14,6 +14,7 @@ import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
 import com.aryupay.helpingapp.modal.phonesignup.PhoneSignupModel;
 import com.aryupay.helpingapp.modal.profession.ProfessionModel;
+import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.modal.register.RegisterModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -151,10 +152,18 @@ public class RetrofitHelper {
         @GET("myping/{category}")
         Call<MyPingBlogModel> MyPingBlogModelCategory(@Path("category") String category, @Header("Authorization") String token);
 
+        @GET("myprofile")
+        Call<MyProfileModel> MyProfileModel(@Header("Authorization") String token);
+
 
         @FormUrlEncoded
         @POST("login")
         Call<LoginModel> LoginModel(@FieldMap HashMap<String, String> hashMap);
+
+        @Multipart
+        @POST("user")
+        Call<LoginModel> userUpdate(@Header("Authorization") String authorization,
+                                    @PartMap Map<String, RequestBody> map);
 
         @FormUrlEncoded
         @POST("register")

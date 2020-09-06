@@ -138,6 +138,10 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_activity_follower_following_helping">FollowerFollowingHelpingActivity
+    </string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
 
     <!--    <string name="default_web_client_id">426985050820-q4847bev8o9ascc7mtvp19s1urd75m5a.apps.googleusercontent.com</string>-->
 

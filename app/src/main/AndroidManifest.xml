@@ -29,7 +29,14 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon,android:allowBackup,android:usesCleartextTraffic">
-        <activity android:name=".ui.addBlog.AddBlogImagesActivity"></activity>
+        <activity android:name=".ui.profile.FollowerFollowingHelpingActivity"></activity>
+        <activity android:name=".ui.profile.NotificationsActivity" />
+        <activity android:name=".ui.profile.ChangePasswordActivity" />
+        <activity android:name=".ui.profile.HelpSupportActivity" />
+        <activity android:name=".ui.profile.SettingsActivity" />
+        <activity android:name=".ui.profile.OpenOptionsActivity" />
+        <activity android:name=".ui.profile.EditProfileActivity" />
+        <activity android:name=".ui.addBlog.AddBlogImagesActivity" />
         <activity android:name=".ui.addBlog.AddLocationActivity" />
         <activity
             android:name=".ui.addBlog.AddImagesActivity"

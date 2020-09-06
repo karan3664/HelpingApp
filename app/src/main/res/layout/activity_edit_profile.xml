@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.RegisterActivity">
+    tools:context=".ui.profile.EditProfileActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -319,10 +319,10 @@
                                             android:layout_height="match_parent"
                                             android:background="@null"
                                             android:drawableLeft="@drawable/ic_city"
-                                            android:gravity="center"
-                                            android:hint="@string/search"
                                             android:editable="false"
                                             android:focusable="false"
+                                            android:gravity="center"
+                                            android:hint="@string/search"
                                             android:inputType="text"
                                             android:paddingLeft="@dimen/_5sdp"
                                             android:singleLine="true"
@@ -368,10 +368,10 @@
                                             android:layout_height="match_parent"
                                             android:background="@null"
                                             android:drawableRight="@drawable/ic_dob"
-                                            android:gravity="center"
-                                            android:hint="@string/dob_hint"
                                             android:editable="false"
                                             android:focusable="false"
+                                            android:gravity="center"
+                                            android:hint="@string/dob_hint"
                                             android:paddingRight="@dimen/_8sdp"
                                             android:singleLine="true"
                                             android:textSize="@dimen/_10sdp" />
@@ -423,11 +423,11 @@
                                             android:layout_height="match_parent"
                                             android:background="@null"
                                             android:drawableLeft="@drawable/ic_gender"
+                                            android:editable="false"
                                             android:entries="@array/genderarray"
+                                            android:focusable="false"
                                             android:gravity="center"
                                             android:hint="@string/select"
-                                            android:editable="false"
-                                            android:focusable="false"
                                             android:inputType="text"
                                             android:paddingLeft="@dimen/_5sdp"
                                             android:singleLine="true"
@@ -473,12 +473,12 @@
                                             android:layout_height="match_parent"
                                             android:background="@null"
                                             android:drawableRight="@drawable/ic_profession"
+                                            android:editable="false"
+                                            android:focusable="false"
                                             android:gravity="center"
                                             android:hint="@string/select"
                                             android:inputType="text"
                                             android:paddingRight="@dimen/_7sdp"
-                                            android:editable="false"
-                                            android:focusable="false"
                                             android:singleLine="true"
                                             android:textSize="@dimen/_10sdp" />
                                     </RelativeLayout>
@@ -500,106 +500,7 @@
 
                         </LinearLayout>
 
-                        <LinearLayout
-                            android:id="@+id/lyt_password"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
 
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="2"
-                                android:orientation="vertical">
-
-                                <FrameLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
-
-                                    <RelativeLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="@dimen/_35sdp"
-                                        android:layout_marginTop="@dimen/_10sdp"
-                                        android:background="@drawable/profile_edittext_bg"
-                                        android:gravity="start">
-
-                                        <EditText
-                                            android:id="@+id/et_password"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:background="@null"
-                                            android:entries="@array/genderarray"
-                                            android:gravity="center"
-                                            android:hint="password"
-                                            android:inputType="textPassword"
-                                            android:paddingLeft="@dimen/_5sdp"
-                                            android:singleLine="true"
-
-                                            android:textSize="@dimen/_10sdp" />
-                                    </RelativeLayout>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginLeft="@dimen/_30sdp"
-                                        android:layout_marginTop="@dimen/_5sdp"
-                                        android:background="@color/white_color"
-                                        android:text="Password"
-                                        android:textColor="@color/pink_color"
-                                        android:textSize="@dimen/_10sdp">
-
-                                    </TextView>
-                                </FrameLayout>
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/_5sdp"
-                                android:layout_weight="2"
-                                android:orientation="vertical">
-
-                                <FrameLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
-
-                                    <RelativeLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="@dimen/_35sdp"
-                                        android:layout_marginTop="@dimen/_10sdp"
-                                        android:background="@drawable/profile_edittext_bg"
-                                        android:gravity="start">
-
-                                        <EditText
-                                            android:id="@+id/et_confirmpassword"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:background="@null"
-                                            android:gravity="center"
-                                            android:hint="Confirm password"
-                                            android:inputType="textPassword"
-                                            android:paddingRight="@dimen/_7sdp"
-                                            android:singleLine="true"
-                                            android:textSize="@dimen/_10sdp" />
-                                    </RelativeLayout>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginLeft="@dimen/_30sdp"
-                                        android:layout_marginTop="@dimen/_5sdp"
-                                        android:background="@color/white_color"
-                                        android:text="Confirm password"
-                                        android:textColor="@color/pink_color"
-                                        android:textSize="@dimen/_10sdp">
-
-                                    </TextView>
-                                </FrameLayout>
-
-                            </LinearLayout>
-
-                        </LinearLayout>
                     </LinearLayout>
 
                     <Button
@@ -625,4 +526,5 @@
         </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -65,7 +65,7 @@ public class AddBlogActivity extends AppCompatActivity implements View.OnClickLi
                 showCategoryDialog(view);
                 break;
             case R.id.btnNext:
-                Intent i = new Intent(AddBlogActivity.this, AddImagesActivity.class);
+                Intent i = new Intent(AddBlogActivity.this, AddBlogImagesActivity.class);
                 i.putExtra("id",  "205");
                 startActivity(i);
 //                AddBlog();
