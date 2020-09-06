@@ -14,6 +14,7 @@ import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
 import com.aryupay.helpingapp.modal.phonesignup.PhoneSignupModel;
 import com.aryupay.helpingapp.modal.profession.ProfessionModel;
+import com.aryupay.helpingapp.modal.profile.followers.FollowersModel;
 import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.modal.register.RegisterModel;
 import com.google.gson.Gson;
@@ -154,6 +155,24 @@ public class RetrofitHelper {
 
         @GET("myprofile")
         Call<MyProfileModel> MyProfileModel(@Header("Authorization") String token);
+
+        @GET("followers")
+        Call<FollowersModel> FollowersModel(@Header("Authorization") String token);
+
+        @GET("following")
+        Call<FollowersModel> following(@Header("Authorization") String token);
+
+        @GET("suggested")
+        Call<FollowersModel> suggested(@Header("Authorization") String token);
+
+        @GET("follow/{user_id}")
+        Call<JsonObject> followunfollo(@Path("user_id") String user_id, @Header("Authorization") String token);
+
+        @GET("logout")
+        Call<JsonObject> logout(@Header("Authorization") String token);
+
+        @GET("deactivate")
+        Call<JsonObject> deactivate(@Header("Authorization") String token);
 
 
         @FormUrlEncoded

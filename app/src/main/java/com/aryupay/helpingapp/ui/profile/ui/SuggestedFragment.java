@@ -1,14 +1,11 @@
 package com.aryupay.helpingapp.ui.profile.ui;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,29 +15,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
-import com.aryupay.helpingapp.modal.bloglist.Blog;
-import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.profile.followers.Datum;
 import com.aryupay.helpingapp.modal.profile.followers.FollowersModel;
-import com.aryupay.helpingapp.ui.fragments.HomeFragment;
-import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -49,10 +37,10 @@ import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FollowersFragment#newInstance} factory method to
+ * Use the {@link SuggestedFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FollowersFragment extends Fragment {
+public class SuggestedFragment extends Fragment {
     protected ViewDialog viewDialog;
     RecyclerView rvFollowers;
     private MyCustomAdapter myCustomAdapter;
@@ -60,6 +48,7 @@ public class FollowersFragment extends Fragment {
     ArrayList<Datum> datumArrayList = new ArrayList<>();
 
     String token;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -69,7 +58,7 @@ public class FollowersFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public FollowersFragment() {
+    public SuggestedFragment() {
         // Required empty public constructor
     }
 
@@ -79,11 +68,11 @@ public class FollowersFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FollowersFragment.
+     * @return A new instance of fragment SuggestedFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FollowersFragment newInstance(String param1, String param2) {
-        FollowersFragment fragment = new FollowersFragment();
+    public static SuggestedFragment newInstance(String param1, String param2) {
+        SuggestedFragment fragment = new SuggestedFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -104,7 +93,9 @@ public class FollowersFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_followers, container, false);
+
+
+        View rootView = inflater.inflate(R.layout.fragment_suggested, container, false);
         loginModel = PrefUtils.getUser(getContext());
         token = loginModel.getData().getToken();
         viewDialog = new ViewDialog(getContext());
@@ -120,7 +111,7 @@ public class FollowersFragment extends Fragment {
     private void FollowerList() {
 
         showProgressDialog();
-        Call<FollowersModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).FollowersModel("Bearer " + token);
+        Call<FollowersModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).suggested("Bearer " + token);
         marqueCall.enqueue(new Callback<FollowersModel>() {
             @Override
             public void onResponse(@NonNull Call<FollowersModel> call, @NonNull Response<FollowersModel> response) {
@@ -176,7 +167,7 @@ public class FollowersFragment extends Fragment {
             }
         }
 
-        @SuppressLint({"SetTextI18n", "ResourceAsColor"})
+        @SuppressLint("SetTextI18n")
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
@@ -190,6 +181,7 @@ public class FollowersFragment extends Fragment {
 
             holder.tvName.setText(datum.getName() + "");
 
+
             if (datum.getFollow() == false) {
                 holder.rlCategory.setBackgroundResource(R.drawable.btn_follow_bg);
                 holder.rlCategory.setText("Follow");
@@ -199,8 +191,17 @@ public class FollowersFragment extends Fragment {
             }
 
             if (datum.getPhoto() != null) {
+                if (datum.getPhoto().getPath() != null) {
+                    Glide.with(getContext())
+                            .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
+//                        .centerCrop()
+                            .placeholder(R.drawable.placeholder)
+                            .into(holder.civProfile);
+                }
+
+            } else {
                 Glide.with(getContext())
-                        .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
+                        .load("")
 //                        .centerCrop()
                         .placeholder(R.drawable.placeholder)
                         .into(holder.civProfile);
@@ -251,6 +252,4 @@ public class FollowersFragment extends Fragment {
     protected void showProgressDialog() {
         viewDialog.show();
     }
-
-
 }

@@ -162,14 +162,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.llFollowers:
                 Intent fol = new Intent(ProfileActivity.this, FollowerFollowingHelpingActivity.class);
-                fol.putExtra("frag1", "0");
+                fol.putExtra("frag1", 0);
                 startActivity(fol);
 
                 break;
 
             case R.id.llfollowing:
                 Intent foll = new Intent(ProfileActivity.this, FollowerFollowingHelpingActivity.class);
-                foll.putExtra("frag1", "1");
+                foll.putExtra("frag1", 1);
                 startActivity(foll);
                 break;
 

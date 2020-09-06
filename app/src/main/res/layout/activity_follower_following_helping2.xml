@@ -5,32 +5,116 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.profile.FollowerFollowingHelpingActivity">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white_color"
         android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white_color"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:background="@drawable/home_search_bg"
+            android:elevation="@dimen/_3sdp"
+            android:orientation="vertical">
 
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tab_layout"
+            <RelativeLayout
+                android:id="@+id/rlSearchPing"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:tabGravity="fill"
-                app:tabIndicatorColor="@android:color/white"
-                app:tabIndicatorHeight="3dp"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@android:color/white"
-                app:tabTextColor="@color/sky_blue_color" />
+                android:layout_height="match_parent">
 
-        </com.google.android.material.appbar.AppBarLayout>
+                <ImageView
+                    android:id="@+id/ivBack"
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/left_arrow" />
+
+                <TextView
+                    android:id="@+id/tvMyPing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_toRightOf="@+id/ivBack"
+                    android:text=""
+                    android:textColor="@color/black_color"
+                    android:textSize="@dimen/_16sdp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="@dimen/_15sdp"
+                    android:layout_height="@dimen/_15sdp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:src="@drawable/ic_options" />
+
+                <RelativeLayout
+                    android:id="@+id/rlSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvMyPing"
+                    android:layout_marginTop="@dimen/_10sdp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_35sdp"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginRight="@dimen/_10sdp"
+                        android:background="@drawable/add_ping_edittext_bg">
+
+
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@null"
+                            android:editable="false"
+                            android:focusable="false"
+                            android:paddingLeft="@dimen/_10sdp"
+                            android:paddingRight="@dimen/_30sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/black_color"
+                            android:textSize="@dimen/_12sdp" />
+
+                        <ImageView
+                            android:layout_width="@dimen/_25sdp"
+                            android:layout_height="@dimen/_25sdp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_4sdp"
+                            android:src="@drawable/search_bg">
+
+                        </ImageView>
+
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_below="@+id/rlSearch"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    app:tabGravity="fill"
+                    app:tabIndicatorColor="@color/sky_blue_color"
+                    app:tabIndicatorHeight="3dp"
+                    app:tabMode="fixed"
+                    app:tabSelectedTextColor="@color/sky_blue_color"
+                    app:tabTextColor="@color/darkGrey" />
+
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager"

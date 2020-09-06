@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.activity.SuggestedFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    tools:context=".ui.profile.ui.SuggestedFragment">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFollowers"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_margin="8dp"
+        android:isScrollContainer="true"
+        android:padding="8dp" />
+
 
 </FrameLayout>
