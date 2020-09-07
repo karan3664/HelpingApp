@@ -1,19 +1,13 @@
-package com.aryupay.helpingapp.ui.fragments;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.os.Bundle;
+package com.aryupay.helpingapp.ui.fragments.activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,108 +19,90 @@ import android.widget.TextView;
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
-import com.aryupay.helpingapp.modal.bloglist.Blog;
-import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.bloglist.Image;
 import com.aryupay.helpingapp.modal.login.LoginModel;
-import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
+import com.aryupay.helpingapp.modal.myping.Datum;
+import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
+import com.aryupay.helpingapp.ui.fragments.MyPingFragment;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.gson.Gson;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class ViewOtherBlogsPingActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView rvBlogList;
 
     private MyCustomAdapter myCustomAdapter;
-    private ArrayList<Blog> blogArrayList = new ArrayList<>();
+    private ArrayList<Datum> blogArrayList = new ArrayList<>();
     private ArrayList<Integer> Like = new ArrayList<>();
     private ArrayList<Integer> Comments = new ArrayList<>();
     private ArrayList<Integer> Views = new ArrayList<>();
     private ArrayList<Image> Images = new ArrayList<>();
     LoginModel loginModel;
-    SharedPreferences preferences;
-    String token, location;
+    String token, userid, name;
     Chip chipAll, chipUrgent, chipInformation, chipGeneral, chipFav, chipSearch;
-    TextView tvLoc;
-
-    public HomeFragment() {
-        // Required empty public constructor
-    }
-
-    public static HomeFragment newInstance() {
-
-        Bundle args = new Bundle();
-
-        HomeFragment fragment = new HomeFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    TextView tvMyPing;
+    ImageView ivBack;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        loginModel = PrefUtils.getUser(getContext());
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_view_other_blogs_ping);
+        loginModel = PrefUtils.getUser(this);
         token = loginModel.getData().getToken() + "";
-        preferences = getActivity().getSharedPreferences("user_info", Context.MODE_PRIVATE);
-        location = preferences.getString("location", "");
-        rvBlogList = rootView.findViewById(R.id.rvBlogList);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        rvBlogList = findViewById(R.id.rvBlogList);
+        tvMyPing = findViewById(R.id.tvMyPing);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvBlogList.setLayoutManager(layoutManager);
         rvBlogList.setHasFixedSize(true);
 
-        chipAll = rootView.findViewById(R.id.chipAll);
-        chipUrgent = rootView.findViewById(R.id.chipUrgent);
-        chipInformation = rootView.findViewById(R.id.chipInformation);
-        chipGeneral = rootView.findViewById(R.id.chipGeneral);
-        chipFav = rootView.findViewById(R.id.chipFav);
-        chipSearch = rootView.findViewById(R.id.chipSearch);
-        tvLoc = rootView.findViewById(R.id.tvLoc);
-        tvLoc.setText(location);
+        chipAll = findViewById(R.id.chipAll);
+        chipUrgent = findViewById(R.id.chipUrgent);
+        chipInformation = findViewById(R.id.chipInformation);
+        chipGeneral = findViewById(R.id.chipGeneral);
+        chipFav = findViewById(R.id.chipFav);
+        ivBack = findViewById(R.id.ivBack);
+
+
         chipAll.setOnClickListener(this);
         chipUrgent.setOnClickListener(this);
         chipInformation.setOnClickListener(this);
         chipGeneral.setOnClickListener(this);
         chipFav.setOnClickListener(this);
+        ivBack.setOnClickListener(this);
 
-        BlogList();
-        return rootView;
+        Intent i = getIntent();
+        if (i != null) {
+
+
+            userid = i.getStringExtra("userid");
+            name = i.getStringExtra("name");
+            tvMyPing.setText(name);
+
+            BlogList();
+        }
     }
 
     private void BlogList() {
 
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("location", "Atmakur,Andhra Pradesh");
 
-        Log.e("GAYA", hashMap + "");
-        Call<BlogListModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).BlogListModel("Bearer " + token, hashMap);
-        marqueCall.enqueue(new Callback<BlogListModel>() {
+        Call<MyPingBlogModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).view_other_blog(userid + "", "Bearer " + token);
+        marqueCall.enqueue(new Callback<MyPingBlogModel>() {
             @Override
-            public void onResponse(@NonNull Call<BlogListModel> call, @NonNull Response<BlogListModel> response) {
-                BlogListModel object = response.body();
+            public void onResponse(@NonNull Call<MyPingBlogModel> call, @NonNull Response<MyPingBlogModel> response) {
+                MyPingBlogModel object = response.body();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
 
 
-                    blogArrayList = object.getMessage().getBlog();
-                    Like = object.getMessage().getLikes();
-                    Comments = object.getMessage().getComments();
-                    Views = object.getMessage().getViews();
-                    Images = object.getMessage().getImages();
+                    blogArrayList = object.getData();
 
                     myCustomAdapter = new MyCustomAdapter(blogArrayList);
                     rvBlogList.setAdapter(myCustomAdapter);
@@ -137,7 +113,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(@NonNull Call<BlogListModel> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<MyPingBlogModel> call, @NonNull Throwable t) {
                 t.printStackTrace();
 
                 Log.e("ChatV_Response", t.getMessage() + "");
@@ -146,26 +122,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     }
 
+
     private void CategoryBlogList(String category) {
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("location", "Atmakur,Andhra Pradesh");
 
-
-        Call<BlogListModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).CategoryBlog(category, "Bearer " + token, hashMap);
-        marqueCall.enqueue(new Callback<BlogListModel>() {
+        Call<MyPingBlogModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).view_other_blogC(userid + "", category, "Bearer " + token);
+        marqueCall.enqueue(new Callback<MyPingBlogModel>() {
             @Override
-            public void onResponse(@NonNull Call<BlogListModel> call, @NonNull Response<BlogListModel> response) {
-                BlogListModel object = response.body();
+            public void onResponse(@NonNull Call<MyPingBlogModel> call, @NonNull Response<MyPingBlogModel> response) {
+                MyPingBlogModel object = response.body();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
 
 
-                    blogArrayList = object.getMessage().getBlog();
-                    Like = object.getMessage().getLikes();
-                    Comments = object.getMessage().getComments();
-                    Views = object.getMessage().getViews();
-                    Images = object.getMessage().getImages();
-
+                    blogArrayList = object.getData();
                     myCustomAdapter = new MyCustomAdapter(blogArrayList);
                     rvBlogList.setAdapter(myCustomAdapter);
                     myCustomAdapter.notifyDataSetChanged();
@@ -176,7 +145,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
 
             @Override
-            public void onFailure(@NonNull Call<BlogListModel> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<MyPingBlogModel> call, @NonNull Throwable t) {
                 t.printStackTrace();
 
                 Log.e("ChatV_Response", t.getMessage() + "");
@@ -189,9 +158,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.chipAll:
-                chipSearch.setText("ALL");
-                chipSearch.setChipIconEnabled(false);
-                chipSearch.setChipBackgroundColorResource(R.color.sky_blue_color);
+
                 chipAll.setChipBackgroundColorResource(R.color.sky_blue_color);
                 chipUrgent.setChipBackgroundColorResource(R.color.dark_grey);
                 chipInformation.setChipBackgroundColorResource(R.color.dark_grey);
@@ -201,9 +168,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 BlogList();
                 break;
             case R.id.chipUrgent:
-                chipSearch.setText("URGENT");
-                chipSearch.setChipIconEnabled(false);
-                chipSearch.setChipBackgroundColorResource(R.color.colorPrimary);
+
                 chipAll.setChipBackgroundColorResource(R.color.dark_grey);
                 chipUrgent.setChipBackgroundColorResource(R.color.colorPrimary);
                 chipInformation.setChipBackgroundColorResource(R.color.dark_grey);
@@ -213,9 +178,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                 break;
             case R.id.chipInformation:
-                chipSearch.setText("INFORMATION");
-                chipSearch.setChipIconEnabled(false);
-                chipSearch.setChipBackgroundColorResource(R.color.pink_color);
+
                 chipAll.setChipBackgroundColorResource(R.color.dark_grey);
                 chipUrgent.setChipBackgroundColorResource(R.color.dark_grey);
                 chipInformation.setChipBackgroundColorResource(R.color.pink_color);
@@ -224,9 +187,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 CategoryBlogList("information");
                 break;
             case R.id.chipGeneral:
-                chipSearch.setText("GENERAL");
-                chipSearch.setChipIconEnabled(false);
-                chipSearch.setChipBackgroundColorResource(R.color.green_color);
+
                 chipAll.setChipBackgroundColorResource(R.color.dark_grey);
                 chipUrgent.setChipBackgroundColorResource(R.color.dark_grey);
                 chipInformation.setChipBackgroundColorResource(R.color.dark_grey);
@@ -235,9 +196,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 CategoryBlogList("general");
                 break;
             case R.id.chipFav:
-                chipSearch.setText("FAV");
-                chipSearch.setChipIconEnabled(true);
-                chipSearch.setChipBackgroundColorResource(R.color.phone_login_color);
+
                 chipAll.setChipBackgroundColorResource(R.color.dark_grey);
                 chipUrgent.setChipBackgroundColorResource(R.color.dark_grey);
                 chipInformation.setChipBackgroundColorResource(R.color.dark_grey);
@@ -245,23 +204,25 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 chipFav.setChipBackgroundColorResource(R.color.phone_login_color);
                 CategoryBlogList("fav");
                 break;
-
+            case R.id.ivBack:
+                onBackPressed();
+                break;
         }
     }
 
     public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyViewHolder> {
 
-        private ArrayList<Blog> moviesList;
+        private ArrayList<Datum> moviesList;
 
-        public MyCustomAdapter(ArrayList<Blog> moviesList) {
+        public MyCustomAdapter(ArrayList<Datum> moviesList) {
             this.moviesList = moviesList;
         }
 
         @Override
-        public MyCustomAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_blog_list, parent, false);
 
-            return new MyCustomAdapter.MyViewHolder(itemView);
+            return new MyViewHolder(itemView);
         }
 
         public void clear() {
@@ -275,13 +236,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
         }
 
-        @SuppressLint("SetTextI18n")
-        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
-        public void onBindViewHolder(MyCustomAdapter.MyViewHolder holder, final int position) {
+        public void onBindViewHolder(MyViewHolder holder, final int position) {
 
 
-            final Blog datum = moviesList.get(position);
+            final Datum datum = moviesList.get(position);
 
 
 //            Uri uri = Uri.parse(BuildConstants.Main_Image + datum.getThmbnailImage());
@@ -291,24 +250,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             holder.tvHeading.setText(datum.getHeading() + "");
             holder.tvSubHeading.setText(datum.getDescription() + "");
             holder.tvLocation.setText(datum.getLocation() + "");
-
-            try {
-                LocalDate today = LocalDate.now();
-                LocalDate birthday = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//                    birthday = LocalDate.parse(datum.getTime() + "");
-//                    Period p = Period.between(birthday, today);
-
-                    LocalDate start = LocalDate.parse(datum.getTime());
-                    LocalDate end = LocalDate.now();
-
-                    System.out.println(ChronoUnit.DAYS.between(start, end));
-
-                    holder.tvTime.setText(ChronoUnit.DAYS.between(start, end) + "");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            holder.tvTime.setText(datum.getTime() + "");
             if (datum.getCategory().matches("general")) {
                 holder.rlCategory.setBackgroundResource(R.drawable.general_cat_bg);
             } else if (datum.getCategory().matches("urgent")) {
@@ -317,17 +259,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             } else {
 
             }
-
-            if (datum.getFav() == true) {
-                holder.favStar.setImageResource(R.drawable.favourite_star);
-            }
             holder.catName.setText(datum.getCategory() + "");
-            holder.tvTotalComment.setText(Comments.get(position) + "");
-            holder.tvTotalView.setText(Views.get(position) + "");
-            holder.tvTotalLikes.setText(Like.get(position) + "");
-            if (Images.get(position) != null) {
-                Glide.with(getContext())
-                        .load(BuildConstants.Main_Image + Images.get(position).getPath().replace("public", "storage"))
+            holder.tvTotalComment.setText(datum.getComments() + "");
+            holder.tvTotalView.setText(datum.getViews() + "");
+            holder.tvTotalLikes.setText(datum.getLikes() + "");
+            if (datum.getImages() != null) {
+                Glide.with(ViewOtherBlogsPingActivity.this)
+                        .load(BuildConstants.Main_Image + datum.getImages().getPath().replace("public", "storage"))
 //                        .centerCrop()
                         .placeholder(R.drawable.placeholder)
                         .into(holder.ivEmployee);
@@ -336,7 +274,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             holder.CVReview.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent i = new Intent(getContext(), DetailBlogsActivity.class);
+                    Intent i = new Intent(ViewOtherBlogsPingActivity.this, DetailBlogsActivity.class);
                     i.putExtra("blogid", datum.getId() + "");
                     startActivity(i);
                 }
@@ -378,11 +316,5 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         }
 
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-//        BlogList();
     }
 }

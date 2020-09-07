@@ -11,8 +11,10 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
 import android.location.Geocoder;
 
 
@@ -38,9 +40,11 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.List;
 import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CALL_PHONE;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_PHONE_STATE;
@@ -60,6 +64,7 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
     private boolean isContinue = false;
     private boolean isGPS = false;
 
+    public static final String PREFS_NAME = "user_info";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,19 +131,19 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
 //        int result1 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
         int result2 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_PHONE_STATE);
         int result3 = ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA);
-//        int result4 = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_SETTINGS);
+        int result4 = ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE);
 
         return result == PackageManager.PERMISSION_GRANTED &&
 //                result1 == PackageManager.PERMISSION_GRANTED &&
                 result2 == PackageManager.PERMISSION_GRANTED &&
-                result3 == PackageManager.PERMISSION_GRANTED ;
-//                result4 == PackageManager.PERMISSION_GRANTED;
+                result3 == PackageManager.PERMISSION_GRANTED &&
+                result4 == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermission() {
 
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION,
-                READ_PHONE_STATE, CAMERA
+                READ_PHONE_STATE, CAMERA, CALL_PHONE
         }, PERMISSION_REQUEST_CODE);
 
     }
@@ -153,8 +158,9 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
 //                    boolean cameraAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     boolean telepone = grantResults[1] == PackageManager.PERMISSION_GRANTED;
                     boolean camera = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+                    boolean call = grantResults[3] == PackageManager.PERMISSION_GRANTED;
 
-                    if (locationAccepted &&  telepone && camera) {
+                    if (locationAccepted && telepone && camera) {
                         startActivity(new Intent(this, this.getClass()));
 //                        updateUI(location);
                         finish();
@@ -170,7 +176,7 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                    requestPermissions(new String[]{ACCESS_FINE_LOCATION,  READ_PHONE_STATE, CAMERA},
+                                                    requestPermissions(new String[]{ACCESS_FINE_LOCATION, READ_PHONE_STATE, CAMERA, CALL_PHONE},
                                                             PERMISSION_REQUEST_CODE);
                                                 }
                                             }
@@ -203,6 +209,10 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
         updateUI(location);
         AppPreferences.setLati(SplashActivity.this, location.getLatitude());
         AppPreferences.setLongi(SplashActivity.this, location.getLongitude());
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = settings.edit();
+
        /* File file = new File(SplashActivity.this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), "text");
         if (!file.exists()) {
             file.mkdir();
@@ -223,20 +233,21 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
             try {
 
                 Geocoder geo = new Geocoder(SplashActivity.this, Locale.getDefault());
-//                List<Address> addresses = geo.getFromLocation(Double.parseDouble(et_latitude.getText().toString()),
-//                        Double.parseDouble(et_longitude.getText().toString()), 1);
-//                Log.e("L:A", addresses + "");
-//                AppPreferences.setLati(SplashActivity.this, Double.parseDouble(et_latitude.getText().toString()));
-//                AppPreferences.setLongi(SplashActivity.this, Double.parseDouble(et_longitude.getText().toString()));
-//                if (addresses.isEmpty()) {
-////                    address.setText("Waiting for Location");
-//                } else {
-//                    if (addresses.size() > 0) {
-////                        address.setText(/*addresses.get(0).getFeatureName() + ", " + addresses.get(0).getSubLocality() + ", " + addresses.get(0).getSubAdminArea() + ", " +*/ addresses.get(0).getAddressLine(0) + "");
-////                        Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
-//                    }
-//
-//                }
+                List<Address> addresses = geo.getFromLocation(location.getLatitude(),
+                        location.getLongitude(), 1);
+                Log.e("L:A", addresses + "");
+
+                if (addresses.isEmpty()) {
+//                    address.setText("Waiting for Location");
+                } else {
+                    if (addresses.size() > 0) {
+                        editor.putString("location", addresses.get(0).getSubLocality() + ", " + addresses.get(0).getLocality() + "");
+                        editor.commit();
+//                        address.setText(/*addresses.get(0).getFeatureName() + ", " + addresses.get(0).getSubLocality() + ", " + addresses.get(0).getSubAdminArea() + ", " +*/ addresses.get(0).getAddressLine(0) + "");
+//                        Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
+                    }
+
+                }
             } catch (Exception e) {
                 e.printStackTrace(); // getFromLocation() may sometimes fail
             }

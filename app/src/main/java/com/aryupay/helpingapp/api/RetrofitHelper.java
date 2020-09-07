@@ -9,9 +9,11 @@ import com.aryupay.helpingapp.modal.addblog.AddBlogModel;
 import com.aryupay.helpingapp.modal.blogdetails.BlogDetailsModel;
 import com.aryupay.helpingapp.modal.blogdetails.CommentsBlogModel;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
+import com.aryupay.helpingapp.modal.changePassword.otp.OTPModel;
 import com.aryupay.helpingapp.modal.city.CityModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
+import com.aryupay.helpingapp.modal.other_user.OtherUserProfileModel;
 import com.aryupay.helpingapp.modal.phonesignup.PhoneSignupModel;
 import com.aryupay.helpingapp.modal.profession.ProfessionModel;
 import com.aryupay.helpingapp.modal.profile.followers.FollowersModel;
@@ -147,6 +149,7 @@ public class RetrofitHelper {
         @GET("favourite/{blog_id}")
         Call<JsonObject> favourite(@Path("blog_id") String blog_id, @Header("Authorization") String token);
 
+
         @GET("myping")
         Call<MyPingBlogModel> MyPingBlogModel(@Header("Authorization") String token);
 
@@ -174,6 +177,22 @@ public class RetrofitHelper {
         @GET("deactivate")
         Call<JsonObject> deactivate(@Header("Authorization") String token);
 
+        @GET("viewprofile/{user_id}")
+        Call<OtherUserProfileModel> OtherUserProfileModel(@Path("user_id") String user_id, @Header("Authorization") String token);
+
+        @GET("view_other_blog/{user_id}")
+        Call<MyPingBlogModel> view_other_blog(@Path("user_id") String user_id, @Header("Authorization") String token);
+
+        @GET("view_other_blog/{user_id}/{category}")
+        Call<MyPingBlogModel> view_other_blogC(@Path("user_id") String user_id, @Path("category") String category, @Header("Authorization") String token);
+
+        @FormUrlEncoded()
+        @POST("report_blog/{blog_id}")
+        Call<JsonObject> report_blog(@Path("blog_id") String blog_id, @Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
+        @FormUrlEncoded()
+        @POST("report_user/{user_id}")
+        Call<JsonObject> report_user(@Path("user_id") String user_id, @Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
 
         @FormUrlEncoded
         @POST("login")
@@ -191,6 +210,22 @@ public class RetrofitHelper {
         @FormUrlEncoded
         @POST("phone_signup")
         Call<PhoneSignupModel> PhoneSignupModel(@FieldMap HashMap<String, String> hashMap);
+
+        @FormUrlEncoded
+        @POST("otp")
+        Call<OTPModel> OTPModel(@FieldMap HashMap<String, String> hashMap);
+
+        @FormUrlEncoded
+        @POST("reset")
+        Call<JsonObject> reset(@FieldMap HashMap<String, String> hashMap);
+
+        @FormUrlEncoded
+        @POST("myprofile_settings")
+        Call<JsonObject> myprofile_settings(@Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
+        @FormUrlEncoded
+        @POST("notification_setting")
+        Call<JsonObject> notification_setting(@Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
 
         @FormUrlEncoded
         @PATCH("blogs")

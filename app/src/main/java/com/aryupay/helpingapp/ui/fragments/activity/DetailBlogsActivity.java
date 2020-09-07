@@ -1,22 +1,35 @@
 package com.aryupay.helpingapp.ui.fragments.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterViewFlipper;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,8 +45,13 @@ import com.aryupay.helpingapp.modal.blogdetails.Image;
 import com.aryupay.helpingapp.modal.bloglist.Blog;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.modal.other_user.OtherUserProfileModel;
+import com.aryupay.helpingapp.modal.profile.my_profile.Comment;
+import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.ui.fragments.HomeFragment;
+
+import com.aryupay.helpingapp.ui.profile.ProfileActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
@@ -42,8 +60,11 @@ import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -57,7 +78,13 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
     RelativeLayout btnComment, btnChat;
     String token, blogid;
     LoginModel loginModel;
-    ImageView userProfile, ivLike, ivFav;
+    ImageView userProfile, ivLike, ivFav, ivCall;
+    CircleImageView ivProfileImage;
+    TextView tv_name, tvBiotxt, tv_bio, tvAgetxt, tv_gender, tv_location,
+            tvEmailId, tvMobileNo, tvFollowers, tvFollowing, tvHelping, tvReviewNo;
+    ImageView iv_editprofile, ivOptionBlog, ivShare, ivOption, ivCloseProfile;
+    RecyclerView rvReviews;
+    LinearLayout llFollowers, llFollowing, llHelping;
 
     protected ViewDialog viewDialog;
     LinearLayout llDetailContain, llBottom;
@@ -68,10 +95,15 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
     CircleImageView userProfileComment;
     CardView cvOpenComment;
     private MyCustomAdapter myCustomAdapter;
+    private MyCustomAdapterOther myCustomAdapterOther;
     ArrayList<Datum> datumArrayList = new ArrayList<>();
 
     EditText edtComment;
     Button btnCommentSave;
+    String calls;
+    NestedScrollView nesDetailBlog, nesProfile;
+    String userid, name;
+    ArrayList<com.aryupay.helpingapp.modal.other_user.Comment> commentArrayLis = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +133,10 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         userProfile = findViewById(R.id.userProfile);
         ivLike = findViewById(R.id.ivLike);
         ivFav = findViewById(R.id.ivFav);
+        ivCall = findViewById(R.id.ivCall);
+        nesDetailBlog = findViewById(R.id.nsvDetailBlog);
+        nesProfile = findViewById(R.id.nesProfile);
+        ivOptionBlog = findViewById(R.id.ivOptionBlog);
 
         //Comment Section
 
@@ -118,18 +154,73 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
         ivLike.setOnClickListener(this);
         ivFav.setOnClickListener(this);
+        ivCall.setOnClickListener(this);
         btnComment.setOnClickListener(this);
         cvOpenComment.setOnClickListener(this);
         btnCommentSave.setOnClickListener(this);
+        ivOptionBlog.setOnClickListener(this);
 
         BlogDetails();
         CommentsList();
+
+        // other user profile
+        ivProfileImage = findViewById(R.id.ivProfileImage);
+        tv_name = findViewById(R.id.tv_name);
+        tvBiotxt = findViewById(R.id.tvBiotxt);
+        tv_bio = findViewById(R.id.tv_bio);
+        tvAgetxt = findViewById(R.id.tvAgetxt);
+        tv_gender = findViewById(R.id.tv_gender);
+        tv_location = findViewById(R.id.tv_location);
+        tvEmailId = findViewById(R.id.tvEmailId);
+        tvMobileNo = findViewById(R.id.tvMobileNo);
+        tvFollowers = findViewById(R.id.tvFollowers);
+        tvFollowing = findViewById(R.id.tvFollowing);
+        tvHelping = findViewById(R.id.tvHelping);
+        tvReviewNo = findViewById(R.id.tvReviewNo);
+        iv_editprofile = findViewById(R.id.iv_editprofile);
+//        ivClose = findViewById(R.id.ivClose);
+        ivCloseProfile = findViewById(R.id.ivCloseProfile);
+        ivShare = findViewById(R.id.ivShare);
+        ivOption = findViewById(R.id.ivOption);
+        rvReviews = findViewById(R.id.rvReviews);
+        llFollowers = findViewById(R.id.llFollowers);
+        llFollowing = findViewById(R.id.llfollowing);
+        llHelping = findViewById(R.id.llHelping);
+        tvName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                nesDetailBlog.setVisibility(View.GONE);
+                nesProfile.setVisibility(View.VISIBLE);
+                ivLike.setVisibility(View.GONE);
+            }
+        });
+        ivOption.setOnClickListener(this);
+        LinearLayoutManager layoutManagesr = new LinearLayoutManager(DetailBlogsActivity.this);
+        rvReviews.setLayoutManager(layoutManagesr);
+        rvReviews.setHasFixedSize(true);
+        llHelping.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(DetailBlogsActivity.this, ViewOtherBlogsPingActivity.class);
+                i.putExtra("userid", userid + "");
+                i.putExtra("name", name + "");
+                startActivity(i);
+
+            }
+        });
+        ivCloseProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void BlogDetails() {
         showProgressDialog();
         Call<BlogDetailsModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).BlogDetailsModel(blogid, "Bearer " + token);
         marqueCall.enqueue(new Callback<BlogDetailsModel>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NonNull Call<BlogDetailsModel> call, @NonNull Response<BlogDetailsModel> response) {
                 BlogDetailsModel object = response.body();
@@ -145,15 +236,24 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     tvTotalLikes.setText(object.getData().getLikes() + "");
                     tvTotalView.setText(object.getData().getViews() + "");
                     catName.setText(object.getData().getCategory() + "");
+                    if (object.getData().getUserdetail() != null) {
+                        calls = object.getData().getUserdetail().getContact() + "";
+                    }
 
                     ArrayList<Image> heros = response.body().getData().getImages();
                     FlipperAdapter adapter = new FlipperAdapter(DetailBlogsActivity.this, heros);
-
+                    if (object.getData().getFav() == true) {
+                        ivFav.setImageResource(R.drawable.favourite_star);
+                    }
                     //adding it to adapterview flipper
                     adapterViewFlipper.setAdapter(adapter);
                     adapterViewFlipper.setFlipInterval(2000);
                     adapterViewFlipper.startFlipping();
-
+                    userid = object.getData().getUserId() + "";
+                    name = object.getData().getName() + "";
+                    if (userid != null) {
+                        ProfileCall();
+                    }
                     if (object.getData().getUserdetail() != null) {
                         Glide.with(DetailBlogsActivity.this)
                                 .load(BuildConstants.Main_Image + object.getData().getUserdetail().getPhoto().replace("public", "storage"))
@@ -271,6 +371,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 hideProgressDialog();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (response.isSuccessful()) {
+                    BlogDetails();
                     Toast.makeText(DetailBlogsActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
@@ -290,8 +391,9 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
             }
         });
     }
-    public void AddFavBlog() {
 
+    public void AddFavBlog() {
+        ivFav.setImageResource(R.drawable.favourite_star);
         showProgressDialog();
         Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).favourite(blogid, "Bearer " + token);
         marqueCall.enqueue(new Callback<JsonObject>() {
@@ -301,6 +403,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 hideProgressDialog();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (response.isSuccessful()) {
+                    BlogDetails();
                     Toast.makeText(DetailBlogsActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
@@ -333,6 +436,9 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnComment:
+                nesDetailBlog.setVisibility(View.VISIBLE);
+                nesProfile.setVisibility(View.GONE);
+
                 llDetailContain.setVisibility(View.GONE);
                 llBottom.setVisibility(View.GONE);
                 llCommentSection.setVisibility(View.VISIBLE);
@@ -350,8 +456,22 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
             case R.id.ivLike:
                 LikeBlog();
                 break;
-                case R.id.ivFav:
+            case R.id.ivFav:
                 AddFavBlog();
+                break;
+            case R.id.ivCall:
+                if (calls != null) {
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + calls));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(this, "No Contact Avaiable", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.ivOptionBlog:
+                ReportBlog();
+                break;
+            case R.id.ivOption:
+                ReportOption();
                 break;
         }
     }
@@ -449,4 +569,330 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
     }
 
+    private void ProfileCall() {
+
+
+        Call<OtherUserProfileModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).OtherUserProfileModel(userid + "", "Bearer " + token);
+        marqueCall.enqueue(new Callback<OtherUserProfileModel>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(@NonNull Call<OtherUserProfileModel> call, @NonNull Response<OtherUserProfileModel> response) {
+                OtherUserProfileModel object = response.body();
+                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                if (object != null) {
+
+
+                    commentArrayLis = object.getData().getComments();
+                    tv_name.setText(object.getData().getFullname() + "");
+                    tvBiotxt.setText(object.getData().getUserDetail().getBio() + "");
+//                    tvAgetxt.setText(object.getData().getUserDetail().getDob() + "");
+                    tv_gender.setText(object.getData().getUserDetail().getGender() + "");
+                    tv_location.setText(object.getData().getUserDetail().getCity().getCity() + "");
+                    tvEmailId.setText(object.getData().getEmail() + "");
+                    tvMobileNo.setText(object.getData().getUserDetail().getContact() + "");
+
+                    try {
+                        LocalDate today = LocalDate.now();
+                        LocalDate birthday = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            birthday = LocalDate.parse(object.getData().getUserDetail().getDob());
+                            Period p = Period.between(birthday, today);
+                            tvAgetxt.setText(p.getYears() + " Years " + p.getMonths() + " Months " + ",");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    tvFollowers.setText(object.getData().getFollowers() + "");
+                    tvFollowing.setText(object.getData().getFollowing() + "");
+//                    tvHelping.setText(object.getData().get() + "");
+//                    tvReviewNo.setText(object.getData().getReviews() + "");
+                    myCustomAdapterOther = new MyCustomAdapterOther(commentArrayLis);
+                    rvReviews.setAdapter(myCustomAdapterOther);
+
+                    if (object.getData().getUserDetail().getPhoto() != null) {
+                        Glide.with(DetailBlogsActivity.this)
+                                .load(BuildConstants.Main_Image + object.getData().getUserDetail().getPhoto().replace("public", "storage"))
+                                .placeholder(R.drawable.placeholder)
+                                .centerCrop()
+//                    .transition(DrawableTransitionOptions.withCrossFade(500))
+                                .into(ivProfileImage);
+                        Log.e("Profile=>", BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage" + ""));
+                    }
+                } else {
+//                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<OtherUserProfileModel> call, @NonNull Throwable t) {
+                t.printStackTrace();
+
+                Log.e("ChatV_Response", t.getMessage() + "");
+            }
+        });
+
+    }
+
+    public class MyCustomAdapterOther extends RecyclerView.Adapter<MyCustomAdapterOther.MyViewHolder> {
+
+        private ArrayList<com.aryupay.helpingapp.modal.other_user.Comment> moviesList;
+
+        public MyCustomAdapterOther(ArrayList<com.aryupay.helpingapp.modal.other_user.Comment> moviesList) {
+            this.moviesList = moviesList;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_review_list, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
+
+        public void clear() {
+            int size = this.moviesList.size();
+            if (size > 0) {
+                for (int i = 0; i < size; i++) {
+                    this.moviesList.remove(0);
+                }
+
+                this.notifyItemRangeRemoved(0, size);
+            }
+        }
+
+        @SuppressLint("SetTextI18n")
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, final int position) {
+
+
+            final com.aryupay.helpingapp.modal.other_user.Comment datum = moviesList.get(position);
+            holder.tvName.setText(datum.getFullname() + "");
+            holder.tvHeading.setText(datum.getComment() + "");
+
+
+//            holder.tvTotalComment.setText(Comments.get(position) + "");
+//            holder.tvTotalView.setText(Views.get(position) + "");
+//            holder.tvTotalLikes.setText(datum.getLike()+ "");
+            if (datum.getPhoto() != null) {
+                Glide.with(DetailBlogsActivity.this)
+                        .load(BuildConstants.Main_Image + datum.getPhoto().replace("public", "storage"))
+//                        .centerCrop()
+                        .placeholder(R.drawable.placeholder)
+                        .into(holder.ivEmployee);
+            }
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return moviesList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            CircleImageView ivEmployee;
+            TextView tvName, tvTime, tvHeading, tvTotalLikes;
+            RelativeLayout rlReply;
+
+            public MyViewHolder(View view) {
+                super(view);
+
+
+                ivEmployee = view.findViewById(R.id.ivEmployee);
+                tvName = view.findViewById(R.id.tvName);
+
+                tvTime = view.findViewById(R.id.tvTime);
+                tvHeading = view.findViewById(R.id.tvComments);
+
+                tvTotalLikes = view.findViewById(R.id.tvTotalLikes);
+                rlReply = view.findViewById(R.id.rlReply);
+
+
+            }
+
+        }
+
+    }
+
+    public void ReportBlog() {
+        final Dialog dialog = new Dialog(Objects.requireNonNull(DetailBlogsActivity.this));
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_report_blog);
+        dialog.setCancelable(true);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        final RadioGroup radioSexGroup = (RadioGroup) dialog.findViewById(R.id.radioGroupReportBlog);
+
+        final Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+        final Button btnSend = (Button) dialog.findViewById(R.id.btnSend);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // get selected radio button from radioGroup
+                int selectedId = radioSexGroup.getCheckedRadioButtonId();
+
+                // find the radiobutton by returned id
+                RadioButton radioButton = (RadioButton) dialog.findViewById(selectedId);
+
+
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("report", radioButton.getText().toString() + "");
+                showProgressDialog();
+                Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).report_blog(blogid, "Bearer " + token, hashMap);
+                marqueCall.enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                        JsonObject object = response.body();
+                        hideProgressDialog();
+                        Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                        if (response.isSuccessful()) {
+                            dialog.dismiss();
+                            BlogDetails();
+                            Toast.makeText(DetailBlogsActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+                        } else {
+                            try {
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                            } catch (Exception e) {
+                                Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                        t.printStackTrace();
+                        hideProgressDialog();
+                        Log.e("ChatV_Response", t.getMessage() + "");
+                    }
+                });
+            }
+        });
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
+    }
+
+    public void ReportOption() {
+        final Dialog dialogs = new Dialog(Objects.requireNonNull(DetailBlogsActivity.this));
+        dialogs.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialogs.setContentView(R.layout.dialog_report_options);
+        dialogs.setCancelable(true);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialogs.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.TOP | Gravity.RIGHT;
+        dialogs.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+        final TextView tvShareProfile = dialogs.findViewById(R.id.tvShareProfile);
+        final TextView tvReportUser = dialogs.findViewById(R.id.tvReportUser);
+
+        tvShareProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
+                sendIntent.setType("text/plain");
+
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                startActivity(shareIntent);
+            }
+        });
+        tvReportUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+                final Dialog dialog = new Dialog(Objects.requireNonNull(DetailBlogsActivity.this));
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+                dialog.setContentView(R.layout.dialog_report_user);
+                dialog.setCancelable(true);
+
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                final RadioGroup radioSexGroup = (RadioGroup) dialog.findViewById(R.id.radioGroupReportUser);
+
+                final Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                final Button btnSend = (Button) dialog.findViewById(R.id.btnSend);
+
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+
+                btnSend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        // get selected radio button from radioGroup
+                        int selectedId = radioSexGroup.getCheckedRadioButtonId();
+
+                        // find the radiobutton by returned id
+                        RadioButton radioButton = (RadioButton) dialog.findViewById(selectedId);
+
+
+                        HashMap<String, String> hashMap = new HashMap<>();
+                        hashMap.put("report", radioButton.getText().toString() + "");
+                        showProgressDialog();
+                        Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).report_user(userid, "Bearer " + token, hashMap);
+                        marqueCall.enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                                JsonObject object = response.body();
+                                hideProgressDialog();
+                                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                                if (response.isSuccessful()) {
+                                    dialog.dismiss();
+                                    BlogDetails();
+                                    Toast.makeText(DetailBlogsActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                    } catch (Exception e) {
+                                        Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                                t.printStackTrace();
+                                hideProgressDialog();
+                                Log.e("ChatV_Response", t.getMessage() + "");
+                            }
+                        });
+                    }
+                });
+                dialog.show();
+                dialog.getWindow().setAttributes(lp);
+
+            }
+        });
+
+        dialogs.show();
+        dialogs.getWindow().setAttributes(lp);
+    }
 }

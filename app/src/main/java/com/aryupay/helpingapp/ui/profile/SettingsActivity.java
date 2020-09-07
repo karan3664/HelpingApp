@@ -64,8 +64,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.llPrivacy:
-                Intent changePassword = new Intent(SettingsActivity.this, ChangePasswordActivity.class);
-                startActivity(changePassword);
+                Intent priva = new Intent(SettingsActivity.this, PrivacyActivity.class);
+                startActivity(priva);
                 break;
             case R.id.llNotification:
                 Intent noti = new Intent(SettingsActivity.this, NotificationsActivity.class);
