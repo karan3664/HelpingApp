@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:isScrollContainer="true"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -441,10 +441,10 @@
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nesProfile"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:isScrollContainer="true">
+            android:isScrollContainer="true"
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -807,34 +807,90 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_8sdp">
 
-                            <RelativeLayout
+                            <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/_10sdp"
-                                android:layout_marginRight="@dimen/_10sdp">
+                                android:orientation="horizontal">
 
-                                <TextView
-                                    android:id="@+id/tvReviewNo"
+                                <RelativeLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="2,345"
-                                    android:textColor="@color/black_color"
-                                    android:textSize="@dimen/_12sdp"
-                                    android:textStyle="bold">
+                                    android:layout_marginLeft="@dimen/_10sdp"
+                                    android:layout_marginRight="@dimen/_10sdp"
+                                    android:layout_weight="1">
 
-                                </TextView>
+                                    <TextView
+                                        android:id="@+id/tvReviewNo"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="2,345"
+                                        android:textColor="@color/black_color"
+                                        android:textSize="@dimen/_12sdp"
+                                        android:textStyle="bold">
 
-                                <TextView
+                                    </TextView>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="@dimen/_5sdp"
+                                        android:layout_toRightOf="@+id/tvReviewNo"
+                                        android:text="@string/reviews"
+                                        android:textColor="@color/black_color"
+                                        android:textSize="@dimen/_12sdp"
+                                        android:textStyle="bold" />
+
+                                </RelativeLayout>
+
+                                <RelativeLayout
                                     android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginLeft="@dimen/_5sdp"
-                                    android:layout_toRightOf="@+id/tvReviewNo"
-                                    android:text="@string/reviews"
-                                    android:textColor="@color/black_color"
-                                    android:textSize="@dimen/_12sdp"
-                                    android:textStyle="bold" />
 
-                            </RelativeLayout>
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="end"
+                                    android:layout_marginLeft="@dimen/_10sdp"
+                                    android:layout_marginRight="@dimen/_10sdp"
+                                    android:gravity="end">
+
+                                    <LinearLayout
+                                        android:id="@+id/llRating"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+
+                                        <ImageView
+                                            android:layout_width="12.28dp"
+                                            android:layout_height="12.28dp"
+                                            android:layout_margin="2dp"
+                                            android:src="@drawable/favourite_star" />
+
+                                        <ImageView
+                                            android:layout_width="12.28dp"
+                                            android:layout_height="12.28dp"
+                                            android:layout_margin="2dp"
+                                            android:src="@drawable/favourite_star" />
+
+                                        <ImageView
+                                            android:layout_width="12.28dp"
+                                            android:layout_height="12.28dp"
+                                            android:layout_margin="2dp"
+                                            android:src="@drawable/favourite_star" />
+
+                                        <ImageView
+                                            android:layout_width="12.28dp"
+                                            android:layout_height="12.28dp"
+                                            android:layout_margin="2dp"
+                                            android:src="@drawable/favourite_star" />
+
+                                        <ImageView
+                                            android:layout_width="12.28dp"
+                                            android:layout_height="12.28dp"
+                                            android:layout_margin="2dp"
+                                            android:src="@drawable/favourite_star" />
+                                    </LinearLayout>
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
 
                             <View
                                 android:layout_width="match_parent"

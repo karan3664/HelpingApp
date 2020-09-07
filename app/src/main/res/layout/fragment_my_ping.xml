@@ -66,10 +66,11 @@
                         android:layout_height="@dimen/_35sdp"
                         android:layout_marginLeft="@dimen/_10sdp"
                         android:layout_marginRight="@dimen/_10sdp"
-                        android:background="@drawable/home_search_white_bg">
+                        android:background="@drawable/add_ping_edittext_bg">
 
 
                         <EditText
+                            android:id="@+id/edtSearch"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"

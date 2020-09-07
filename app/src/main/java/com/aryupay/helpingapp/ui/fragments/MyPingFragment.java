@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -27,6 +28,8 @@ import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.myping.Datum;
 import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
+import com.aryupay.helpingapp.ui.fragments.activity.SearchBlogActivity;
+import com.aryupay.helpingapp.ui.fragments.activity.SearchMyPingActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
@@ -59,7 +62,7 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
 
     String token;
     Chip chipAll, chipUrgent, chipInformation, chipGeneral, chipFav, chipSearch;
-
+    EditText edtSearch;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -117,6 +120,7 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
         chipInformation = rootView.findViewById(R.id.chipInformation);
         chipGeneral = rootView.findViewById(R.id.chipGeneral);
         chipFav = rootView.findViewById(R.id.chipFav);
+        edtSearch = rootView.findViewById(R.id.edtSearch);
 
 
         chipAll.setOnClickListener(this);
@@ -124,7 +128,7 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
         chipInformation.setOnClickListener(this);
         chipGeneral.setOnClickListener(this);
         chipFav.setOnClickListener(this);
-
+        edtSearch.setOnClickListener(this);
         BlogList();
         return rootView;
     }
@@ -242,7 +246,10 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
                 chipFav.setChipBackgroundColorResource(R.color.phone_login_color);
                 CategoryBlogList("fav");
                 break;
-
+            case R.id.edtSearch:
+                Intent i = new Intent(getContext(), SearchMyPingActivity.class);
+                startActivity(i);
+                break;
         }
     }
 

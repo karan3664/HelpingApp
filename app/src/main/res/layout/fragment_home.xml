@@ -56,6 +56,7 @@
 
 
                 <ImageView
+                    android:id="@+id/ivNotification"
                     android:layout_width="@dimen/_20sdp"
                     android:layout_height="@dimen/_20sdp"
                     android:layout_alignParentRight="true"
@@ -75,7 +76,7 @@
                         android:layout_height="@dimen/_35sdp"
                         android:layout_marginLeft="@dimen/_10sdp"
                         android:layout_marginRight="@dimen/_10sdp"
-                        android:background="@drawable/home_search_white_bg">
+                        android:background="@drawable/add_ping_edittext_bg">
 
                         <com.google.android.material.chip.Chip
                             android:id="@+id/chipSearch"
@@ -84,13 +85,14 @@
                             android:fontFamily="@font/segoe_ui"
                             android:gravity="center"
                             android:text="All"
-                            app:chipIcon="@drawable/ic_star"
                             android:textAlignment="center"
-                            app:chipIconEnabled="false"
                             android:textColor="@color/white_color"
-                            app:chipBackgroundColor="@color/sky_blue_color" />
+                            app:chipBackgroundColor="@color/sky_blue_color"
+                            app:chipIcon="@drawable/ic_star"
+                            app:chipIconEnabled="false" />
 
                         <EditText
+                            android:id="@+id/edtSearch"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
@@ -196,8 +198,8 @@
                         android:textColor="@color/white_color"
                         app:chipBackgroundColor="@color/dark_grey"
                         app:chipIcon="@drawable/ic_star"
-                        app:chipIconTint="@color/phone_login_color"
-                        app:chipIconEnabled="true" />
+                        app:chipIconEnabled="true"
+                        app:chipIconTint="@color/phone_login_color" />
 
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>

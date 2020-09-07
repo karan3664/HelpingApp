@@ -34,8 +34,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/_7sdp"
-            android:layout_weight="1"
             android:layout_marginLeft="10dp"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <LinearLayout
@@ -180,6 +180,7 @@
                 </View>
 
                 <LinearLayout
+                    android:id="@+id/llReport"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/_15sdp"

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    android:background="@drawable/roundedbackground"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/segoe_ui"
+            android:gravity="center"
+            android:text="Tell others what you think about this user"
+            android:textColor="@color/pink_color"
+            android:textSize="10sp" />
+
+        <RatingBar
+            android:id="@+id/ratingStar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:numStars="5"
+            android:stepSize="0.5" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/add_ping_edittext_bg">
+
+
+                <EditText
+                    android:id="@+id/edtComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="101dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@null"
+                    android:fontFamily="@font/segoe_ui"
+                    android:gravity="top"
+                    android:hint="Write your comment here..."
+                    android:padding="10dp"
+                    android:textSize="8dp" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btnSendRating"
+                android:layout_width="69dp"
+                android:layout_height="17dp"
+                android:layout_gravity="center|bottom"
+                android:layout_marginTop="105dp"
+                android:background="@drawable/send_msg_btn_bg"
+                android:backgroundTint="@color/pink_color"
+                android:gravity="center"
+                android:text="send"
+                android:textColor="@color/white_color"
+                android:textSize="@dimen/_10sdp">
+
+            </Button>
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

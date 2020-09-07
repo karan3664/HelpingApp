@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,6 +105,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
     NestedScrollView nesDetailBlog, nesProfile;
     String userid, name;
     ArrayList<com.aryupay.helpingapp.modal.other_user.Comment> commentArrayLis = new ArrayList<>();
+    LinearLayout llRating;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +149,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         cvOpenComment = findViewById(R.id.cvOpenComment);
         edtComment = findViewById(R.id.edtComment);
         btnCommentSave = findViewById(R.id.btnCommentSave);
+        llRating = findViewById(R.id.llRating);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(DetailBlogsActivity.this);
         rvCommnetList.setLayoutManager(layoutManager);
@@ -159,6 +162,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         cvOpenComment.setOnClickListener(this);
         btnCommentSave.setOnClickListener(this);
         ivOptionBlog.setOnClickListener(this);
+        llRating.setOnClickListener(this);
 
         BlogDetails();
         CommentsList();
@@ -473,6 +477,9 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
             case R.id.ivOption:
                 ReportOption();
                 break;
+            case R.id.llRating:
+                RatingOption();
+                break;
         }
     }
 
@@ -535,6 +542,27 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
                 }
             });
+            holder.llReport.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    final Dialog dialogs = new Dialog(Objects.requireNonNull(DetailBlogsActivity.this));
+                    dialogs.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+                    dialogs.setContentView(R.layout.dialog_rating_comment);
+                    dialogs.setCancelable(true);
+
+                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                    lp.copyFrom(Objects.requireNonNull(dialogs.getWindow()).getAttributes());
+                    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+                    dialogs.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+                    dialogs.show();
+                    dialogs.getWindow().setAttributes(lp);
+                }
+            });
 
         }
 
@@ -548,6 +576,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
             CircleImageView ivEmployee;
             TextView tvName, tvTime, tvHeading, tvTotalLikes;
             RelativeLayout rlReply;
+            LinearLayout llReport;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -561,6 +590,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
                 tvTotalLikes = view.findViewById(R.id.tvTotalLikes);
                 rlReply = view.findViewById(R.id.rlReply);
+                llReport = view.findViewById(R.id.llReport);
 
 
             }
@@ -889,6 +919,65 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 dialog.show();
                 dialog.getWindow().setAttributes(lp);
 
+            }
+        });
+
+        dialogs.show();
+        dialogs.getWindow().setAttributes(lp);
+    }
+
+    public void RatingOption() {
+        final Dialog dialogs = new Dialog(Objects.requireNonNull(DetailBlogsActivity.this));
+        dialogs.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialogs.setContentView(R.layout.dialog_rating_user);
+        dialogs.setCancelable(true);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialogs.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+        dialogs.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        RatingBar ratingStar = dialogs.findViewById(R.id.ratingStar);
+        EditText edtComment = dialogs.findViewById(R.id.edtComment);
+        Button btnSendRating = dialogs.findViewById(R.id.btnSendRating);
+
+        btnSendRating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("rate", ratingStar.getNumStars() + "");
+                hashMap.put("comment", edtComment.getText().toString() + "");
+                showProgressDialog();
+                Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).rateprofile(userid, "Bearer " + token, hashMap);
+                marqueCall.enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                        JsonObject object = response.body();
+                        hideProgressDialog();
+                        Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                        if (response.isSuccessful()) {
+                            dialogs.dismiss();
+
+                            Toast.makeText(DetailBlogsActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+                        } else {
+                            try {
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                            } catch (Exception e) {
+                                Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                        t.printStackTrace();
+                        hideProgressDialog();
+                        Log.e("ChatV_Response", t.getMessage() + "");
+                    }
+                });
             }
         });
 

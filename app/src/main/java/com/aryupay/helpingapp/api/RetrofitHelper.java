@@ -13,12 +13,14 @@ import com.aryupay.helpingapp.modal.changePassword.otp.OTPModel;
 import com.aryupay.helpingapp.modal.city.CityModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
+import com.aryupay.helpingapp.modal.notification.NotificationsModel;
 import com.aryupay.helpingapp.modal.other_user.OtherUserProfileModel;
 import com.aryupay.helpingapp.modal.phonesignup.PhoneSignupModel;
 import com.aryupay.helpingapp.modal.profession.ProfessionModel;
 import com.aryupay.helpingapp.modal.profile.followers.FollowersModel;
 import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.modal.register.RegisterModel;
+import com.aryupay.helpingapp.modal.search.my_ping.SearchMyPingModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -194,6 +196,14 @@ public class RetrofitHelper {
         @POST("report_user/{user_id}")
         Call<JsonObject> report_user(@Path("user_id") String user_id, @Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
 
+        @FormUrlEncoded()
+        @POST("rateprofile/{user_id}")
+        Call<JsonObject> rateprofile(@Path("user_id") String user_id, @Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
+
+        @GET("notification")
+        Call<NotificationsModel> NotificationsModel(@Header("Authorization") String token);
+
         @FormUrlEncoded
         @POST("login")
         Call<LoginModel> LoginModel(@FieldMap HashMap<String, String> hashMap);
@@ -230,6 +240,14 @@ public class RetrofitHelper {
         @FormUrlEncoded
         @PATCH("blogs")
         Call<BlogListModel> BlogListModel(@Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
+        @FormUrlEncoded
+        @POST("search_blog")
+        Call<BlogListModel> search_blog(@Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
+        @FormUrlEncoded
+        @POST("search_myping ")
+        Call<SearchMyPingModel> search_myping(@Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
 
         @FormUrlEncoded
         @PATCH("blogs/{category}")

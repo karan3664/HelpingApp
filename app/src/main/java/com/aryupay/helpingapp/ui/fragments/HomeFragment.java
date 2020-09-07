@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,7 +30,9 @@ import com.aryupay.helpingapp.modal.bloglist.Blog;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.bloglist.Image;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.ui.NotificationsAllActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
+import com.aryupay.helpingapp.ui.fragments.activity.SearchBlogActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
@@ -61,6 +64,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     String token, location;
     Chip chipAll, chipUrgent, chipInformation, chipGeneral, chipFav, chipSearch;
     TextView tvLoc;
+    EditText edtSearch;
+    ImageView ivNotification;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -89,6 +94,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         rvBlogList.setLayoutManager(layoutManager);
         rvBlogList.setHasFixedSize(true);
 
+        ivNotification = rootView.findViewById(R.id.ivNotification);
         chipAll = rootView.findViewById(R.id.chipAll);
         chipUrgent = rootView.findViewById(R.id.chipUrgent);
         chipInformation = rootView.findViewById(R.id.chipInformation);
@@ -96,12 +102,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         chipFav = rootView.findViewById(R.id.chipFav);
         chipSearch = rootView.findViewById(R.id.chipSearch);
         tvLoc = rootView.findViewById(R.id.tvLoc);
+        edtSearch = rootView.findViewById(R.id.edtSearch);
         tvLoc.setText(location);
         chipAll.setOnClickListener(this);
         chipUrgent.setOnClickListener(this);
         chipInformation.setOnClickListener(this);
         chipGeneral.setOnClickListener(this);
         chipFav.setOnClickListener(this);
+        edtSearch.setOnClickListener(this);
+        ivNotification.setOnClickListener(this);
 
         BlogList();
         return rootView;
@@ -246,6 +255,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 CategoryBlogList("fav");
                 break;
 
+            case R.id.edtSearch:
+                Intent i = new Intent(getContext(), SearchBlogActivity.class);
+                startActivity(i);
+                break;
+            case R.id.ivNotification:
+                Intent ivNotification = new Intent(getContext(), NotificationsAllActivity.class);
+                startActivity(ivNotification);
+                break;
         }
     }
 

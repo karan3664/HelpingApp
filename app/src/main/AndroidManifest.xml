@@ -29,7 +29,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:icon,android:allowBackup,android:usesCleartextTraffic">
-        <activity android:name=".ui.fragments.activity.ViewOtherBlogsPingActivity"></activity>
+        <activity android:name=".ui.NotificationsAllActivity"></activity>
+        <activity android:name=".ui.fragments.activity.SearchMyPingActivity" />
+        <activity android:name=".ui.fragments.activity.SearchBlogActivity" />
+        <activity android:name=".ui.fragments.activity.ViewOtherBlogsPingActivity" />
         <activity android:name=".ui.profile.ChangePasswordMobileNumberActivity" />
         <activity android:name=".ui.profile.PrivacyActivity" />
         <activity android:name=".ui.profile.FollowerFollowingHelpingActivity" />

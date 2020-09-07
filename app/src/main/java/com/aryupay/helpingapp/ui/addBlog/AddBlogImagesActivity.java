@@ -125,11 +125,12 @@ public class AddBlogImagesActivity extends AppCompatActivity {
     // get all images from external storage
     public void getAllImages(){
         imageList.clear();
-        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null,null, null);
+        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.INTERNAL_CONTENT_URI, projection, null,null, null);
         while (cursor.moveToNext()) {
-            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+            int absolutePathOfImage = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
             ImageModel ImageModel = new ImageModel();
-            ImageModel.setImage(absolutePathOfImage);
+            ImageModel.setImage(String.valueOf(absolutePathOfImage));
             imageList.add(ImageModel);
         }
         cursor.close();

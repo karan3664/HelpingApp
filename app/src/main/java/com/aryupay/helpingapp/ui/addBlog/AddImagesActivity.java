@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 
@@ -134,7 +135,7 @@ public class AddImagesActivity extends AppCompatActivity {
         });
 //        loadSavedImages(this.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS));
 
-//        getAllImages();
+        getAllImages();
         setImageList();
         setSelectedImageList();
 //        if (isStoragePermissionGranted()) {
@@ -195,78 +196,26 @@ public class AddImagesActivity extends AppCompatActivity {
     // get all images from external storage
     public void getAllImages() {
         imageList.clear();
-//        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.INTERNAL_CONTENT_URI, projection, null,null, null);
-//        while (cursor.moveToNext()) {
-//            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-//            ImageModel ImageModel = new ImageModel();
-//            ImageModel.setImage(absolutePathOfImage);
-//            imageList.add(ImageModel);
-//        }
-//        cursor.close();
-        // which image properties are we querying
-        String result;
-        Cursor cursor = getContentResolver().query(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null, null, null);
-        if (cursor == null) {
-            result = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath();
-        } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(android.provider.MediaStore.Images.ImageColumns.DATA);
-            result = cursor.getString(idx);
+
+
+        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.INTERNAL_CONTENT_URI, projection, null, null, null);
+        while (cursor.moveToNext()) {
+
+            int absolutePathOfImage = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             ImageModel ImageModel = new ImageModel();
-            ImageModel.setImage(result);
+            ImageModel.setImage(String.valueOf(absolutePathOfImage));
             imageList.add(ImageModel);
-            cursor.close();
         }
-//        return result;
+        cursor.close();
+        // which image properties are we querying
+
+
     }
 
-    public void loadSavedImages(File dir) {
-        imageList.clear();
-        if (dir.exists()) {
-            File[] files = dir.listFiles();
-            for (File file : files) {
-                String absolutePath = file.getAbsolutePath();
-                String extension = absolutePath.substring(absolutePath.lastIndexOf("."));
-                if (extension.equals(".jpg")) {
-                    loadImage(file);
-//                    ImageModel ImageModel = new ImageModel();
-//                    ImageModel.setImage(file + "");
-//                    imageList.add(ImageModel);
-                }
-            }
-        }
-    }
 
-    private static String getDateFromUri(Uri uri) {
-        String[] split = uri.getPath().split("/");
-        String fileName = split[split.length - 1];
-        String fileNameNoExt = fileName.split("\\.")[0];
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String dateString = format.format(new Date(Long.parseLong(fileNameNoExt)));
-        return dateString;
-    }
 
-    public  void loadImage(File file) {
-//        PictureItem newItem = new PictureItem();
-//        newItem.uri = Uri.fromFile(file);
-//        newItem.date = getDateFromUri(newItem.uri);
-//        addItem(newItem);
-        ImageModel ImageModel = new ImageModel();
-        ImageModel.setImage(String.valueOf(file));
-        imageList.add(ImageModel);
-    }
-    @Override
-    protected void onResume() {
-        super.onResume();
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                loadSavedImages(AddImagesActivity.this.getExternalFilesDir(Environment.DIRECTORY_DCIM));
-                imageRecyclerView.notifyAll();
-            }
-        });
-    }
+
     // start the image capture Intent
     public void takePicture() {
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
