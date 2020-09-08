@@ -304,14 +304,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //            Uri uri = Uri.parse(BuildConstants.Main_Image + datum.getThmbnailImage());
 //            holder.imageView_Spotlight.setImageURI(uri);
 
-            holder.tvName.setText(datum.getName() + "");
-            holder.tvHeading.setText(datum.getHeading() + "");
-            holder.tvSubHeading.setText(datum.getDescription() + "");
-            holder.tvLocation.setText(datum.getLocation() + "");
 
+            if (datum.getFav() == true) {
+                holder.favStar.setImageResource(R.drawable.favourite_star);
+            }
             try {
-                LocalDate today = LocalDate.now();
-                LocalDate birthday = null;
+                holder.tvName.setText(datum.getName() + "");
+                holder.tvHeading.setText(datum.getHeading() + "");
+                holder.tvSubHeading.setText(datum.getDescription() + "");
+                holder.tvLocation.setText(datum.getLocation() + "");
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
 //                    birthday = LocalDate.parse(datum.getTime() + "");
 //                    Period p = Period.between(birthday, today);
@@ -323,21 +324,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
                     holder.tvTime.setText(ChronoUnit.DAYS.between(start, end) + "");
                 }
+
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (datum.getCategory().matches("general")) {
-                holder.rlCategory.setBackgroundResource(R.drawable.general_cat_bg);
-            } else if (datum.getCategory().matches("urgent")) {
-//                holder.rlCategory.setBackgroundColor(R.drawable.urgent_bg);
 
-            } else {
-
-            }
-
-            if (datum.getFav() == true) {
-                holder.favStar.setImageResource(R.drawable.favourite_star);
-            }
             holder.catName.setText(datum.getCategory() + "");
             holder.tvTotalComment.setText(Comments.get(position) + "");
             holder.tvTotalView.setText(Views.get(position) + "");
@@ -348,6 +341,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //                        .centerCrop()
                         .placeholder(R.drawable.placeholder)
                         .into(holder.ivEmployee);
+            }
+            if (datum.getCategory().matches("general")) {
+                holder.rlCategory.setBackgroundResource(R.drawable.general_cat_bg);
+            } else if (datum.getCategory().matches("urgent")) {
+//                holder.rlCategory.setBackgroundColor(R.drawable.urgent_bg);
+
+            } else {
+
             }
 
             holder.CVReview.setOnClickListener(new View.OnClickListener() {

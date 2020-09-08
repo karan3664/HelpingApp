@@ -47,8 +47,7 @@ public class ChangePasswordMobileNumberActivity extends AppCompatActivity implem
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password_mobile_number);
-        loginModel = PrefUtils.getUser(ChangePasswordMobileNumberActivity.this);
-        token  = loginModel.getData().getToken();
+
         viewDialog = new ViewDialog(this);
         viewDialog.setCancelable(false);
 

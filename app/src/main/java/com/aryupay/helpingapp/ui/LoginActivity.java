@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.ui.profile.ChangePasswordMobileNumberActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.facebook.CallbackManager;
@@ -136,7 +137,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tvForgotPassword:
-                Intent forgotIntent = new Intent(this, ForgotPasswordActivity.class);
+                Intent forgotIntent = new Intent(this, ChangePasswordMobileNumberActivity.class);
                 startActivity(forgotIntent);
                 break;
 

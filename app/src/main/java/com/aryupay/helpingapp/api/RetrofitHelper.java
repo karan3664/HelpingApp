@@ -10,6 +10,7 @@ import com.aryupay.helpingapp.modal.blogdetails.BlogDetailsModel;
 import com.aryupay.helpingapp.modal.blogdetails.CommentsBlogModel;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.changePassword.otp.OTPModel;
+import com.aryupay.helpingapp.modal.chats.chatList.ChatListModel;
 import com.aryupay.helpingapp.modal.city.CityModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
@@ -169,6 +170,9 @@ public class RetrofitHelper {
 
         @GET("suggested")
         Call<FollowersModel> suggested(@Header("Authorization") String token);
+
+        @GET("chat")
+        Call<ChatListModel> ChatListModel(@Header("Authorization") String token);
 
         @GET("follow/{user_id}")
         Call<JsonObject> followunfollo(@Path("user_id") String user_id, @Header("Authorization") String token);

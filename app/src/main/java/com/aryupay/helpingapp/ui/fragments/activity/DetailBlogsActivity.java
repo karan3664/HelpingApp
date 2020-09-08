@@ -614,25 +614,30 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
 
                     commentArrayLis = object.getData().getComments();
-                    tv_name.setText(object.getData().getFullname() + "");
-                    tvBiotxt.setText(object.getData().getUserDetail().getBio() + "");
-//                    tvAgetxt.setText(object.getData().getUserDetail().getDob() + "");
-                    tv_gender.setText(object.getData().getUserDetail().getGender() + "");
-                    tv_location.setText(object.getData().getUserDetail().getCity().getCity() + "");
                     tvEmailId.setText(object.getData().getEmail() + "");
-                    tvMobileNo.setText(object.getData().getUserDetail().getContact() + "");
+                    tv_name.setText(object.getData().getName() + "");
+                    if (object.getData().getUserDetail() != null){
+                        tvBiotxt.setText(object.getData().getUserDetail().getBio() + "");
+//                    tvAgetxt.setText(object.getData().getUserDetail().getDob() + "");
+                        tv_gender.setText(object.getData().getUserDetail().getGender() + "");
+                        tv_location.setText(object.getData().getUserDetail().getCity().getCity() + "");
 
-                    try {
-                        LocalDate today = LocalDate.now();
-                        LocalDate birthday = null;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                            birthday = LocalDate.parse(object.getData().getUserDetail().getDob());
-                            Period p = Period.between(birthday, today);
-                            tvAgetxt.setText(p.getYears() + " Years " + p.getMonths() + " Months " + ",");
+                        tvMobileNo.setText(object.getData().getUserDetail().getContact() + "");
+                        try {
+                            LocalDate today = LocalDate.now();
+                            LocalDate birthday = null;
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                birthday = LocalDate.parse(object.getData().getUserDetail().getDob());
+                                Period p = Period.between(birthday, today);
+                                tvAgetxt.setText(p.getYears() + " Years " + p.getMonths() + " Months " + ",");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
                     }
+
+
+
                     tvFollowers.setText(object.getData().getFollowers() + "");
                     tvFollowing.setText(object.getData().getFollowing() + "");
 //                    tvHelping.setText(object.getData().get() + "");
@@ -640,7 +645,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     myCustomAdapterOther = new MyCustomAdapterOther(commentArrayLis);
                     rvReviews.setAdapter(myCustomAdapterOther);
 
-                    if (object.getData().getUserDetail().getPhoto() != null) {
+                    if (object.getData().getUserDetail() != null) {
                         Glide.with(DetailBlogsActivity.this)
                                 .load(BuildConstants.Main_Image + object.getData().getUserDetail().getPhoto().replace("public", "storage"))
                                 .placeholder(R.drawable.placeholder)

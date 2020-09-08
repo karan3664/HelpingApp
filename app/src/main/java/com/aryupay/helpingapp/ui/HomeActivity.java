@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.ui.addBlog.AddBlogActivity;
+import com.aryupay.helpingapp.ui.chats.ChatListActivity;
 import com.aryupay.helpingapp.ui.fragments.ChatFragment;
 import com.aryupay.helpingapp.ui.fragments.HomeFragment;
 import com.aryupay.helpingapp.ui.fragments.MyPingFragment;
@@ -17,14 +18,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class HomeActivity extends AppCompatActivity  implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-
 
 
         //getting bottom navigation view and attaching the listener
@@ -37,13 +36,13 @@ public class HomeActivity extends AppCompatActivity  implements BottomNavigation
     }
 
 
-
     public void openFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment = null;
@@ -54,7 +53,9 @@ public class HomeActivity extends AppCompatActivity  implements BottomNavigation
                 return true;
             case R.id.navigation_chat:
 //                loadFragment(new ChatFragment());
-                openFragment(ChatFragment.newInstance("", ""));
+                Intent chat = new Intent(HomeActivity.this, ChatListActivity.class);
+                startActivity(chat);
+//                openFragment(ChatFragment.newInstance("", ""));
                 return true;
             case R.id.navigation_Add:
                 Intent addBlog = new Intent(HomeActivity.this, AddBlogActivity.class);

@@ -17,7 +17,12 @@
         <item name="android:windowIsFloating">true</item>
 
     </style>
-
+    <style name="AlertDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:background">@color/white_color</item>
+        <item name="android:textColor">@color/sky_blue_color</item>
+        <item name="android:fontFamily">@font/segoe_ui</item>
+    </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

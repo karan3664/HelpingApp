@@ -38,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     ImageView ivClose;
     LoginModel loginModel;
     String token;
-
+    private AlertDialog.Builder alertDialogBuilder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,56 +84,59 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void LogoutCall() {
+        alertDialogBuilder = new AlertDialog.Builder(SettingsActivity.this, R.style.AlertDialogTheme);
+        alertDialogBuilder.setTitle(getResources().getString(R.string.app_name));
+        alertDialogBuilder.setIcon(R.drawable.eyu);
+        alertDialogBuilder
+                .setMessage("Are you sure you want to logout ?")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).logout("Bearer " + token);
+                        marqueCall.enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                                JsonObject object = response.body();
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage("Are you sure, You want to Logout");
-        alertDialogBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).logout("Bearer " + token);
-                marqueCall.enqueue(new Callback<JsonObject>() {
-                    @Override
-                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                        JsonObject object = response.body();
+                                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                                if (response.isSuccessful()) {
 
-                        Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
-                        if (response.isSuccessful()) {
-
-                            PrefUtils.clearCurrentUser(SettingsActivity.this);
-                            Intent log = new Intent(SettingsActivity.this, LoginActivity.class);
-                            startActivity(log);
-                            finish();
+                                    PrefUtils.clearCurrentUser(SettingsActivity.this);
+                                    Intent log = new Intent(SettingsActivity.this, LoginActivity.class);
+                                    startActivity(log);
+                                    finish();
 
 
-                        } else {
-                            try {
-                                JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                Toast.makeText(SettingsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
-                            } catch (Exception e) {
-                                Toast.makeText(SettingsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
+                                } else {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        Toast.makeText(SettingsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                    } catch (Exception e) {
+                                        Toast.makeText(SettingsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
 
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
-                        }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                                t.printStackTrace();
+
+                                Log.e("ChatV_Response", t.getMessage() + "");
+                            }
+                        });
                     }
-
-                    @Override
-                    public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                        t.printStackTrace();
-
-                        Log.e("ChatV_Response", t.getMessage() + "");
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
                     }
                 });
-            }
-        });
-        alertDialogBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
-            }
-        });
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+
+
 
     }
 

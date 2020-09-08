@@ -4,12 +4,25 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.aryupay.helpingapp.R;
+import com.pusher.pushnotifications.PushNotifications;
 
+
+
+
+import com.pusher.client.Pusher;
+import com.pusher.client.PusherOptions;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.PusherEvent;
+import com.pusher.client.channel.SubscriptionEventListener;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ChatFragment#newInstance} factory method to
@@ -61,6 +74,41 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+        View rootView=  inflater.inflate(R.layout.fragment_chat, container, false);
+//        PushNotifications.start(getContext(), "4ea4ab7f-c287-4d74-bdd9-9ed46daac678");
+//        PushNotifications.addDeviceInterest("hello");
+        PushNotifications.start(getContext(), "12d80944-bbe7-4b7d-b37f-6d45cdeacdd5");
+        PushNotifications.addDeviceInterest("hello");
+        PusherOptions options = new PusherOptions();
+        options.setCluster("ap2");
+
+        Pusher pusher = new Pusher("be975eb78f96375382f6", options);
+        pusher.connect(new ConnectionEventListener() {
+            @Override
+            public void onConnectionStateChange(ConnectionStateChange change) {
+                Log.i("Pusher", "State changed from " + change.getPreviousState() +
+                        " to " + change.getCurrentState());
+            }
+
+            @Override
+            public void onError(String message, String code, Exception e) {
+                Log.i("Pusher", "There was a problem connecting! " +
+                        "\ncode: " + code +
+                        "\nmessage: " + message +
+                        "\nException: " + e
+                );
+            }
+        }, ConnectionState.ALL);
+
+        Channel channel = pusher.subscribe("my-channel");
+
+        channel.bind("my-event", new SubscriptionEventListener() {
+            @Override
+            public void onEvent(PusherEvent event) {
+                Log.i("Pusher", "Received event with data: " + event.toString());
+            }
+        });
+
+        return rootView;
     }
 }

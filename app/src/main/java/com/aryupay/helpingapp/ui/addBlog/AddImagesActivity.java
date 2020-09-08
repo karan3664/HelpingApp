@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import androidx.loader.content.CursorLoader;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -196,14 +197,15 @@ public class AddImagesActivity extends AppCompatActivity {
     // get all images from external storage
     public void getAllImages() {
         imageList.clear();
+        CursorLoader loader = new CursorLoader(AddImagesActivity.this, MediaStore.Images.Media.INTERNAL_CONTENT_URI, projection, null, null, null);
+        Cursor cursor = loader.loadInBackground();
 
-
-        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.INTERNAL_CONTENT_URI, projection, null, null, null);
+//        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.INTERNAL_CONTENT_URI, projection, null, null, null);
         while (cursor.moveToNext()) {
-
-            int absolutePathOfImage = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(android.provider.MediaStore.MediaColumns.DATA));
+//            int absolutePathOfImage = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             ImageModel ImageModel = new ImageModel();
-            ImageModel.setImage(String.valueOf(absolutePathOfImage));
+            ImageModel.setImage(absolutePathOfImage);
             imageList.add(ImageModel);
         }
         cursor.close();
@@ -301,7 +303,9 @@ public class AddImagesActivity extends AppCompatActivity {
 
     // Get image file path
     public void getImageFilePath(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        CursorLoader loader = new CursorLoader(AddImagesActivity.this, MediaStore.Images.Media.INTERNAL_CONTENT_URI, projection, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+//        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(android.provider.MediaStore.MediaColumns.DATA));

@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
@@ -174,7 +175,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.llHelping:
-                openFragment(MyPingFragment.newInstance("", ""));
+                Toast.makeText(this, "Under Development", Toast.LENGTH_SHORT).show();
+//                openFragment(MyPingFragment.newInstance("", ""));
                 break;
 
 
