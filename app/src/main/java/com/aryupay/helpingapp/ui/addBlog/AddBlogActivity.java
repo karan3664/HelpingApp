@@ -65,10 +65,10 @@ public class AddBlogActivity extends AppCompatActivity implements View.OnClickLi
                 showCategoryDialog(view);
                 break;
             case R.id.btnNext:
-                Intent i = new Intent(AddBlogActivity.this, AddBlogImagesActivity.class);
-                i.putExtra("id",  "205");
-                startActivity(i);
-//                AddBlog();
+//                Intent i = new Intent(AddBlogActivity.this, AddBlogImagesActivity.class);
+//                i.putExtra("id",  "205");
+//                startActivity(i);
+                AddBlog();
                 break;
             case R.id.btnBack:
                 onBackPressed();
@@ -120,7 +120,7 @@ public class AddBlogActivity extends AppCompatActivity implements View.OnClickLi
                         assert object != null;
                         Toast.makeText(AddBlogActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
                         blogid = object.getData().getId() + "";
-                        Intent i = new Intent(AddBlogActivity.this, AddImagesActivity.class);
+                        Intent i = new Intent(AddBlogActivity.this, AddBlogImagesActivity.class);
                         i.putExtra("id", object.getData().getId() + "");
                         startActivity(i);
                     } else {

@@ -15,10 +15,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="true" />
-
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
@@ -30,8 +26,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:replace="android:icon,android:allowBackup,android:usesCleartextTraffic">
-        <activity android:name=".ui.chats.ChatDetailsActivity"></activity>
+        tools:ignore="AllowBackup"
+        tools:replace="android:icon,android:allowBackup,android:usesCleartextTraffic"
+        tools:targetApi="q">
+        <activity android:name=".ui.fragments.activity.OtherFollowFollowingActivity"></activity>
+        <activity android:name=".ui.addBlog.BlogPreviewSettingsActivity" />
+        <activity android:name=".ui.chats.ChatDetailsActivity" />
         <activity android:name=".ui.chats.ChatListActivity" />
         <activity android:name=".ui.NotificationsAllActivity" />
         <activity android:name=".ui.fragments.activity.SearchMyPingActivity" />
@@ -46,11 +46,17 @@
         <activity android:name=".ui.profile.SettingsActivity" />
         <activity android:name=".ui.profile.OpenOptionsActivity" />
         <activity android:name=".ui.profile.EditProfileActivity" />
-        <activity android:name=".ui.addBlog.AddBlogImagesActivity" />
+        <activity android:name=".ui.addBlog.AddImagesActivity" />
         <activity android:name=".ui.addBlog.AddLocationActivity" />
         <activity
-            android:name=".ui.addBlog.AddImagesActivity"
-            android:configChanges="orientation|screenSize" />
+            android:name=".ui.addBlog.AddBlogImagesActivity"
+            android:configChanges="orientation|screenSize">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
         <activity android:name=".ui.fragments.activity.DetailBlogsActivity" />
         <activity android:name=".ui.addBlog.AddBlogActivity" />
         <activity android:name=".ui.profile.ProfileActivity" />

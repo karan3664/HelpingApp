@@ -33,16 +33,16 @@ public class SelectedImageAdapter extends RecyclerView.Adapter<SelectedImageAdap
     public  void onBindViewHolder(ViewHolder holder, final int position) {
         Glide.with(context)
                 .load(stringArrayList.get(position))
-                .placeholder(R.drawable.placeholder)
+                .placeholder(R.color.dark_grey)
                 .centerCrop()
                 .into(holder.image);
 
-//        holder.image.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 //                context.startActivity(new Intent(context, FullImageActivity.class).putExtra("image", stringArrayList.get(position)));
-//            }
-//        });
+            }
+        });
     }
 
     @Override

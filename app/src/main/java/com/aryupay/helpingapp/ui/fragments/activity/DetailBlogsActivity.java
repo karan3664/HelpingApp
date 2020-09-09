@@ -52,6 +52,7 @@ import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.ui.fragments.HomeFragment;
 
+import com.aryupay.helpingapp.ui.profile.FollowerFollowingHelpingActivity;
 import com.aryupay.helpingapp.ui.profile.ProfileActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
@@ -189,6 +190,9 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         rvReviews = findViewById(R.id.rvReviews);
         llFollowers = findViewById(R.id.llFollowers);
         llFollowing = findViewById(R.id.llfollowing);
+        llFollowing.setOnClickListener(this);
+        llFollowers.setOnClickListener(this);
+
         llHelping = findViewById(R.id.llHelping);
         tvName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -479,6 +483,23 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.llRating:
                 RatingOption();
+                break;
+
+            case R.id.llFollowers:
+                Intent fol = new Intent(DetailBlogsActivity.this, OtherFollowFollowingActivity.class);
+                fol.putExtra("frag1", 0);
+                fol.putExtra("user_id", userid + "");
+                fol.putExtra("name", name + "");
+                startActivity(fol);
+
+                break;
+
+            case R.id.llfollowing:
+                Intent foll = new Intent(DetailBlogsActivity.this, OtherFollowFollowingActivity.class);
+                foll.putExtra("frag1", 1);
+                foll.putExtra("user_id", userid + "");
+                foll.putExtra("name", name + "");
+                startActivity(foll);
                 break;
         }
     }

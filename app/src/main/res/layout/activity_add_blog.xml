@@ -15,8 +15,8 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:isScrollContainer="true"
-            android:fillViewport="true">
+            android:fillViewport="true"
+            android:isScrollContainer="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -98,19 +98,25 @@
                         android:layout_marginRight="@dimen/_10sdp"
                         android:background="@drawable/add_ping_edittext_bg">
 
-                        <EditText
-                            android:id="@+id/et_description"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@null"
-                            android:gravity="start"
-                            android:inputType="text|textMultiLine"
-                            android:maxLines="8"
-                            android:paddingLeft="@dimen/_10sdp"
-                            android:paddingTop="@dimen/_10sdp"
-                            android:paddingRight="@dimen/_10sdp"
-                            android:textColor="@color/black_color"
-                            android:textStyle="normal" />
+
+
+                            <EditText
+                                android:id="@+id/et_description"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@null"
+                                android:gravity="start"
+                                android:inputType="text|textMultiLine"
+                                android:isScrollContainer="true"
+                                android:overScrollMode="always"
+                                android:scrollbarStyle="insideInset"
+                                android:scrollbars="vertical"
+                                android:paddingLeft="@dimen/_10sdp"
+                                android:paddingTop="@dimen/_10sdp"
+                                android:paddingRight="@dimen/_10sdp"
+                                android:textColor="@color/black_color"
+                                android:textStyle="normal" />
+
                     </RelativeLayout>
 
                     <TextView
@@ -125,6 +131,7 @@
 
                     </TextView>
                 </FrameLayout>
+
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -142,9 +149,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"
-                            android:inputType="text"
                             android:editable="false"
                             android:focusable="false"
+                            android:inputType="text"
                             android:paddingLeft="@dimen/_5sdp"
                             android:paddingRight="@dimen/_5sdp"
                             android:textColor="@color/black_color"
@@ -163,6 +170,7 @@
 
                     </TextView>
                 </FrameLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -170,11 +178,12 @@
                     android:layout_marginTop="@dimen/_20sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:orientation="horizontal">
+
                     <Button
                         android:id="@+id/btnBack"
                         android:layout_width="0dp"
-                        android:layout_weight="2"
                         android:layout_height="@dimen/_45sdp"
+                        android:layout_weight="2"
                         android:background="@drawable/btn_back_bg"
                         android:elevation="@dimen/_3sdp"
                         android:text="@string/back"
@@ -182,18 +191,18 @@
                         android:textColor="@color/white_color"
                         android:textSize="@dimen/_14sdp"
                         android:textStyle="bold" />
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_weight="2">-->
+                    <!--                    <LinearLayout-->
+                    <!--                        android:layout_width="0dp"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_weight="2">-->
 
-<!--                       -->
-<!--                    </LinearLayout>-->
+                    <!--                       -->
+                    <!--                    </LinearLayout>-->
                     <Button
                         android:id="@+id/btnNext"
                         android:layout_width="0dp"
-                        android:layout_weight="2"
                         android:layout_height="@dimen/_45sdp"
+                        android:layout_weight="2"
                         android:background="@drawable/next_btn_bg"
                         android:elevation="@dimen/_3sdp"
                         android:text="@string/next"
@@ -201,14 +210,14 @@
                         android:textColor="@color/white_color"
                         android:textSize="@dimen/_14sdp"
                         android:textStyle="bold" />
-<!--                    <LinearLayout-->
-<!--                        android:layout_width="0dp"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginLeft="@dimen/_2sdp"-->
-<!--                        android:layout_weight="2">-->
+                    <!--                    <LinearLayout-->
+                    <!--                        android:layout_width="0dp"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginLeft="@dimen/_2sdp"-->
+                    <!--                        android:layout_weight="2">-->
 
-<!--                       -->
-<!--                    </LinearLayout>-->
+                    <!--                       -->
+                    <!--                    </LinearLayout>-->
                 </LinearLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

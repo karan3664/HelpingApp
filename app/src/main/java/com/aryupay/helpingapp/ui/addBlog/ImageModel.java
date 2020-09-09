@@ -1,7 +1,6 @@
 package com.aryupay.helpingapp.ui.addBlog;
 
 public class ImageModel {
-
     String image;
     String title;
     int resImg;

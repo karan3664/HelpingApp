@@ -168,6 +168,12 @@ public class RetrofitHelper {
         @GET("following")
         Call<FollowersModel> following(@Header("Authorization") String token);
 
+        @GET("others_followers/{user_id}")
+        Call<FollowersModel> others_followers(@Path("user_id") String user_id, @Header("Authorization") String token);
+
+        @GET("others_following/{user_id}")
+        Call<FollowersModel> others_following(@Path("user_id") String user_id, @Header("Authorization") String token);
+
         @GET("suggested")
         Call<FollowersModel> suggested(@Header("Authorization") String token);
 
@@ -267,9 +273,9 @@ public class RetrofitHelper {
         @POST("blog")
         Call<AddBlogModel> Addblog(@Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
 
-        @Multipart
-        @POST("file/{blog_id}")
-        Call<JsonObject> uploadFile(@Path("blog_id") String blog_id, @Part MultipartBody.Part file, @Header("Authorization") String token);
+        @FormUrlEncoded
+        @POST("update_blog/{blog_id}")
+        Call<JsonObject> update_blog(@Path("blog_id") String blog_id, @FieldMap HashMap<String, String> hashMap, @Header("Authorization") String token);
 
         @Multipart
         @POST("file/{blog_id}")

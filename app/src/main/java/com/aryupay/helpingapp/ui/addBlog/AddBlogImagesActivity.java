@@ -1,30 +1,33 @@
 package com.aryupay.helpingapp.ui.addBlog;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.loader.content.CursorLoader;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ClipData;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.adapter.ImageAdapter;
@@ -38,7 +41,9 @@ import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,7 +57,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AddBlogImagesActivity extends AppCompatActivity {
+public class AddBlogImagesActivity extends Activity {
     public static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int PICK_IMAGES = 2;
     public static final int STORAGE_PERMISSION = 100;
@@ -67,17 +72,19 @@ public class AddBlogImagesActivity extends AppCompatActivity {
     ImageAdapter imageAdapter;
     String[] projection = {MediaStore.MediaColumns.DATA};
     File image;
-    Button done, btnNext, btnBack;
+    Button done;
+    RelativeLayout btnNext, btnBack;
     String id;
     protected ViewDialog viewDialog;
     LoginModel loginModel;
     String token, blogid, uriz;
-    File fileImage = null;
+    File ImageNameFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_images);
+        setContentView(R.layout.activity_add_blog_images);
         viewDialog = new ViewDialog(this);
         viewDialog.setCancelable(false);
         loginModel = PrefUtils.getUser(AddBlogImagesActivity.this);
@@ -96,32 +103,19 @@ public class AddBlogImagesActivity extends AppCompatActivity {
         imageRecyclerView = findViewById(R.id.recycler_view);
         selectedImageRecyclerView = findViewById(R.id.selected_recycler_view);
         done = findViewById(R.id.done);
-
         btnNext = findViewById(R.id.btnNext);
         btnBack = findViewById(R.id.btnBack);
         selectedImageList = new ArrayList<>();
         imageList = new ArrayList<>();
 
-//        done.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                for (int i = 0; i < selectedImageList.size(); i++) {
-//                    Toast.makeText(getApplicationContext(), selectedImageList.get(i), Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
-
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 for (int i = 0; i < selectedImageList.size(); i++) {
-                    Toast.makeText(getApplicationContext(), selectedImageList.get(i), Toast.LENGTH_LONG).show();
-
-                    fileImage = new File(selectedImageList.get(i));
-
-                    Toast.makeText(AddBlogImagesActivity.this, fileImage.getAbsolutePath() + "", Toast.LENGTH_SHORT).show();
-                    uploadFile(fileImage);
-
+                    ImageNameFile = new File(selectedImageList.get(i));
+                    btnNext.setEnabled(true);
+                    uploadFile();
+//                    Toast.makeText(getApplicationContext(), ImageNameFile + "", Toast.LENGTH_LONG).show();
 
                 }
             }
@@ -130,9 +124,11 @@ public class AddBlogImagesActivity extends AppCompatActivity {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent addLoc = new Intent(AddBlogImagesActivity.this, AddLocationActivity.class);
                 addLoc.putExtra("id", id + "");
                 startActivity(addLoc);
+                finish();
             }
         });
 
@@ -193,24 +189,11 @@ public class AddBlogImagesActivity extends AppCompatActivity {
     // get all images from external storage
     public void getAllImages() {
         imageList.clear();
-        Uri uri = MediaStore.Video.Media.getContentUri(
-                MediaStore.VOLUME_INTERNAL
-        );
-        Cursor cursor = null;
-//        Uri uri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//                cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID)));
-//        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.INTERNAL_CONTENT_URI, projection, null,null, null);
-        CursorLoader loader = new CursorLoader(AddBlogImagesActivity.this, MediaStore.Images.Media.INTERNAL_CONTENT_URI, projection, null, null, null);
-        cursor = loader.loadInBackground();
-
-        assert cursor != null;
+        Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
         while (cursor.moveToNext()) {
-//            String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(android.provider.MediaStore.MediaColumns.DATA));
-
-//            int absolutePathOfImage = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
             ImageModel ImageModel = new ImageModel();
-            ImageModel.setImage(String.valueOf(absolutePathOfImage));
+            ImageModel.setImage(absolutePathOfImage);
             imageList.add(ImageModel);
         }
         cursor.close();
@@ -218,14 +201,30 @@ public class AddBlogImagesActivity extends AppCompatActivity {
 
     // start the image capture Intent
     public void takePicture() {
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Continue only if the File was successfully created;
-        File photoFile = createImageFile();
-        if (photoFile != null) {
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+//        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+//        StrictMode.setVmPolicy(builder.build());
+//        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        // Continue only if the File was successfully created;
+//        File photoFile = createImageFile();
+//        if (photoFile != null) {
+//            Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.aryupay.helpingapp.fileprovider", photoFile);
+//            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+//            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+//        }
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
+
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.aryupay.helpingapp.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
         }
     }
 
@@ -236,7 +235,7 @@ public class AddBlogImagesActivity extends AppCompatActivity {
         startActivityForResult(intent, PICK_IMAGES);
     }
 
-    // Add image in SelectedArrayList
+    // Add image in selectedImageList
     public void selectImage(int position) {
         // Check before add new item in ArrayList;
         if (!selectedImageList.contains(imageList.get(position).getImage())) {
@@ -261,61 +260,113 @@ public class AddBlogImagesActivity extends AppCompatActivity {
         }
     }
 
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        image = File.createTempFile(
+                "image",  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        ImageNameFile = new File(image.getAbsolutePath());
+        return image;
+    }
+/*
     public File createImageFile() {
         // Create an image file name
         String dateTime = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "IMG_" + dateTime + "_";
-
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        storageDir.mkdirs();
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         try {
             image = File.createTempFile(imageFileName, ".jpg", storageDir);
         } catch (IOException e) {
             e.printStackTrace();
         }
         // Save a file: path for use with ACTION_VIEW intents
-        mCurrentPhotoPath = "file:" + image.getPath();
-        fileImage = new File(image.getAbsolutePath());
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        ImageNameFile = new File(image.getAbsolutePath());
         return image;
-    }
+    }*/
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 if (mCurrentPhotoPath != null) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath());
+                    final File userImageFile = getUserImageFile(bitmap);
                     addImage(mCurrentPhotoPath);
-                    fileImage = new File(mCurrentPhotoPath);
+                    ImageNameFile = userImageFile;
                 }
-            } else if (requestCode == PICK_IMAGES) {
+            } else if (requestCode == PICK_IMAGES && resultCode == Activity.RESULT_OK && null != data) {
+
                 if (data.getClipData() != null) {
                     ClipData mClipData = data.getClipData();
                     for (int i = 0; i < mClipData.getItemCount(); i++) {
+//                        Uri galleryURI = data.getData();
+//
                         ClipData.Item item = mClipData.getItemAt(i);
                         Uri uri = item.getUri();
                         getImageFilePath(uri);
+                        Bitmap bitmap = null;
+                        try {
+                            bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        final File userImageFile = getUserImageFile(bitmap);
+                        ImageNameFile = userImageFile;
                     }
                 } else if (data.getData() != null) {
-                    Uri uri = data.getData();
-                    getImageFilePath(uri);
+                    Uri galleryURI = data.getData();
+                    Bitmap bitmap = null;
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), galleryURI);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+//                    Uri uri = data.getData();
+                    getImageFilePath(galleryURI);
+                    final File userImageFile = getUserImageFile(bitmap);
+                    ImageNameFile = userImageFile;
+
                 }
             }
         }
     }
 
+    private File getUserImageFile(Bitmap bitmap) {
+        try {
+            File f = new File(getCacheDir(), ".jpg");
+            f.createNewFile();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 0 /*ignored for PNG*/, bos);
+            byte[] bitmapdata = bos.toByteArray();
+
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+            return f;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // Get image file path
     public void getImageFilePath(Uri uri) {
-        CursorLoader loader = new CursorLoader(AddBlogImagesActivity.this, uri, projection, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-//        Cursor cursor = getContentResolver().query(uri, projection, null,    null, null);
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 String absolutePathOfImage = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
                 if (absolutePathOfImage != null) {
-                    fileImage = new File(absolutePathOfImage);
                     checkImage(absolutePathOfImage);
                 } else {
-                    fileImage = new File(uri + "");
                     checkImage(String.valueOf(uri));
                 }
             }
@@ -366,19 +417,20 @@ public class AddBlogImagesActivity extends AppCompatActivity {
         }
     }
 
-    private void uploadFile(File file) {
-
+    private void uploadFile() {
+        File file = ImageNameFile;
+        Log.e("IMAGE", ImageNameFile + "");
 //        Log.e("FILE==>", file.getName() + "");
 //        File file = new File(image.getAbsolutePath());
-//        if (!file.exists()) {
-//            Toast.makeText(AddBlogImagesActivity.this, "Failed to upload pic", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
+        if (!file.exists()) {
+            Toast.makeText(AddBlogImagesActivity.this, "Failed to upload pic", Toast.LENGTH_SHORT).show();
+            return;
+        }
 //        File file = null;
 //        File fileImage = null;
 
         try {
-            file = new File(String.valueOf(file));
+            file = new File(String.valueOf(ImageNameFile));
 //            fileImage = new File(final_thumbnail_video);
 
         } catch (Exception e) {
@@ -397,7 +449,7 @@ public class AddBlogImagesActivity extends AppCompatActivity {
         }
         Map<String, RequestBody> map = new HashMap<>();
         map.put("file[]\"; filename=\"" + file.getName() + "\"", requestBody);
-//
+        showProgressDialog();
 //        String fileExtension
 //                = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(file).toString());
 //        String mimeType
@@ -406,7 +458,6 @@ public class AddBlogImagesActivity extends AppCompatActivity {
 //        RequestBody fbody = RequestBody.create(MediaType.parse(mimeType), file);
 //        MultipartBody.Part body = MultipartBody.Part.createFormData("file[]", file.getName(), fbody);
         Log.e("MAP", map + "");
-        showProgressDialog();
         Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).upload(id, "Bearer " + token, map);
         marqueCall.enqueue(new Callback<JsonObject>() {
             @Override
@@ -417,10 +468,6 @@ public class AddBlogImagesActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Toast.makeText(AddBlogImagesActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
 
-                    Intent addImage = new Intent(AddBlogImagesActivity.this, AddLocationActivity.class);
-
-                    addImage.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(addImage);
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -476,4 +523,6 @@ public class AddBlogImagesActivity extends AppCompatActivity {
     protected void showProgressDialog() {
         viewDialog.show();
     }
+
 }
+
