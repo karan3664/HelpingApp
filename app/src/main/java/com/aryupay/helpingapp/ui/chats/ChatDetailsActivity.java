@@ -3,12 +3,17 @@ package com.aryupay.helpingapp.ui.chats;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,13 +22,18 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +43,14 @@ import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.chats.chatDetails.ChatDetailModel;
 import com.aryupay.helpingapp.modal.chats.chatDetails.Datum;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.modal.profile.followers.FollowersModel;
 import com.aryupay.helpingapp.ui.LoginActivity;
+
+import com.aryupay.helpingapp.ui.fragments.activity.fragment_follower.OtherFollowingFragment;
+import com.aryupay.helpingapp.ui.profile.SettingsActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.Tools;
+import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -44,18 +59,19 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ChatDetailsActivity extends AppCompatActivity {
+public class ChatDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
     TextView userChatName;
     CircleImageView ivProfile;
     ImageView ivClose, ivCall, ivOption;
-
+    protected ViewDialog viewDialog;
     String name, image_path;
     Button btnCommentSave;
     EditText edtComment;
@@ -65,7 +81,7 @@ public class ChatDetailsActivity extends AppCompatActivity {
     private final int CHAT_ME = 100;
     private final int CHAT_YOU = 200;
     private ActionBar actionBar;
-
+    private AlertDialog.Builder alertDialogBuilder;
     String id = "", lableusername = "", product_url = "", type = "";
     LoginModel loginModel;
 
@@ -80,12 +96,15 @@ public class ChatDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_details);
         loginModel = PrefUtils.getUser(ChatDetailsActivity.this);
+        viewDialog = new ViewDialog(this);
+        viewDialog.setCancelable(false);
         token = loginModel.getData().getToken();
         userChatName = findViewById(R.id.userChatName);
         ivProfile = findViewById(R.id.ivProfile);
         ivClose = findViewById(R.id.ivClose);
         ivCall = findViewById(R.id.ivCall);
         ivOption = findViewById(R.id.ivOption);
+        ivOption.setOnClickListener(this);
         btnCommentSave = findViewById(R.id.btnCommentSave);
         edtComment = findViewById(R.id.edtComment);
         mHandler = new Handler();
@@ -252,9 +271,28 @@ public class ChatDetailsActivity extends AppCompatActivity {
 
                 if (response.isSuccessful()) {
                     assert object != null;
-                    datumArrayList = object.getData();
-                    myCustomAdapter = new MyCustomAdapter(datumArrayList);
-                    recycler_view.setAdapter(myCustomAdapter);
+                    assert response.body() != null;
+                    if (response.body().getMessage().equalsIgnoreCase("User is Blocked!")) {
+                        alertDialogBuilder = new AlertDialog.Builder(ChatDetailsActivity.this, R.style.AlertDialogTheme);
+                        alertDialogBuilder.setTitle(getResources().getString(R.string.app_name));
+                        alertDialogBuilder.setIcon(R.drawable.eyu);
+                        alertDialogBuilder
+                                .setMessage(object.getMessage() + "")
+                                .setCancelable(false)
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+
+                    } else {
+                        datumArrayList = object.getData();
+                        myCustomAdapter = new MyCustomAdapter(datumArrayList);
+                        recycler_view.setAdapter(myCustomAdapter);
+                    }
+
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -273,6 +311,15 @@ public class ChatDetailsActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.ivOption:
+                OpenOptionDialog();
+                break;
+        }
     }
 
     public class MyCustomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -417,5 +464,230 @@ public class ChatDetailsActivity extends AppCompatActivity {
 //        public int getItemViewType(int position) {
 //            return this.items.get(position).isFromMe() ? CHAT_ME : CHAT_YOU;
 //        }
+    }
+
+    public void OpenOptionDialog() {
+        final Dialog dialogs = new Dialog(Objects.requireNonNull(ChatDetailsActivity.this));
+        dialogs.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialogs.setContentView(R.layout.dialog_chat_options);
+        dialogs.setCancelable(true);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialogs.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.gravity = Gravity.TOP | Gravity.RIGHT;
+        dialogs.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+        final TextView tvDeletechat = dialogs.findViewById(R.id.tvDeletechat);
+        final TextView tvBlockUser = dialogs.findViewById(R.id.tvBlockUser);
+        final TextView tvReportUser = dialogs.findViewById(R.id.tvReportUser);
+
+        tvDeletechat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+                final Dialog deletChatDialog = new Dialog(Objects.requireNonNull(ChatDetailsActivity.this));
+                deletChatDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+                deletChatDialog.setContentView(R.layout.dialog_delete_chat);
+                deletChatDialog.setCancelable(true);
+
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(Objects.requireNonNull(deletChatDialog.getWindow()).getAttributes());
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                deletChatDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                deletChatDialog.show();
+                final Button btnCancel = (Button) deletChatDialog.findViewById(R.id.btnCancel);
+                final Button btnSend = (Button) deletChatDialog.findViewById(R.id.btnOk);
+
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deletChatDialog.dismiss();
+                    }
+                });
+
+                btnSend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showProgressDialog();
+                        Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).delete_chat(id, "Bearer " + token);
+                        marqueCall.enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                                JsonObject object = response.body();
+                                hideProgressDialog();
+                                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                                if (object != null) {
+
+                                    Toast.makeText(ChatDetailsActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+
+
+                                } else {
+
+//                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                                t.printStackTrace();
+                                hideProgressDialog();
+                                Log.e("ChatV_Response", t.getMessage() + "");
+                            }
+                        });
+                    }
+                });
+
+            }
+        });
+
+        tvBlockUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+                final Dialog blockChatDialog = new Dialog(Objects.requireNonNull(ChatDetailsActivity.this));
+                blockChatDialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+                blockChatDialog.setContentView(R.layout.dialog_block_chat_user);
+                blockChatDialog.setCancelable(true);
+
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(Objects.requireNonNull(blockChatDialog.getWindow()).getAttributes());
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                blockChatDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                final Button btnCancel = (Button) blockChatDialog.findViewById(R.id.btnCancel);
+                final Button btnSend = (Button) blockChatDialog.findViewById(R.id.btnBlock);
+                blockChatDialog.show();
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        blockChatDialog.dismiss();
+                    }
+                });
+
+                btnSend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showProgressDialog();
+                        Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).block_user(id, "Bearer " + token);
+                        marqueCall.enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                                JsonObject object = response.body();
+                                hideProgressDialog();
+                                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                                if (object != null) {
+
+                                    Toast.makeText(ChatDetailsActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+
+
+                                } else {
+
+//                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                                t.printStackTrace();
+                                hideProgressDialog();
+                                Log.e("ChatV_Response", t.getMessage() + "");
+                            }
+                        });
+                    }
+                });
+
+            }
+        });
+        tvReportUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialogs.dismiss();
+                final Dialog dialog = new Dialog(Objects.requireNonNull(ChatDetailsActivity.this));
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+                dialog.setContentView(R.layout.dialog_report_user);
+                dialog.setCancelable(true);
+
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                final RadioGroup radioSexGroup = (RadioGroup) dialog.findViewById(R.id.radioGroupReportUser);
+
+                final Button btnCancel = (Button) dialog.findViewById(R.id.btnCancel);
+                final Button btnSend = (Button) dialog.findViewById(R.id.btnSend);
+
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+                btnSend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        // get selected radio button from radioGroup
+                        int selectedId = radioSexGroup.getCheckedRadioButtonId();
+
+                        // find the radiobutton by returned id
+                        RadioButton radioButton = (RadioButton) dialog.findViewById(selectedId);
+
+
+                        HashMap<String, String> hashMap = new HashMap<>();
+                        hashMap.put("report", radioButton.getText().toString() + "");
+                        showProgressDialog();
+                        Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).report_user(id, "Bearer " + token, hashMap);
+                        marqueCall.enqueue(new Callback<JsonObject>() {
+                            @Override
+                            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                                JsonObject object = response.body();
+                                hideProgressDialog();
+                                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                                if (response.isSuccessful()) {
+                                    dialog.dismiss();
+                                    Toast.makeText(ChatDetailsActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        Toast.makeText(ChatDetailsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                    } catch (Exception e) {
+                                        Toast.makeText(ChatDetailsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                                t.printStackTrace();
+                                hideProgressDialog();
+                                Log.e("ChatV_Response", t.getMessage() + "");
+                            }
+                        });
+                    }
+                });
+                dialog.show();
+                dialog.getWindow().setAttributes(lp);
+
+            }
+        });
+
+        dialogs.show();
+        dialogs.getWindow().setAttributes(lp);
+    }
+
+    protected void hideProgressDialog() {
+        viewDialog.dismiss();
+    }
+
+    protected void showProgressDialog() {
+        viewDialog.show();
     }
 }

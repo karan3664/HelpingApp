@@ -13,6 +13,7 @@ import com.aryupay.helpingapp.modal.changePassword.otp.OTPModel;
 import com.aryupay.helpingapp.modal.chats.chatDetails.ChatDetailModel;
 import com.aryupay.helpingapp.modal.chats.chatList.ChatListModel;
 import com.aryupay.helpingapp.modal.city.CityModel;
+import com.aryupay.helpingapp.modal.location.LocationModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
 import com.aryupay.helpingapp.modal.notification.NotificationsModel;
@@ -182,12 +183,21 @@ public class RetrofitHelper {
         @GET("chat")
         Call<ChatListModel> ChatListModel(@Header("Authorization") String token);
 
+        @GET("location")
+        Call<ArrayList<LocationModel>> LocationModel(@Header("Authorization") String token);
+
         @GET("messages/{user_id}")
         Call<ChatDetailModel> ChatDetailModel(@Path("user_id") String user_id, @Header("Authorization") String token);
 
 
         @GET("follow/{user_id}")
         Call<JsonObject> followunfollo(@Path("user_id") String user_id, @Header("Authorization") String token);
+
+        @GET("delete_chat/{user_id}")
+        Call<JsonObject> delete_chat(@Path("user_id") String user_id, @Header("Authorization") String token);
+
+        @GET("block_user/{user_id}")
+        Call<JsonObject> block_user(@Path("user_id") String user_id, @Header("Authorization") String token);
 
         @GET("logout")
         Call<JsonObject> logout(@Header("Authorization") String token);

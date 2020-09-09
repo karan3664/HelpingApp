@@ -2,11 +2,13 @@ package com.aryupay.helpingapp.ui.chats;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,10 +19,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
+import com.aryupay.helpingapp.modal.chats.chatDetails.ChatDetailModel;
 import com.aryupay.helpingapp.modal.chats.chatList.ChatListModel;
 import com.aryupay.helpingapp.modal.chats.chatList.Datum;
 import com.aryupay.helpingapp.modal.login.LoginModel;
@@ -41,6 +45,8 @@ import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -54,7 +60,7 @@ public class ChatListActivity extends AppCompatActivity {
     private MyCustomAdapter myCustomAdapter;
     LoginModel loginModel;
     ArrayList<Datum> datumArrayList = new ArrayList<>();
-
+    private AlertDialog.Builder alertDialogBuilder;
     String token;
 
     @Override
@@ -198,11 +204,58 @@ public class ChatListActivity extends AppCompatActivity {
             holder.llChatDetail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent i = new Intent(ChatListActivity.this, ChatDetailsActivity.class);
-                    i.putExtra("name", datum.getName() + "");
-                    i.putExtra("image_path", datum.getPhoto() + "");
-                    i.putExtra("id", datum.getId() + "");
-                    startActivity(i);
+                    Call<ChatDetailModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).ChatDetailModel(String.valueOf(datum.getId()), "Bearer " + token);
+                    marqueCall.enqueue(new Callback<ChatDetailModel>() {
+                        @Override
+                        public void onResponse(@NonNull Call<ChatDetailModel> call, @NonNull Response<ChatDetailModel> response) {
+                            ChatDetailModel object = response.body();
+                            Log.e("TAG", "ChatReceive_Response : " + new Gson().toJson(response.body()));
+
+                            if (response.isSuccessful()) {
+                                assert object != null;
+                                assert response.body() != null;
+                                if (response.body().getMessage().equalsIgnoreCase("User is Blocked!")) {
+                                    alertDialogBuilder = new AlertDialog.Builder(ChatListActivity.this, R.style.AlertDialogTheme);
+                                    alertDialogBuilder.setTitle(getResources().getString(R.string.app_name));
+                                    alertDialogBuilder.setIcon(R.drawable.eyu);
+                                    alertDialogBuilder
+                                            .setMessage(object.getMessage() + "")
+                                            .setCancelable(false)
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                                    AlertDialog alertDialog = alertDialogBuilder.create();
+                                    alertDialog.show();
+
+                                } else {
+                                    Intent i = new Intent(ChatListActivity.this, ChatDetailsActivity.class);
+                                    i.putExtra("name", datum.getName() + "");
+                                    i.putExtra("image_path", datum.getPhoto() + "");
+                                    i.putExtra("id", datum.getId() + "");
+                                    startActivity(i);
+                                }
+
+                            } else {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    Toast.makeText(ChatListActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                    Toast.makeText(ChatListActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<ChatDetailModel> call, @NonNull Throwable t) {
+                            t.printStackTrace();
+                            Log.e("ChatReceive_Response", t.getMessage() + "");
+//                Toast.makeText(ChatDetailsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+
                 }
             });
 

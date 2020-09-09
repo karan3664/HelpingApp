@@ -16,6 +16,10 @@ public class ChatDetailModel {
     @Expose
     private ArrayList<Datum> data = null;
 
+    @SerializedName("message")
+    @Expose
+    private String message;
+
     public String getStatus() {
         return status;
     }
@@ -38,5 +42,13 @@ public class ChatDetailModel {
 
     public void setData(ArrayList<Datum> data) {
         this.data = data;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

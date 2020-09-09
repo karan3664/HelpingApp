@@ -2,6 +2,7 @@ package com.aryupay.helpingapp.ui.fragments.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -45,12 +47,14 @@ import com.aryupay.helpingapp.modal.blogdetails.Datum;
 import com.aryupay.helpingapp.modal.blogdetails.Image;
 import com.aryupay.helpingapp.modal.bloglist.Blog;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
+import com.aryupay.helpingapp.modal.chats.chatDetails.ChatDetailModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.other_user.OtherUserProfileModel;
 import com.aryupay.helpingapp.modal.profile.my_profile.Comment;
 import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.ui.chats.ChatDetailsActivity;
+import com.aryupay.helpingapp.ui.chats.ChatListActivity;
 import com.aryupay.helpingapp.ui.fragments.HomeFragment;
 
 import com.aryupay.helpingapp.ui.profile.FollowerFollowingHelpingActivity;
@@ -108,7 +112,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
     String userid, name;
     ArrayList<com.aryupay.helpingapp.modal.other_user.Comment> commentArrayLis = new ArrayList<>();
     LinearLayout llRating;
-
+    private AlertDialog.Builder alertDialogBuilder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -455,11 +459,60 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 llCommentSection.setVisibility(View.VISIBLE);
                 break;
             case R.id.btnChat:
-                Intent i = new Intent(DetailBlogsActivity.this, ChatDetailsActivity.class);
-                i.putExtra("name", name + "");
-                i.putExtra("image_path", image_path + "");
-                i.putExtra("id", userid + "");
-                startActivity(i);
+
+                Call<ChatDetailModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).ChatDetailModel(userid, "Bearer " + token);
+                marqueCall.enqueue(new Callback<ChatDetailModel>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ChatDetailModel> call, @NonNull Response<ChatDetailModel> response) {
+                        ChatDetailModel object = response.body();
+                        Log.e("TAG", "ChatReceive_Response : " + new Gson().toJson(response.body()));
+
+                        if (response.isSuccessful()) {
+                            assert object != null;
+                            assert response.body() != null;
+                            if (response.body().getMessage().equalsIgnoreCase("User is Blocked!")) {
+                                alertDialogBuilder = new AlertDialog.Builder(DetailBlogsActivity.this, R.style.AlertDialogTheme);
+                                alertDialogBuilder.setTitle(getResources().getString(R.string.app_name));
+                                alertDialogBuilder.setIcon(R.drawable.eyu);
+                                alertDialogBuilder
+                                        .setMessage(object.getMessage() + "")
+                                        .setCancelable(false)
+                                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.cancel();
+                                            }
+                                        });
+                                AlertDialog alertDialog = alertDialogBuilder.create();
+                                alertDialog.show();
+
+                            } else {
+                                Intent i = new Intent(DetailBlogsActivity.this, ChatDetailsActivity.class);
+                                i.putExtra("name", name + "");
+                                i.putExtra("image_path", image_path + "");
+                                i.putExtra("id", userid + "");
+                                startActivity(i);
+                            }
+
+                        } else {
+                            try {
+                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                            } catch (Exception e) {
+                                Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<ChatDetailModel> call, @NonNull Throwable t) {
+                        t.printStackTrace();
+                        Log.e("ChatReceive_Response", t.getMessage() + "");
+//                Toast.makeText(ChatDetailsActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+
                 break;
 
             case R.id.cvOpenComment:

@@ -1,9 +1,12 @@
 package com.aryupay.helpingapp.ui.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -15,13 +18,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
@@ -29,20 +42,32 @@ import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.bloglist.Blog;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.bloglist.Image;
+import com.aryupay.helpingapp.modal.city.CityModel;
+import com.aryupay.helpingapp.modal.location.LocationModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.ui.NotificationsAllActivity;
+import com.aryupay.helpingapp.ui.RegisterActivity;
+import com.aryupay.helpingapp.ui.chats.ChatDetailsActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.SearchBlogActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
+import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -66,6 +91,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     TextView tvLoc;
     EditText edtSearch;
     ImageView ivNotification;
+    private List<String> nameList = new ArrayList<>();
+    ListView listView;
+    BottomSheetDialog locationDialog;
+    protected ViewDialog viewDialog;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -86,6 +115,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         loginModel = PrefUtils.getUser(getContext());
+        viewDialog = new ViewDialog(getContext());
+        viewDialog.setCancelable(false);
         token = loginModel.getData().getToken() + "";
         preferences = getActivity().getSharedPreferences("user_info", Context.MODE_PRIVATE);
         location = preferences.getString("location", "");
@@ -113,13 +144,154 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         ivNotification.setOnClickListener(this);
 
         BlogList();
+
+        tvLoc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OpenLocationDialog();
+
+            }
+        });
         return rootView;
+    }
+
+    public void OpenLocationDialog() {
+        final Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+        dialog.setContentView(R.layout.dialog_location);
+        dialog.setCancelable(true);
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(Objects.requireNonNull(dialog.getWindow()).getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        RelativeLayout rlLocation = dialog.findViewById(R.id.rlLocation);
+        TextView tv_location = dialog.findViewById(R.id.tv_location);
+        final RelativeLayout btnSearch = dialog.findViewById(R.id.btnSearch);
+        ImageView ivClosse = dialog.findViewById(R.id.ivClose);
+        tv_location.setText(tvLoc.getText().toString() + "");
+        ivClosse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        rlLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                locationDialog = new BottomSheetDialog(getContext());
+                locationDialog.setContentView(R.layout.sub_location);
+
+                WindowManager.LayoutParams lpState = new WindowManager.LayoutParams();
+                lpState.copyFrom(locationDialog.getWindow().getAttributes());
+                lpState.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lpState.height = WindowManager.LayoutParams.MATCH_PARENT;
+//                lpState.gravity = Gravity.CENTER;
+                locationDialog.getWindow().setAttributes(lpState);
+
+                listView = (ListView) locationDialog.findViewById(R.id.list_sub_cat);
+//                listView.setDivider(getResources().getDrawable(R.drawable.close));
+//                listView.setDividerHeight(1);
+                TextView txtState = (TextView) locationDialog.findViewById(R.id.dialogtitile);
+                txtState.setText("Select Location");
+                showProgressDialog();
+                HashMap<String, String> hashMap = new HashMap<>();
+
+                Call<ArrayList<LocationModel>> postCodeModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LocationModel("Bearer " + token);
+                postCodeModelCall.enqueue(new Callback<ArrayList<LocationModel>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ArrayList<LocationModel>> call, @NonNull Response<ArrayList<LocationModel>> response) {
+                        final ArrayList<LocationModel> object = response.body();
+                        hideProgressDialog();
+                        nameList.clear();
+                        if (object != null) {
+                            Log.e("TAG", "Postcode_Response : " + new Gson().toJson(response.body()));
+//                    resultGetpostcodes = new ArrayList<CityModel>();
+
+                            for (int i = 0; i < object.size(); i++) {
+
+                                nameList.add(object.get(i).getLocation() + "");
+                            }
+
+
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, nameList); //selected item will look like a spinner set from XML
+
+                            listView.setAdapter(adapter);
+                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+
+                                    tv_location.setText(object.get(position).getLocation());
+                                    tvLoc.setText(object.get(position).getLocation());
+                                    locationDialog.dismiss();
+                                }
+                            });
+
+                        } else {
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<ArrayList<LocationModel>> call, @NonNull Throwable t) {
+
+                        hideProgressDialog();
+                        t.printStackTrace();
+                        Log.e("Postcode_Response", t.getMessage() + "");
+                    }
+                });
+                locationDialog.show();
+            }
+        });
+
+        btnSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HashMap<String, String> hashMap = new HashMap<>();
+                hashMap.put("location", tv_location.getText().toString() + "");
+
+                Log.e("GAYA", hashMap + "");
+                Call<BlogListModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).BlogListModel("Bearer " + token, hashMap);
+                marqueCall.enqueue(new Callback<BlogListModel>() {
+                    @Override
+                    public void onResponse(@NonNull Call<BlogListModel> call, @NonNull Response<BlogListModel> response) {
+                        BlogListModel object = response.body();
+                        Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                        if (object != null) {
+
+                            dialog.dismiss();
+                            blogArrayList = object.getMessage().getBlog();
+                            Like = object.getMessage().getLikes();
+                            Comments = object.getMessage().getComments();
+                            Views = object.getMessage().getViews();
+                            Images = object.getMessage().getImages();
+
+                            myCustomAdapter = new MyCustomAdapter(blogArrayList);
+                            rvBlogList.setAdapter(myCustomAdapter);
+
+                        } else {
+//                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<BlogListModel> call, @NonNull Throwable t) {
+                        t.printStackTrace();
+
+                        Log.e("ChatV_Response", t.getMessage() + "");
+                    }
+                });
+            }
+        });
+        dialog.show();
+        dialog.getWindow().setAttributes(lp);
     }
 
     private void BlogList() {
 
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("location", "Atmakur,Andhra Pradesh");
+        hashMap.put("location", tvLoc.getText().toString() + "");
 
         Log.e("GAYA", hashMap + "");
         Call<BlogListModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).BlogListModel("Bearer " + token, hashMap);
@@ -326,7 +498,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 }
 
 
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -402,5 +573,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onStart() {
         super.onStart();
 //        BlogList();
+    }
+
+    protected void hideProgressDialog() {
+        viewDialog.dismiss();
+    }
+
+    protected void showProgressDialog() {
+        viewDialog.show();
     }
 }
