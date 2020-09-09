@@ -187,13 +187,8 @@ public class OtherFollowingFragment extends Fragment {
 
             holder.tvName.setText(datum.getName() + "");
 
-            if (datum.getFollow() == false) {
-                holder.rlCategory.setBackgroundResource(R.drawable.btn_follow_bg);
-                holder.rlCategory.setText("Follow");
-            } else {
-                holder.rlCategory.setBackgroundResource(R.drawable.btn_back_bg);
-                holder.rlCategory.setText("Following");
-            }
+            holder.rlCategory.setBackgroundResource(R.drawable.btn_back_bg);
+            holder.rlCategory.setText("Following");
 
             if (datum.getPhoto() != null) {
                 Glide.with(getContext())

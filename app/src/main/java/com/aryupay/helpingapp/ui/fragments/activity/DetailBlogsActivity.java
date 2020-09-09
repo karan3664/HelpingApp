@@ -50,6 +50,7 @@ import com.aryupay.helpingapp.modal.other_user.OtherUserProfileModel;
 import com.aryupay.helpingapp.modal.profile.my_profile.Comment;
 import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.ui.LoginActivity;
+import com.aryupay.helpingapp.ui.chats.ChatDetailsActivity;
 import com.aryupay.helpingapp.ui.fragments.HomeFragment;
 
 import com.aryupay.helpingapp.ui.profile.FollowerFollowingHelpingActivity;
@@ -78,7 +79,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
     AdapterViewFlipper adapterViewFlipper;
     TextView tvName, catName, tvTime, tvSubHeading, tvHeading, tvTotalView, tvTotalLikes, tvTotalComment, tvLocation;
     RelativeLayout btnComment, btnChat;
-    String token, blogid;
+    String token, blogid, id, image_path;
     LoginModel loginModel;
     ImageView userProfile, ivLike, ivFav, ivCall;
     CircleImageView ivProfileImage;
@@ -159,6 +160,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         ivLike.setOnClickListener(this);
         ivFav.setOnClickListener(this);
         ivCall.setOnClickListener(this);
+        btnChat.setOnClickListener(this);
         btnComment.setOnClickListener(this);
         cvOpenComment.setOnClickListener(this);
         btnCommentSave.setOnClickListener(this);
@@ -263,6 +265,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                         ProfileCall();
                     }
                     if (object.getData().getUserdetail() != null) {
+                        image_path = object.getData().getUserdetail().getPhoto();
                         Glide.with(DetailBlogsActivity.this)
                                 .load(BuildConstants.Main_Image + object.getData().getUserdetail().getPhoto().replace("public", "storage"))
 //                                .centerCrop()
@@ -451,6 +454,13 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 llBottom.setVisibility(View.GONE);
                 llCommentSection.setVisibility(View.VISIBLE);
                 break;
+            case R.id.btnChat:
+                Intent i = new Intent(DetailBlogsActivity.this, ChatDetailsActivity.class);
+                i.putExtra("name", name + "");
+                i.putExtra("image_path", image_path + "");
+                i.putExtra("id", userid + "");
+                startActivity(i);
+                break;
 
             case R.id.cvOpenComment:
                 llCommentSection.setVisibility(View.GONE);
@@ -637,7 +647,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     commentArrayLis = object.getData().getComments();
                     tvEmailId.setText(object.getData().getEmail() + "");
                     tv_name.setText(object.getData().getName() + "");
-                    if (object.getData().getUserDetail() != null){
+                    if (object.getData().getUserDetail() != null) {
                         tvBiotxt.setText(object.getData().getUserDetail().getBio() + "");
 //                    tvAgetxt.setText(object.getData().getUserDetail().getDob() + "");
                         tv_gender.setText(object.getData().getUserDetail().getGender() + "");
@@ -656,7 +666,6 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                             e.printStackTrace();
                         }
                     }
-
 
 
                     tvFollowers.setText(object.getData().getFollowers() + "");

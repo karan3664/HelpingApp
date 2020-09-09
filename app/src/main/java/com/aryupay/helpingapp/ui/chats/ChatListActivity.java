@@ -201,6 +201,7 @@ public class ChatListActivity extends AppCompatActivity {
                     Intent i = new Intent(ChatListActivity.this, ChatDetailsActivity.class);
                     i.putExtra("name", datum.getName() + "");
                     i.putExtra("image_path", datum.getPhoto() + "");
+                    i.putExtra("id", datum.getId() + "");
                     startActivity(i);
                 }
             });

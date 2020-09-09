@@ -10,6 +10,7 @@ import com.aryupay.helpingapp.modal.blogdetails.BlogDetailsModel;
 import com.aryupay.helpingapp.modal.blogdetails.CommentsBlogModel;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.changePassword.otp.OTPModel;
+import com.aryupay.helpingapp.modal.chats.chatDetails.ChatDetailModel;
 import com.aryupay.helpingapp.modal.chats.chatList.ChatListModel;
 import com.aryupay.helpingapp.modal.city.CityModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
@@ -54,6 +55,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Path;
@@ -180,6 +182,10 @@ public class RetrofitHelper {
         @GET("chat")
         Call<ChatListModel> ChatListModel(@Header("Authorization") String token);
 
+        @GET("messages/{user_id}")
+        Call<ChatDetailModel> ChatDetailModel(@Path("user_id") String user_id, @Header("Authorization") String token);
+
+
         @GET("follow/{user_id}")
         Call<JsonObject> followunfollo(@Path("user_id") String user_id, @Header("Authorization") String token);
 
@@ -210,6 +216,9 @@ public class RetrofitHelper {
         @POST("rateprofile/{user_id}")
         Call<JsonObject> rateprofile(@Path("user_id") String user_id, @Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
 
+        @FormUrlEncoded()
+        @POST("messages")
+        Call<JsonObject> sendMessage(@Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
 
         @GET("notification")
         Call<NotificationsModel> NotificationsModel(@Header("Authorization") String token);
@@ -217,6 +226,9 @@ public class RetrofitHelper {
         @FormUrlEncoded
         @POST("login")
         Call<LoginModel> LoginModel(@FieldMap HashMap<String, String> hashMap);
+
+        @PUT("appinfo")
+        Call<JsonObject> updateAppInfo(@QueryMap HashMap<String, String> map, @Header("Authorization") String token);
 
         @Multipart
         @POST("user")
