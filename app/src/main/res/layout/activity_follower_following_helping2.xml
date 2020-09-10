@@ -63,6 +63,7 @@
                     android:layout_marginTop="@dimen/_10sdp">
 
                     <RelativeLayout
+
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_35sdp"
                         android:layout_marginLeft="@dimen/_10sdp"
@@ -71,6 +72,7 @@
 
 
                         <EditText
+                            android:id="@+id/edtSearch"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@null"

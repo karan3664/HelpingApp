@@ -512,27 +512,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             if (datum.getFav() == true) {
                 holder.favStar.setImageResource(R.drawable.favourite_star);
             }
-            try {
-                holder.tvName.setText(datum.getName() + "");
-                holder.tvHeading.setText(datum.getHeading() + "");
-                holder.tvSubHeading.setText(datum.getDescription() + "");
-                holder.tvLocation.setText(datum.getLocation() + "");
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//                    birthday = LocalDate.parse(datum.getTime() + "");
-//                    Period p = Period.between(birthday, today);
-
-                    LocalDate start = LocalDate.parse(datum.getTime());
-                    LocalDate end = LocalDate.now();
-
-                    System.out.println(ChronoUnit.DAYS.between(start, end));
-
-                    holder.tvTime.setText(ChronoUnit.DAYS.between(start, end) + "");
-                }
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            holder.tvName.setText(datum.getName() + "");
+            holder.tvHeading.setText(datum.getHeading() + "");
+            holder.tvSubHeading.setText(datum.getDescription() + "");
+            holder.tvLocation.setText(datum.getLocation() + "");
+            holder.tvTime.setText(datum.getTime() + "");
 
             holder.catName.setText(datum.getCategory() + "");
             holder.tvTotalComment.setText(Comments.get(position) + "");

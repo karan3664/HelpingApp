@@ -8,15 +8,22 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -29,6 +36,7 @@ import com.aryupay.helpingapp.modal.chats.chatDetails.ChatDetailModel;
 import com.aryupay.helpingapp.modal.chats.chatList.ChatListModel;
 import com.aryupay.helpingapp.modal.chats.chatList.Datum;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.ui.profile.SearchFollowFollowingActivity;
 import com.aryupay.helpingapp.ui.profile.ui.SuggestedFragment;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
@@ -49,6 +57,7 @@ import com.pusher.client.connection.ConnectionStateChange;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -64,6 +73,8 @@ public class ChatListActivity extends AppCompatActivity {
     private AlertDialog.Builder alertDialogBuilder;
     String token;
     ImageView ivBack;
+    private EditText et_search;
+    private ImageButton bt_clear;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +84,8 @@ public class ChatListActivity extends AppCompatActivity {
         viewDialog = new ViewDialog(ChatListActivity.this);
         viewDialog.setCancelable(false);
         rvChatList = findViewById(R.id.rvChatList);
+        et_search = (EditText) findViewById(R.id.et_search);
+        bt_clear = (ImageButton) findViewById(R.id.bt_clear);
         ivBack = findViewById(R.id.ivBack);
         LinearLayoutManager layoutManager = new LinearLayoutManager(ChatListActivity.this);
         rvChatList.setLayoutManager(layoutManager);
@@ -116,6 +129,97 @@ public class ChatListActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        bt_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                et_search.setText("");
+                FollowerList();
+//                productList();
+            }
+        });
+
+        et_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    hideKeyboard();
+                    searchAction();
+                    return true;
+                }
+                return false;
+            }
+        });
+    }
+    private void hideKeyboard() {
+        View view = getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    private void searchAction() {
+//        progress_bar.setVisibility(View.VISIBLE);
+        showProgressDialog();
+        rvChatList.setVisibility(View.VISIBLE);
+
+        final String query = et_search.getText().toString().trim();
+        if (!query.equals("")) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+//                    progress_bar.setVisibility(View.GONE);
+                    hideProgressDialog();
+                    SearchList();
+//                    if (resultProductLists.isEmpty())
+//                    {
+//                        productList();
+//                    }
+//                    else {
+//                        mProductListCustomAdapter = new ProductListCustomAdapter(resultProductLists);
+//                        searchRecyclerview.setAdapter(mProductListCustomAdapter);
+//
+//                    }
+
+                }
+            }, 500);
+        } else {
+            Toast.makeText(ChatListActivity.this, "Please fill search input", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void SearchList() {
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("user", et_search.getText().toString() + "");
+
+        showProgressDialog();
+        Call<ChatListModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).search_chat("Bearer " + token, hashMap);
+        marqueCall.enqueue(new Callback<ChatListModel>() {
+            @Override
+            public void onResponse(@NonNull Call<ChatListModel> call, @NonNull Response<ChatListModel> response) {
+                ChatListModel object = response.body();
+                hideProgressDialog();
+                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                if (object != null) {
+
+
+                    datumArrayList = object.getData();
+                    myCustomAdapter = new MyCustomAdapter(datumArrayList);
+                    rvChatList.setAdapter(myCustomAdapter);
+
+                } else {
+
+//                    Toast.makeText(ChatListActivity.this, "No Chat Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ChatListModel> call, @NonNull Throwable t) {
+                t.printStackTrace();
+                hideProgressDialog();
+                Log.e("ChatV_Response", t.getMessage() + "");
+            }
+        });
+
     }
 
 

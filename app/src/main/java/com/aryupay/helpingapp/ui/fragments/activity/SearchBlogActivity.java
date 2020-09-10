@@ -247,24 +247,7 @@ public class SearchBlogActivity extends AppCompatActivity {
             holder.tvHeading.setText(datum.getHeading() + "");
             holder.tvSubHeading.setText(datum.getDescription() + "");
             holder.tvLocation.setText(datum.getLocation() + "");
-
-            try {
-                LocalDate today = LocalDate.now();
-                LocalDate birthday = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-//                    birthday = LocalDate.parse(datum.getTime() + "");
-//                    Period p = Period.between(birthday, today);
-
-                    LocalDate start = LocalDate.parse(datum.getTime());
-                    LocalDate end = LocalDate.now();
-
-                    System.out.println(ChronoUnit.DAYS.between(start, end));
-
-                    holder.tvTime.setText(ChronoUnit.DAYS.between(start, end) + "");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            holder.tvTime.setText(datum.getTime() + "");
             if (datum.getCategory().matches("general")) {
                 holder.rlCategory.setBackgroundResource(R.drawable.general_cat_bg);
             } else if (datum.getCategory().matches("urgent")) {

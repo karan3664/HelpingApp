@@ -184,11 +184,13 @@ public class FollowingFragment extends Fragment {
             holder.rlCategory.setText("Following");
 
             if (datum.getPhoto() != null) {
-                Glide.with(getContext())
-                        .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
+                if (datum.getPhoto().getPath() != null) {
+                    Glide.with(getContext())
+                            .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
 //                        .centerCrop()
-                        .placeholder(R.drawable.placeholder)
-                        .into(holder.civProfile);
+                            .placeholder(R.drawable.placeholder)
+                            .into(holder.civProfile);
+                }
             }
 
             holder.rlCategory.setOnClickListener(new View.OnClickListener() {

@@ -105,7 +105,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         return false;
     }
 
-    @Override
+ /*   @Override
     public void onBackPressed() {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.nav_view);
         int seletedItemId = bottomNavigationView.getSelectedItemId();
@@ -119,5 +119,5 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 activity.findViewById(R.id.nav_view);
         bottomNavigationView.setSelectedItemId(R.id.home);
-    }
+    }*/
 }

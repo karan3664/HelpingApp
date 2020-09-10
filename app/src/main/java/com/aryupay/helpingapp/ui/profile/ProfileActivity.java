@@ -35,6 +35,7 @@ import com.aryupay.helpingapp.ui.fragments.ChatFragment;
 import com.aryupay.helpingapp.ui.fragments.HomeFragment;
 import com.aryupay.helpingapp.ui.fragments.MyPingFragment;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
+import com.aryupay.helpingapp.ui.fragments.activity.HelpingActivity;
 import com.aryupay.helpingapp.ui.profile.ui.FollowersFragment;
 import com.aryupay.helpingapp.ui.profile.ui.FollowingFragment;
 import com.aryupay.helpingapp.utils.PrefUtils;
@@ -42,8 +43,10 @@ import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.gson.Gson;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import java.text.ParseException;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
@@ -76,6 +79,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AndroidThreeTen.init(this);
+
         setContentView(R.layout.activity_profile);
         loginModel = PrefUtils.getUser(ProfileActivity.this);
         token = loginModel.getData().getToken();
@@ -107,12 +112,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         tv_name.setText(loginModel.getData().getUser().getFullname() + "");
         tv_bio.setText(loginModel.getData().getUser().getUserDetail().getBio() + "");
         try {
-            LocalDate today = LocalDate.now();
-            LocalDate birthday = null;
+
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                LocalDate today = LocalDate.now();
+                LocalDate birthday = null;
                 birthday = LocalDate.parse(loginModel.getData().getUser().getUserDetail().getDob());
                 Period p = Period.between(birthday, today);
                 tvAgetxt.setText(p.getYears() + " Years " + p.getMonths() + " Months " + ",");
+            } else {
+                tvAgetxt.setText(loginModel.getData().getUser().getUserDetail().getDob());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,7 +196,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 break;
 
             case R.id.llHelping:
-                Toast.makeText(this, "Under Development", Toast.LENGTH_SHORT).show();
+                Intent iv = new Intent(ProfileActivity.this, HelpingActivity.class);
+                startActivity(iv);
 //                openFragment(MyPingFragment.newInstance("", ""));
                 break;
 

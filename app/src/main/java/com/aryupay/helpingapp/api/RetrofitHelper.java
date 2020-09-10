@@ -24,6 +24,7 @@ import com.aryupay.helpingapp.modal.profile.followers.FollowersModel;
 import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.modal.register.RegisterModel;
 import com.aryupay.helpingapp.modal.search.my_ping.SearchMyPingModel;
+import com.aryupay.helpingapp.modal.search_user.SearchUserModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -177,6 +178,14 @@ public class RetrofitHelper {
         @GET("others_following/{user_id}")
         Call<FollowersModel> others_following(@Path("user_id") String user_id, @Header("Authorization") String token);
 
+        @FormUrlEncoded
+        @POST("search_user")
+        Call<FollowersModel> search_user(@Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
+        @FormUrlEncoded
+        @POST("search_chat")
+        Call<ChatListModel> search_chat(@Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
         @GET("suggested")
         Call<FollowersModel> suggested(@Header("Authorization") String token);
 
@@ -306,6 +315,7 @@ public class RetrofitHelper {
                 @Header("Authorization") String authorization,
                 @PartMap Map<String, RequestBody> map
         );
+
 
     }
 

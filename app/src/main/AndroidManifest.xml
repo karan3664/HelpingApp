@@ -29,7 +29,10 @@
         tools:ignore="AllowBackup"
         tools:replace="android:icon,android:allowBackup,android:usesCleartextTraffic"
         tools:targetApi="q">
-        <activity android:name=".ui.fragments.activity.OtherFollowFollowingActivity"></activity>
+        <activity android:name=".ui.profile.SearchFollowFollowingActivity"></activity>
+        <activity android:name=".ui.profile.HelpAndSupportActivity" />
+        <activity android:name=".ui.fragments.activity.HelpingActivity" />
+        <activity android:name=".ui.fragments.activity.OtherFollowFollowingActivity" />
         <activity android:name=".ui.addBlog.BlogPreviewSettingsActivity" />
         <activity android:name=".ui.chats.ChatDetailsActivity" />
         <activity android:name=".ui.chats.ChatListActivity" />
@@ -95,6 +98,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <service
             android:name=".ui.notifications.MyFirebaseMessagingService"
             android:enabled="true"

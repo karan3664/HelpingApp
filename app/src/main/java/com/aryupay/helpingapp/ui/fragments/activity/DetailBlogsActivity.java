@@ -714,13 +714,27 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                         tv_location.setText(object.getData().getUserDetail().getCity().getCity() + "");
 
                         tvMobileNo.setText(object.getData().getUserDetail().getContact() + "");
-                        try {
+                     /*   try {
                             LocalDate today = LocalDate.now();
                             LocalDate birthday = null;
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                                 birthday = LocalDate.parse(object.getData().getUserDetail().getDob());
                                 Period p = Period.between(birthday, today);
                                 tvAgetxt.setText(p.getYears() + " Years " + p.getMonths() + " Months " + ",");
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }*/
+                        try {
+
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                LocalDate today = LocalDate.now();
+                                LocalDate birthday = null;
+                                birthday = LocalDate.parse(loginModel.getData().getUser().getUserDetail().getDob());
+                                Period p = Period.between(birthday, today);
+                                tvAgetxt.setText(p.getYears() + " Years " + p.getMonths() + " Months " + ",");
+                            } else {
+                                tvAgetxt.setText(loginModel.getData().getUser().getUserDetail().getDob());
                             }
                         } catch (Exception e) {
                             e.printStackTrace();

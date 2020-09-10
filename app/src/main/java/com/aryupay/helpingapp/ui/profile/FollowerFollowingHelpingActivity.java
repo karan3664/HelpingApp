@@ -6,9 +6,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aryupay.helpingapp.R;
@@ -28,6 +31,8 @@ public class FollowerFollowingHelpingActivity extends AppCompatActivity {
     LoginModel loginModel;
     TextView tvMyPing;
     ImageView ivBack;
+EditText edtSearch;
+    RelativeLayout rlSearch;
 
     @Override
 
@@ -50,6 +55,14 @@ public class FollowerFollowingHelpingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onBackPressed();
+            }
+        });
+        edtSearch = findViewById(R.id.edtSearch);
+        edtSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(FollowerFollowingHelpingActivity.this, SearchFollowFollowingActivity.class);
+                startActivity(i);
             }
         });
     }
