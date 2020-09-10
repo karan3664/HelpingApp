@@ -41,6 +41,7 @@ import com.aryupay.helpingapp.modal.profession.ProfessionModel;
 import com.aryupay.helpingapp.modal.register.RegisterModel;
 import com.aryupay.helpingapp.ui.HomeActivity;
 
+import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.Tools;
 import com.aryupay.helpingapp.utils.ViewDialog;
@@ -304,9 +305,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(EditProfileActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(EditProfileActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(EditProfileActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }

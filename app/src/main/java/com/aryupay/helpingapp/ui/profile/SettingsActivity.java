@@ -113,9 +113,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                 } else {
                                     try {
                                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        Toast.makeText(SettingsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(SettingsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                                     } catch (Exception e) {
-                                        Toast.makeText(SettingsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                     }
 
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
@@ -171,9 +170,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                 } else {
                                     try {
                                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        Toast.makeText(SettingsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(SettingsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                                     } catch (Exception e) {
-                                        Toast.makeText(SettingsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                     }
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
                                 }

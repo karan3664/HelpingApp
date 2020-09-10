@@ -312,9 +312,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 } else {
                                     try {
                                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        Toast.makeText(LoginActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(LoginActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                                     } catch (Exception e) {
-                                        Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }
@@ -331,9 +330,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            Toast.makeText(LoginActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
-                            Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -342,7 +340,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
                     hideProgressDialog();
                     t.printStackTrace();
-                    Log.e("Login_Response", t.getMessage() + "");
+                    Log.e("Login_Response_Fail", t.getMessage() + "");
                 }
             });
         }

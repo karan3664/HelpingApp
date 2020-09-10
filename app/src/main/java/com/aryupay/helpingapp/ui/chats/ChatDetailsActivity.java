@@ -296,10 +296,15 @@ public class ChatDetailsActivity extends AppCompatActivity implements View.OnCli
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(ChatDetailsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(ChatDetailsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(ChatDetailsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
+//                    try {
+//                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+//                        Toast.makeText(ChatDetailsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+//                    } catch (Exception e) {
+//                        Toast.makeText(ChatDetailsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+//                    }
                 }
             }
 

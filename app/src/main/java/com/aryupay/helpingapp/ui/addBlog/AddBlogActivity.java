@@ -18,6 +18,7 @@ import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.addblog.AddBlogModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.google.gson.Gson;
@@ -133,9 +134,8 @@ public class AddBlogActivity extends AppCompatActivity implements View.OnClickLi
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            Toast.makeText(AddBlogActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                            Toast.makeText(AddBlogActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
-                            Toast.makeText(AddBlogActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 }

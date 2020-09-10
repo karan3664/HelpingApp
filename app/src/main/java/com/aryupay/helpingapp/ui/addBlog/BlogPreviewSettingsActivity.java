@@ -19,6 +19,7 @@ import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
@@ -102,9 +103,8 @@ public class BlogPreviewSettingsActivity extends AppCompatActivity implements Vi
                             } else {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                    Toast.makeText(BlogPreviewSettingsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(BlogPreviewSettingsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                                 } catch (Exception e) {
-                                    Toast.makeText(BlogPreviewSettingsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             }
                         }
@@ -141,9 +141,8 @@ public class BlogPreviewSettingsActivity extends AppCompatActivity implements Vi
                             } else {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                    Toast.makeText(BlogPreviewSettingsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(BlogPreviewSettingsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                                 } catch (Exception e) {
-                                    Toast.makeText(BlogPreviewSettingsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             }
                         }
@@ -180,9 +179,8 @@ public class BlogPreviewSettingsActivity extends AppCompatActivity implements Vi
                             } else {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                    Toast.makeText(BlogPreviewSettingsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(BlogPreviewSettingsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                                 } catch (Exception e) {
-                                    Toast.makeText(BlogPreviewSettingsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             }
                         }
@@ -219,9 +217,8 @@ public class BlogPreviewSettingsActivity extends AppCompatActivity implements Vi
                             } else {
                                 try {
                                     JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                    Toast.makeText(BlogPreviewSettingsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(BlogPreviewSettingsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                                 } catch (Exception e) {
-                                    Toast.makeText(BlogPreviewSettingsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             }
                         }

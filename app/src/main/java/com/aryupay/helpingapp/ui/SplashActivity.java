@@ -55,12 +55,12 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
 
     private static final int PERMISSION_REQUEST_CODE = 200;
     final String TAG = "GPS";
-    private long UPDATE_INTERVAL = 2
-            * 1000;  /* 10 secs */
-    private long FASTEST_INTERVAL = 2000; /* 2 sec */
+    private long UPDATE_INTERVAL = 30 * 1000;  /* 10 secs */
+    private long FASTEST_INTERVAL = 5 * 1000; /* 2 sec */
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     GoogleApiClient gac;
     LocationRequest locationRequest;
+    LocationManager locationManager;
     private boolean isContinue = false;
     private boolean isGPS = false;
 
@@ -79,6 +79,9 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
         locationRequest.setInterval(UPDATE_INTERVAL);
         locationRequest.setFastestInterval(FASTEST_INTERVAL);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+//        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         gac = new GoogleApiClient.Builder(SplashActivity.this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -90,11 +93,35 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
                 // turn on GPS
 
                 isGPS = isGPSEnable;
+//                boolean gpsEnabled = Settings.Secure.isLocationProviderEnabled(getContentResolver(), LocationManager.GPS_PROVIDER);
+//
+//                if (isGPSEnable) {
+//                    Settings.Secure.putInt(getContentResolver(), Settings.Secure.LOCATION_MODE, 0);
+//                } else {
+//                    Settings.Secure.putInt(getContentResolver(), Settings.Secure.LOCATION_MODE, 3);
+//                }
 
             }
 
         });
-
+//        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//            builder.setMessage("Your GPS is Disabled, P")
+//                    .setCancelable(false)
+//                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                            startActivity(intent);
+//                        }
+//                    })
+//                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                        public void onClick(DialogInterface dialog, int id) {
+//                            dialog.cancel();
+//                        }
+//                    });
+//            AlertDialog alert = builder.create();
+//            alert.show();
+//        }
         if (!checkPermission()) {
 //            openGPSSettings();
 
@@ -125,6 +152,7 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
         }
 
     }
+
 
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION);
@@ -175,7 +203,7 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
                                         new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                                     requestPermissions(new String[]{ACCESS_FINE_LOCATION, READ_PHONE_STATE, CAMERA, CALL_PHONE},
                                                             PERMISSION_REQUEST_CODE);
                                                 }

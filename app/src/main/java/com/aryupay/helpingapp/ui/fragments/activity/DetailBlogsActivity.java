@@ -52,7 +52,7 @@ import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.other_user.OtherUserProfileModel;
 import com.aryupay.helpingapp.modal.profile.my_profile.Comment;
 import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
-import com.aryupay.helpingapp.ui.LoginActivity;
+
 import com.aryupay.helpingapp.ui.chats.ChatDetailsActivity;
 import com.aryupay.helpingapp.ui.chats.ChatListActivity;
 import com.aryupay.helpingapp.ui.fragments.HomeFragment;
@@ -289,9 +289,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(DetailBlogsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -325,9 +324,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(DetailBlogsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -365,9 +363,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     } else {
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
-                            Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                            Toast.makeText(DetailBlogsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                         } catch (Exception e) {
-                            Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
                 }
@@ -399,9 +396,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(DetailBlogsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -431,9 +427,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(DetailBlogsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -504,9 +499,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                         } else {
                             try {
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                Toast.makeText(DetailBlogsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                             } catch (Exception e) {
-                                Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     }
@@ -905,9 +899,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                         } else {
                             try {
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                Toast.makeText(DetailBlogsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                             } catch (Exception e) {
-                                Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     }
@@ -1009,9 +1002,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                                 } else {
                                     try {
                                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(DetailBlogsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                                     } catch (Exception e) {
-                                        Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }
@@ -1073,9 +1065,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                         } else {
                             try {
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                Toast.makeText(DetailBlogsActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                Toast.makeText(DetailBlogsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                             } catch (Exception e) {
-                                Toast.makeText(DetailBlogsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     }

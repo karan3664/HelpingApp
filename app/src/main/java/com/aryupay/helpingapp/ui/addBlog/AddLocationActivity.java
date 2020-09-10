@@ -18,6 +18,7 @@ import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 
+import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.google.gson.Gson;
@@ -104,9 +105,8 @@ public class AddLocationActivity extends AppCompatActivity implements View.OnCli
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(AddLocationActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(AddLocationActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(AddLocationActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }

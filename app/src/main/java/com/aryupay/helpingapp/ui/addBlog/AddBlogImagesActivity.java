@@ -35,6 +35,7 @@ import com.aryupay.helpingapp.adapter.ImageAdapter;
 import com.aryupay.helpingapp.adapter.SelectedImageAdapter;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.google.gson.Gson;
@@ -480,9 +481,8 @@ public class AddBlogImagesActivity extends Activity {
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(AddBlogImagesActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(AddBlogImagesActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(AddBlogImagesActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }

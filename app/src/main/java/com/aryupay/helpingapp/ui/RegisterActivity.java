@@ -223,9 +223,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 } else {
                                     try {
                                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        Toast.makeText(RegisterActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(RegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                                     } catch (Exception e) {
-                                        Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                     }
                                 }
                             }
@@ -251,9 +250,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(RegisterActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                        Toast.makeText(RegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }

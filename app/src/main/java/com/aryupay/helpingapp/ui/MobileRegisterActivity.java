@@ -142,9 +142,8 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
                                     } else {
                                         try {
                                             JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                            Toast.makeText(MobileRegisterActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                            Toast.makeText(MobileRegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                                         } catch (Exception e) {
-                                            Toast.makeText(MobileRegisterActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 }

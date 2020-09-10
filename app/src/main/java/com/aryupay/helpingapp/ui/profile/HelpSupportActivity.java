@@ -113,9 +113,8 @@ public class HelpSupportActivity extends AppCompatActivity implements View.OnCli
                                 } else {
                                     try {
                                         JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        Toast.makeText(HelpSupportActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                        Toast.makeText(HelpSupportActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                                     } catch (Exception e) {
-                                        Toast.makeText(HelpSupportActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                                     }
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
                                 }

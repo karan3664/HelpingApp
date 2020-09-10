@@ -107,9 +107,8 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
                         } else {
                             try {
                                 JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                Toast.makeText(ChangePasswordActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
+                                Toast.makeText(ChangePasswordActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
                             } catch (Exception e) {
-                                Toast.makeText(ChangePasswordActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
 
