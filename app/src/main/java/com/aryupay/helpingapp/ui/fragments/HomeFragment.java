@@ -95,6 +95,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     ListView listView;
     BottomSheetDialog locationDialog;
     protected ViewDialog viewDialog;
+    TextView tvNoNotification;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -124,6 +125,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rvBlogList.setLayoutManager(layoutManager);
         rvBlogList.setHasFixedSize(true);
+        tvNoNotification = rootView.findViewById(R.id.tvNoNotification);
 
         ivNotification = rootView.findViewById(R.id.ivNotification);
         chipAll = rootView.findViewById(R.id.chipAll);
@@ -180,7 +182,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         rlLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                locationDialog = new BottomSheetDialog(getContext());
+                showProgressDialog();
+                BottomSheetDialog locationDialog = new BottomSheetDialog(getContext());
                 locationDialog.setContentView(R.layout.sub_location);
 
                 WindowManager.LayoutParams lpState = new WindowManager.LayoutParams();
@@ -195,8 +198,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //                listView.setDividerHeight(1);
                 TextView txtState = (TextView) locationDialog.findViewById(R.id.dialogtitile);
                 txtState.setText("Select Location");
-                showProgressDialog();
-                HashMap<String, String> hashMap = new HashMap<>();
 
                 Call<ArrayList<LocationModel>> postCodeModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LocationModel("Bearer " + token);
                 postCodeModelCall.enqueue(new Callback<ArrayList<LocationModel>>() {
@@ -250,25 +251,38 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             public void onClick(View view) {
                 HashMap<String, String> hashMap = new HashMap<>();
                 hashMap.put("location", tv_location.getText().toString() + "");
-
+                showProgressDialog();
                 Log.e("GAYA", hashMap + "");
                 Call<BlogListModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).BlogListModel("Bearer " + token, hashMap);
                 marqueCall.enqueue(new Callback<BlogListModel>() {
                     @Override
                     public void onResponse(@NonNull Call<BlogListModel> call, @NonNull Response<BlogListModel> response) {
                         BlogListModel object = response.body();
+                        hideProgressDialog();
                         Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                         if (object != null) {
 
                             dialog.dismiss();
-                            blogArrayList = object.getMessage().getBlog();
-                            Like = object.getMessage().getLikes();
-                            Comments = object.getMessage().getComments();
-                            Views = object.getMessage().getViews();
-                            Images = object.getMessage().getImages();
+                            if (object.getMessage().getBlog().size() != 0) {
+                                blogArrayList = object.getMessage().getBlog();
+                                Like = object.getMessage().getLikes();
+                                Comments = object.getMessage().getComments();
+                                Views = object.getMessage().getViews();
+                                Images = object.getMessage().getImages();
 
-                            myCustomAdapter = new MyCustomAdapter(blogArrayList);
-                            rvBlogList.setAdapter(myCustomAdapter);
+                                myCustomAdapter = new MyCustomAdapter(blogArrayList);
+                                rvBlogList.setAdapter(myCustomAdapter);
+                            } else {
+                                tvNoNotification.setVisibility(View.VISIBLE);
+                            }
+//                            blogArrayList = object.getMessage().getBlog();
+//                            Like = object.getMessage().getLikes();
+//                            Comments = object.getMessage().getComments();
+//                            Views = object.getMessage().getViews();
+//                            Images = object.getMessage().getImages();
+//
+//                            myCustomAdapter = new MyCustomAdapter(blogArrayList);
+//                            rvBlogList.setAdapter(myCustomAdapter);
 
                         } else {
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
@@ -278,6 +292,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onFailure(@NonNull Call<BlogListModel> call, @NonNull Throwable t) {
                         t.printStackTrace();
+                        hideProgressDialog();
 
                         Log.e("ChatV_Response", t.getMessage() + "");
                     }
@@ -289,7 +304,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void BlogList() {
-
+        showProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("location", tvLoc.getText().toString() + "");
 
@@ -299,18 +314,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(@NonNull Call<BlogListModel> call, @NonNull Response<BlogListModel> response) {
                 BlogListModel object = response.body();
+                hideProgressDialog();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
 
+                    if (object.getMessage().getBlog().size() != 0) {
+                        blogArrayList = object.getMessage().getBlog();
+                        Like = object.getMessage().getLikes();
+                        Comments = object.getMessage().getComments();
+                        Views = object.getMessage().getViews();
+                        Images = object.getMessage().getImages();
 
-                    blogArrayList = object.getMessage().getBlog();
-                    Like = object.getMessage().getLikes();
-                    Comments = object.getMessage().getComments();
-                    Views = object.getMessage().getViews();
-                    Images = object.getMessage().getImages();
+                        myCustomAdapter = new MyCustomAdapter(blogArrayList);
+                        rvBlogList.setAdapter(myCustomAdapter);
+                    } else {
+                        tvNoNotification.setVisibility(View.VISIBLE);
+                    }
 
-                    myCustomAdapter = new MyCustomAdapter(blogArrayList);
-                    rvBlogList.setAdapter(myCustomAdapter);
 
                 } else {
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
@@ -320,7 +340,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(@NonNull Call<BlogListModel> call, @NonNull Throwable t) {
                 t.printStackTrace();
-
+                hideProgressDialog();
                 Log.e("ChatV_Response", t.getMessage() + "");
             }
         });
@@ -329,7 +349,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void CategoryBlogList(String category) {
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("location", "Atmakur,Andhra Pradesh");
+//        hashMap.put("location", "Atmakur,Andhra Pradesh");
+        hashMap.put("location", tvLoc.getText().toString() + "");
 
 
         Call<BlogListModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).CategoryBlog(category, "Bearer " + token, hashMap);
@@ -340,16 +361,27 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
 
+                    if (object.getMessage().getBlog().size() != 0) {
+                        blogArrayList = object.getMessage().getBlog();
+                        Like = object.getMessage().getLikes();
+                        Comments = object.getMessage().getComments();
+                        Views = object.getMessage().getViews();
+                        Images = object.getMessage().getImages();
 
-                    blogArrayList = object.getMessage().getBlog();
-                    Like = object.getMessage().getLikes();
-                    Comments = object.getMessage().getComments();
-                    Views = object.getMessage().getViews();
-                    Images = object.getMessage().getImages();
-
-                    myCustomAdapter = new MyCustomAdapter(blogArrayList);
-                    rvBlogList.setAdapter(myCustomAdapter);
-                    myCustomAdapter.notifyDataSetChanged();
+                        myCustomAdapter = new MyCustomAdapter(blogArrayList);
+                        rvBlogList.setAdapter(myCustomAdapter);
+                    } else {
+                        tvNoNotification.setVisibility(View.VISIBLE);
+                    }
+//                    blogArrayList = object.getMessage().getBlog();
+//                    Like = object.getMessage().getLikes();
+//                    Comments = object.getMessage().getComments();
+//                    Views = object.getMessage().getViews();
+//                    Images = object.getMessage().getImages();
+//
+//                    myCustomAdapter = new MyCustomAdapter(blogArrayList);
+//                    rvBlogList.setAdapter(myCustomAdapter);
+//                    myCustomAdapter.notifyDataSetChanged();
 
                 } else {
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
@@ -513,10 +545,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         .placeholder(R.drawable.placeholder)
                         .into(holder.ivEmployee);
             }
-            if (datum.getCategory().matches("general")) {
-                holder.rlCategory.setBackgroundResource(R.drawable.general_cat_bg);
+            if (datum.getCategory().matches("information")) {
+                holder.rlCategory.setBackgroundResource(R.drawable.information_cat_bg);
             } else if (datum.getCategory().matches("urgent")) {
-//                holder.rlCategory.setBackgroundColor(R.drawable.urgent_bg);
+                holder.rlCategory.setBackgroundResource(R.drawable.urgent_cat_bg);
 
             } else {
 

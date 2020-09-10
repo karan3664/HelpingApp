@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -62,7 +63,7 @@ public class ChatListActivity extends AppCompatActivity {
     ArrayList<Datum> datumArrayList = new ArrayList<>();
     private AlertDialog.Builder alertDialogBuilder;
     String token;
-
+    ImageView ivBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +73,7 @@ public class ChatListActivity extends AppCompatActivity {
         viewDialog = new ViewDialog(ChatListActivity.this);
         viewDialog.setCancelable(false);
         rvChatList = findViewById(R.id.rvChatList);
+        ivBack = findViewById(R.id.ivBack);
         LinearLayoutManager layoutManager = new LinearLayoutManager(ChatListActivity.this);
         rvChatList.setLayoutManager(layoutManager);
         rvChatList.setHasFixedSize(true);
@@ -105,6 +107,13 @@ public class ChatListActivity extends AppCompatActivity {
             @Override
             public void onEvent(PusherEvent event) {
                 Log.i("Pusher", "Received event with data: " + event.toString());
+            }
+        });
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
             }
         });
     }

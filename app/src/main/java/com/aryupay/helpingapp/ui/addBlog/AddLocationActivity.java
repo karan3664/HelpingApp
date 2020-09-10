@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,12 +40,14 @@ public class AddLocationActivity extends AppCompatActivity implements View.OnCli
     LoginModel loginModel;
     SharedPreferences preferences;
     String token, location;
+    ImageView ivClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_location);
         tv_location = findViewById(R.id.tv_location);
+        ivClose = findViewById(R.id.ivClose);
         viewDialog = new ViewDialog(this);
         viewDialog.setCancelable(false);
         loginModel = PrefUtils.getUser(AddLocationActivity.this);
@@ -57,6 +60,7 @@ public class AddLocationActivity extends AppCompatActivity implements View.OnCli
         btnBack = findViewById(R.id.btnBack);
         btnNext.setOnClickListener(this);
         btnBack.setOnClickListener(this);
+        ivClose.setOnClickListener(this);
 
         tv_location.setText(location);
 
@@ -70,6 +74,8 @@ public class AddLocationActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.btnBack:
                 onBackPressed();
+                break; case R.id.ivClose:
+                onBackPressed();
                 break;
         }
     }
@@ -79,7 +85,7 @@ public class AddLocationActivity extends AppCompatActivity implements View.OnCli
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put("location", tv_location.getText().toString() + "");
         showProgressDialog();
-        Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).update_blog(id, hashMap,"Bearer " + token);
+        Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).update_blog(id, hashMap, "Bearer " + token);
         marqueCall.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
@@ -91,7 +97,7 @@ public class AddLocationActivity extends AppCompatActivity implements View.OnCli
                     Toast.makeText(AddLocationActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
 
                     Intent i = new Intent(AddLocationActivity.this, BlogPreviewSettingsActivity.class);
-                    i.putExtra("id", id+"");
+                    i.putExtra("id", id + "");
                     startActivity(i);
                     finish();
 
@@ -113,6 +119,7 @@ public class AddLocationActivity extends AppCompatActivity implements View.OnCli
             }
         });
     }
+
     protected void hideProgressDialog() {
         viewDialog.dismiss();
     }

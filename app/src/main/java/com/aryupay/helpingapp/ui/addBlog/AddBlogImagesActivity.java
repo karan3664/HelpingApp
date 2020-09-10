@@ -18,6 +18,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -80,6 +81,7 @@ public class AddBlogImagesActivity extends Activity {
     String token, blogid, uriz;
     File ImageNameFile;
 
+    ImageView ivClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +107,7 @@ public class AddBlogImagesActivity extends Activity {
         done = findViewById(R.id.done);
         btnNext = findViewById(R.id.btnNext);
         btnBack = findViewById(R.id.btnBack);
+        ivClose = findViewById(R.id.ivClose);
         selectedImageList = new ArrayList<>();
         imageList = new ArrayList<>();
 
@@ -128,11 +131,17 @@ public class AddBlogImagesActivity extends Activity {
                 Intent addLoc = new Intent(AddBlogImagesActivity.this, AddLocationActivity.class);
                 addLoc.putExtra("id", id + "");
                 startActivity(addLoc);
-                finish();
+//                finish();
             }
         });
 
         btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();

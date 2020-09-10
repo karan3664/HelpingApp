@@ -52,4 +52,14 @@
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tvNoNotification"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fontFamily="@font/segoe_ui_bold"
+        android:gravity="center"
+        android:text="No Notification Found"
+        android:textSize="20dp"
+        android:visibility="gone" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

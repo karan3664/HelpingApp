@@ -18,6 +18,7 @@ import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.profile.followers.FollowersModel;
 import com.aryupay.helpingapp.ui.LoginActivity;
+import com.aryupay.helpingapp.ui.LoginOrRegisterActivity;
 import com.aryupay.helpingapp.ui.profile.ui.FollowingFragment;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.facebook.login.Login;
@@ -66,6 +67,7 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
             case R.id.llPrivacy:
                 Intent priva = new Intent(SettingsActivity.this, PrivacyActivity.class);
                 startActivity(priva);
+
                 break;
             case R.id.llNotification:
                 Intent noti = new Intent(SettingsActivity.this, NotificationsActivity.class);
@@ -102,7 +104,8 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                 if (response.isSuccessful()) {
 
                                     PrefUtils.clearCurrentUser(SettingsActivity.this);
-                                    Intent log = new Intent(SettingsActivity.this, LoginActivity.class);
+                                    Intent log = new Intent(SettingsActivity.this, LoginOrRegisterActivity.class);
+                                    log.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(log);
                                     finish();
 

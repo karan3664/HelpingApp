@@ -31,6 +31,7 @@ import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.SearchBlogActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.SearchMyPingActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
+import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.gson.Gson;
@@ -59,7 +60,7 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
     private ArrayList<Integer> Views = new ArrayList<>();
     private ArrayList<Image> Images = new ArrayList<>();
     LoginModel loginModel;
-
+    protected ViewDialog viewDialog;
     String token;
     Chip chipAll, chipUrgent, chipInformation, chipGeneral, chipFav, chipSearch;
     EditText edtSearch;
@@ -114,7 +115,8 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rvBlogList.setLayoutManager(layoutManager);
         rvBlogList.setHasFixedSize(true);
-
+        viewDialog = new ViewDialog(getContext());
+        viewDialog.setCancelable(false);
         chipAll = rootView.findViewById(R.id.chipAll);
         chipUrgent = rootView.findViewById(R.id.chipUrgent);
         chipInformation = rootView.findViewById(R.id.chipInformation);
@@ -133,14 +135,23 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
+    protected void hideProgressDialog() {
+        viewDialog.dismiss();
+    }
+
+    protected void showProgressDialog() {
+        viewDialog.show();
+    }
+
     private void BlogList() {
 
-
+        showProgressDialog();
         Call<MyPingBlogModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).MyPingBlogModel("Bearer " + token);
         marqueCall.enqueue(new Callback<MyPingBlogModel>() {
             @Override
             public void onResponse(@NonNull Call<MyPingBlogModel> call, @NonNull Response<MyPingBlogModel> response) {
                 MyPingBlogModel object = response.body();
+                hideProgressDialog();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
 
@@ -158,7 +169,7 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(@NonNull Call<MyPingBlogModel> call, @NonNull Throwable t) {
                 t.printStackTrace();
-
+                hideProgressDialog();
                 Log.e("ChatV_Response", t.getMessage() + "");
             }
         });
@@ -166,12 +177,13 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
     }
 
     private void CategoryBlogList(String category) {
-
+        showProgressDialog();
         Call<MyPingBlogModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).MyPingBlogModelCategory(category, "Bearer " + token);
         marqueCall.enqueue(new Callback<MyPingBlogModel>() {
             @Override
             public void onResponse(@NonNull Call<MyPingBlogModel> call, @NonNull Response<MyPingBlogModel> response) {
                 MyPingBlogModel object = response.body();
+                hideProgressDialog();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
 
@@ -189,7 +201,7 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(@NonNull Call<MyPingBlogModel> call, @NonNull Throwable t) {
                 t.printStackTrace();
-
+                hideProgressDialog();
                 Log.e("ChatV_Response", t.getMessage() + "");
             }
         });

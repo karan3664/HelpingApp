@@ -308,6 +308,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                     Intent loginIntent = new Intent(LoginActivity.this, HomeActivity.class);
                                     loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(loginIntent);
+                                    finish();
                                 } else {
                                     try {
                                         JSONObject jObjError = new JSONObject(response.errorBody().string());

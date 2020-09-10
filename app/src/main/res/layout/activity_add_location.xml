@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.addBlog.AddLocationActivity">
+
     <RelativeLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -16,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
+            android:id="@+id/ivClose"
             android:layout_width="@dimen/_15sdp"
             android:layout_height="@dimen/_15sdp"
             android:layout_marginLeft="@dimen/_12sdp"
@@ -53,24 +55,25 @@
                 android:id="@+id/tv_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
                 android:layout_centerInParent="true"
+                android:background="@null"
                 android:editable="false"
                 android:focusable="false"
-                android:text="Mountain"
                 android:inputType="text"
                 android:paddingLeft="@dimen/_5sdp"
                 android:paddingRight="@dimen/_20sdp"
                 android:singleLine="true"
+                android:text="Mountain"
                 android:textColor="@color/black_color"
                 android:textStyle="bold" />
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/right_arrow"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"/>
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/right_arrow" />
         </RelativeLayout>
 
         <TextView
@@ -90,8 +93,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_margin="10dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -113,8 +116,8 @@
                     android:id="@+id/ivChatBtn"
                     android:layout_width="@dimen/_22sdp"
                     android:layout_height="@dimen/_22sdp"
-                    android:src="@drawable/ic_arrow_left"
-                    android:backgroundTint="@color/pink_color">
+                    android:backgroundTint="@color/pink_color"
+                    android:src="@drawable/ic_arrow_left">
 
                 </ImageView>
 

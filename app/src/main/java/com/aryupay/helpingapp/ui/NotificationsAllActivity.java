@@ -59,8 +59,9 @@ public class NotificationsAllActivity extends AppCompatActivity {
     String token;
     protected ViewDialog viewDialog;
     LoginModel loginModel;
-
+    TextView tvNoNotification;
     ImageView ivBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +71,7 @@ public class NotificationsAllActivity extends AppCompatActivity {
         viewDialog = new ViewDialog(this);
         viewDialog.setCancelable(false);
         ivBack = findViewById(R.id.ivBack);
+        tvNoNotification = findViewById(R.id.tvNoNotification);
         notificationRecyclerview = findViewById(R.id.notificationRecyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         notificationRecyclerview.setLayoutManager(layoutManager);
@@ -95,12 +97,14 @@ public class NotificationsAllActivity extends AppCompatActivity {
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
 
+                    if (object.getData().size() != 0) {
+                        blogArrayList = object.getData();
+                        myCustomAdapter = new MyCustomAdapter(blogArrayList);
+                        notificationRecyclerview.setAdapter(myCustomAdapter);
+                    } else {
+                        tvNoNotification.setVisibility(View.VISIBLE);
+                    }
 
-                    blogArrayList = object.getData();
-
-
-                    myCustomAdapter = new MyCustomAdapter(blogArrayList);
-                    notificationRecyclerview.setAdapter(myCustomAdapter);
 
                 } else {
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();

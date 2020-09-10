@@ -38,6 +38,7 @@ import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.ui.profile.ui.FollowersFragment;
 import com.aryupay.helpingapp.ui.profile.ui.FollowingFragment;
 import com.aryupay.helpingapp.utils.PrefUtils;
+import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.google.gson.Gson;
@@ -60,14 +61,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     CircleImageView ivProfileImage;
     TextView tv_name, tvBiotxt, tv_bio, tvAgetxt, tv_gender, tv_location,
-            tvEmailId, tvMobileNo, tvFollowers, tvFollowing, tvHelping, tvReviewNo;
+            tvEmailId, tvMobileNo, tvFollowers, tvFollowing, tvHelping, tvReviewNo, tvNocomments;
     ImageView iv_editprofile, ivClose, ivShare, ivOption;
     RecyclerView rvReviews;
+
     LoginModel loginModel;
     String token;
     private MyCustomAdapter myCustomAdapter;
     LinearLayout llFollowers, llFollowing, llHelping;
-
+    protected ViewDialog viewDialog;
     ArrayList<Comment> commentArrayLis = new ArrayList<>();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -77,6 +79,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_profile);
         loginModel = PrefUtils.getUser(ProfileActivity.this);
         token = loginModel.getData().getToken();
+        viewDialog = new ViewDialog(this);
+        viewDialog.setCancelable(false);
         ivProfileImage = findViewById(R.id.ivProfileImage);
         tv_name = findViewById(R.id.tv_name);
         tvBiotxt = findViewById(R.id.tvBiotxt);
@@ -98,6 +102,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         llFollowers = findViewById(R.id.llFollowers);
         llFollowing = findViewById(R.id.llfollowing);
         llHelping = findViewById(R.id.llHelping);
+        tvNocomments = findViewById(R.id.tvNocomments);
 
         tv_name.setText(loginModel.getData().getUser().getFullname() + "");
         tv_bio.setText(loginModel.getData().getUser().getUserDetail().getBio() + "");
@@ -144,6 +149,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         llFollowing.setOnClickListener(this);
     }
 
+
+    protected void hideProgressDialog() {
+        viewDialog.dismiss();
+    }
+
+    protected void showProgressDialog() {
+        viewDialog.show();
+    }
 
     @Override
     public void onClick(View view) {
@@ -192,24 +205,31 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private void ProfileCall() {
 
-
+        showProgressDialog();
         Call<MyProfileModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).MyProfileModel("Bearer " + token);
         marqueCall.enqueue(new Callback<MyProfileModel>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NonNull Call<MyProfileModel> call, @NonNull Response<MyProfileModel> response) {
                 MyProfileModel object = response.body();
+                hideProgressDialog();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
 
+                    if (object.getData().getComments().size() != 0) {
+                        commentArrayLis = object.getData().getComments();
+                        myCustomAdapter = new MyCustomAdapter(commentArrayLis);
+                        rvReviews.setAdapter(myCustomAdapter);
+                    } else {
+                        tvNocomments.setVisibility(View.VISIBLE);
+                    }
 
-                    commentArrayLis = object.getData().getComments();
 
                     tvFollowers.setText(object.getData().getFollowers() + "");
                     tvFollowing.setText(object.getData().getFollowing() + "");
                     tvHelping.setText(object.getData().getHelping() + "");
                     tvReviewNo.setText(object.getData().getReviews() + "");
-                    myCustomAdapter = new MyCustomAdapter(commentArrayLis);
-                    rvReviews.setAdapter(myCustomAdapter);
+
 
                 } else {
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
@@ -219,7 +239,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onFailure(@NonNull Call<MyProfileModel> call, @NonNull Throwable t) {
                 t.printStackTrace();
-
+                hideProgressDialog();
                 Log.e("ChatV_Response", t.getMessage() + "");
             }
         });
@@ -259,20 +279,29 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
 
             final Comment datum = moviesList.get(position);
-            holder.tvName.setText(datum.getFullname() + "");
-            holder.tvHeading.setText(datum.getComment() + "");
-            holder.tvTime.setText(datum.getTime() + "");
+            if (datum != null) {
+                holder.tvName.setText(datum.getFullname() + "");
+                if (datum.getComment() != null) {
+                    holder.tvHeading.setText(datum.getComment() + "");
+
+                } else {
+                    holder.tvHeading.setText("");
+                }
+                holder.tvTime.setText(datum.getTime() + "");
+                if (datum.getPhoto() != null) {
+                    Glide.with(ProfileActivity.this)
+                            .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
+//                        .centerCrop()
+                            .placeholder(R.drawable.placeholder)
+                            .into(holder.ivEmployee);
+                }
+            }
+
 
 //            holder.tvTotalComment.setText(Comments.get(position) + "");
 //            holder.tvTotalView.setText(Views.get(position) + "");
 //            holder.tvTotalLikes.setText(datum.getLike()+ "");
-            if (datum.getPhoto() != null) {
-                Glide.with(ProfileActivity.this)
-                        .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
-//                        .centerCrop()
-                        .placeholder(R.drawable.placeholder)
-                        .into(holder.ivEmployee);
-            }
+
 
         }
 

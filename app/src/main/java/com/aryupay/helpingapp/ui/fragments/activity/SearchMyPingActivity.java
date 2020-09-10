@@ -56,7 +56,7 @@ public class SearchMyPingActivity extends AppCompatActivity {
     private MyCustomAdapter myCustomAdapter;
 
     private ArrayList<Datum> blogArrayList = new ArrayList<>();
-//    private ArrayList<Integer> Like = new ArrayList<>();
+    //    private ArrayList<Integer> Like = new ArrayList<>();
 //    private ArrayList<Integer> Comments = new ArrayList<>();
 //    private ArrayList<Integer> Views = new ArrayList<>();
 //    private ArrayList<Image> Images = new ArrayList<>();
@@ -64,8 +64,10 @@ public class SearchMyPingActivity extends AppCompatActivity {
     private EditText et_search;
     private ImageButton bt_clear;
     String token;
+    ImageView ivBack;
 
     LoginModel loginModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +79,7 @@ public class SearchMyPingActivity extends AppCompatActivity {
         et_search = (EditText) findViewById(R.id.et_search);
         bt_clear = (ImageButton) findViewById(R.id.bt_clear);
 //        productList();
-
+        ivBack = findViewById(R.id.ivBack);
         searchRecyclerview = findViewById(R.id.searchRecyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         searchRecyclerview.setLayoutManager(layoutManager);
@@ -90,7 +92,12 @@ public class SearchMyPingActivity extends AppCompatActivity {
 //                productList();
             }
         });
-
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
 //        productList();
         et_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -159,7 +166,7 @@ public class SearchMyPingActivity extends AppCompatActivity {
 
 
         Log.e("GAYA", hashMap + "");
-        Call<SearchMyPingModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).search_myping ("Bearer " + token, hashMap);
+        Call<SearchMyPingModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).search_myping("Bearer " + token, hashMap);
         marqueCall.enqueue(new Callback<SearchMyPingModel>() {
             @Override
             public void onResponse(@NonNull Call<SearchMyPingModel> call, @NonNull Response<SearchMyPingModel> response) {
@@ -267,7 +274,7 @@ public class SearchMyPingActivity extends AppCompatActivity {
             holder.tvTotalLikes.setText(datum.getLikes() + "");
             if (datum.getImages() != null) {
                 Glide.with(SearchMyPingActivity.this)
-                        .load(BuildConstants.Main_Image +datum.getImages().getPath().replace("public", "storage"))
+                        .load(BuildConstants.Main_Image + datum.getImages().getPath().replace("public", "storage"))
 //                        .centerCrop()
                         .placeholder(R.drawable.placeholder)
                         .into(holder.ivEmployee);

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.aryupay.helpingapp.R;
@@ -34,6 +35,7 @@ public class AddBlogActivity extends AppCompatActivity implements View.OnClickLi
     EditText et_heading, et_category, et_description;
     String token, blogid;
     LoginModel loginModel;
+    ImageView ivBack;
     Button btnNext, btnBack;
     protected ViewDialog viewDialog;
 
@@ -51,10 +53,12 @@ public class AddBlogActivity extends AppCompatActivity implements View.OnClickLi
 
         btnBack = findViewById(R.id.btnBack);
         btnNext = findViewById(R.id.btnNext);
+        ivBack = findViewById(R.id.ivBack);
 
         et_category.setOnClickListener(this);
         btnNext.setOnClickListener(this);
         btnBack.setOnClickListener(this);
+        ivBack.setOnClickListener(this);
 
     }
 
@@ -71,6 +75,9 @@ public class AddBlogActivity extends AppCompatActivity implements View.OnClickLi
                 AddBlog();
                 break;
             case R.id.btnBack:
+                onBackPressed();
+                break;
+            case R.id.ivBack:
                 onBackPressed();
                 break;
         }

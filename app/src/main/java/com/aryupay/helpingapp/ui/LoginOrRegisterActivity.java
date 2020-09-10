@@ -31,6 +31,7 @@ public class LoginOrRegisterActivity extends AppCompatActivity implements View.O
             case R.id.btnLogin:
                 Intent loginIntent = new Intent(this, LoginActivity.class);
                 startActivity(loginIntent);
+                finish();
                 break;
 
             case R.id.btnRegister:

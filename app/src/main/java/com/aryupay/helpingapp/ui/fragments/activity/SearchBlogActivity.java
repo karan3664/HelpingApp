@@ -68,7 +68,7 @@ public class SearchBlogActivity extends AppCompatActivity {
     private EditText et_search;
     private ImageButton bt_clear;
     String token;
-
+    ImageView ivBack;
     LoginModel loginModel;
 
     @Override
@@ -81,6 +81,7 @@ public class SearchBlogActivity extends AppCompatActivity {
         viewDialog.setCancelable(false);
         et_search = (EditText) findViewById(R.id.et_search);
         bt_clear = (ImageButton) findViewById(R.id.bt_clear);
+        ivBack = findViewById(R.id.ivBack);
 //        productList();
 
         searchRecyclerview = findViewById(R.id.searchRecyclerview);
@@ -98,7 +99,12 @@ public class SearchBlogActivity extends AppCompatActivity {
             }
         });
 
-
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 //        productList();
         et_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

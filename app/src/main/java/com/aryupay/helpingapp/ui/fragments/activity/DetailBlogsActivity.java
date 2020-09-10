@@ -89,7 +89,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
     CircleImageView ivProfileImage;
     TextView tv_name, tvBiotxt, tv_bio, tvAgetxt, tv_gender, tv_location,
             tvEmailId, tvMobileNo, tvFollowers, tvFollowing, tvHelping, tvReviewNo;
-    ImageView iv_editprofile, ivOptionBlog, ivShare, ivOption, ivCloseProfile;
+    ImageView iv_editprofile, ivOptionBlog, ivShare, ivOption, ivCloseProfile, ivClose;
     RecyclerView rvReviews;
     LinearLayout llFollowers, llFollowing, llHelping;
 
@@ -113,6 +113,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
     ArrayList<com.aryupay.helpingapp.modal.other_user.Comment> commentArrayLis = new ArrayList<>();
     LinearLayout llRating;
     private AlertDialog.Builder alertDialogBuilder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,6 +146,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         nesDetailBlog = findViewById(R.id.nsvDetailBlog);
         nesProfile = findViewById(R.id.nesProfile);
         ivOptionBlog = findViewById(R.id.ivOptionBlog);
+        ivClose = findViewById(R.id.ivClose);
 
         //Comment Section
 
@@ -228,6 +230,12 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 onBackPressed();
             }
         });
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void BlogDetails() {
@@ -268,7 +276,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     if (userid != null) {
                         ProfileCall();
                     }
-                    if (object.getData().getUserdetail() != null) {
+                    if (object.getData().getUserdetail().getPhoto() != null) {
                         image_path = object.getData().getUserdetail().getPhoto();
                         Glide.with(DetailBlogsActivity.this)
                                 .load(BuildConstants.Main_Image + object.getData().getUserdetail().getPhoto().replace("public", "storage"))
@@ -512,7 +520,6 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 });
 
 
-
                 break;
 
             case R.id.cvOpenComment:
@@ -728,7 +735,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     myCustomAdapterOther = new MyCustomAdapterOther(commentArrayLis);
                     rvReviews.setAdapter(myCustomAdapterOther);
 
-                    if (object.getData().getUserDetail() != null) {
+                    if (object.getData().getUserDetail().getPhoto() != null) {
                         Glide.with(DetailBlogsActivity.this)
                                 .load(BuildConstants.Main_Image + object.getData().getUserDetail().getPhoto().replace("public", "storage"))
                                 .placeholder(R.drawable.placeholder)

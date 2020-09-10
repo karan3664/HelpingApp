@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +44,7 @@ public class BlogPreviewSettingsActivity extends AppCompatActivity implements Vi
     CheckBox cb_show_contact, cb_show_chat, cb_enable_comment, cb_show_comment;
     CircleImageView ivProfile;
     TextView tv_name, tv_contact, tv_email;
-
+    ImageView ivClose;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -56,6 +57,7 @@ public class BlogPreviewSettingsActivity extends AppCompatActivity implements Vi
         token = loginModel.getData().getToken() + "";
         Intent i = getIntent();
         id = i.getStringExtra("id");
+        ivClose = findViewById(R.id.ivClose);
         btnNext = findViewById(R.id.btnDone);
         btnBack = findViewById(R.id.btnBack);
         cb_show_contact = findViewById(R.id.cb_show_contact);
@@ -74,7 +76,7 @@ public class BlogPreviewSettingsActivity extends AppCompatActivity implements Vi
         if (loginModel.getData().getUser().getUserDetail().getPhoto() != null) {
             Glide.with(this)
                     .load(BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
-                        .centerCrop()
+                    .centerCrop()
                     .placeholder(R.drawable.placeholder)
                     .into(ivProfile);
         }
@@ -237,6 +239,7 @@ public class BlogPreviewSettingsActivity extends AppCompatActivity implements Vi
 
         btnNext.setOnClickListener(this);
         btnBack.setOnClickListener(this);
+        ivClose.setOnClickListener(this);
 
     }
 
@@ -250,6 +253,9 @@ public class BlogPreviewSettingsActivity extends AppCompatActivity implements Vi
                 finish();
                 break;
             case R.id.btnBack:
+                onBackPressed();
+                break;
+            case R.id.ivClose:
                 onBackPressed();
                 break;
         }

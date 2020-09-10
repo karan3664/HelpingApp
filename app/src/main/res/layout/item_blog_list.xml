@@ -15,20 +15,22 @@
         android:layout_height="@dimen/_100sdp"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.3">
+        <!--        <LinearLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="0.3">-->
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/ivEmployee"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="@dimen/_70sdp"
-                android:src="@drawable/placeholder">
+<!--           -->
+<!--        </LinearLayout>-->
 
-            </de.hdodenhof.circleimageview.CircleImageView>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivEmployee"
+            android:layout_width="@dimen/_70sdp"
+            android:layout_margin="5dp"
+            android:layout_height="@dimen/_70sdp"
+            android:src="@drawable/placeholder">
 
-        </LinearLayout>
+        </de.hdodenhof.circleimageview.CircleImageView>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -125,6 +127,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvHeading"
+                    android:maxLines="1"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:text="@string/loremipsum"
                     android:textColor="@color/black_color"
