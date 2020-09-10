@@ -67,8 +67,8 @@
                                     android:layout_margin="@dimen/_12sdp"
                                     android:layout_marginTop="@dimen/_13sdp"
                                     android:src="@drawable/ic_share"
-                                    android:visibility="gone"
-                                    android:tint="@color/sky_blue_color" />
+                                    android:tint="@color/sky_blue_color"
+                                    android:visibility="gone" />
 
                                 <ImageView
                                     android:id="@+id/ivOptionBlog"
@@ -273,7 +273,7 @@
 
                                 <RelativeLayout
                                     android:id="@+id/rlCategory"
-                                    android:layout_width="53.9dp"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="20.57dp"
                                     android:layout_gravity="center"
                                     android:background="@drawable/general_cat_bg"
@@ -281,13 +281,13 @@
 
                                     <TextView
                                         android:id="@+id/catName"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="match_parent"
                                         android:layout_marginLeft="5dp"
                                         android:layout_marginRight="5dp"
                                         android:fontFamily="@font/segoe_ui"
                                         android:gravity="center"
-                                        android:text="GENERAL"
+                                        android:text="information"
                                         android:textAlignment="center"
                                         android:textAllCaps="true"
                                         android:textColor="@color/white_color"
@@ -519,7 +519,7 @@
 
                                             <de.hdodenhof.circleimageview.CircleImageView
                                                 android:id="@+id/ivProfileImage"
-                                                android:layout_width="@dimen/_155sdp"
+                                                android:layout_width="@dimen/_130sdp"
                                                 android:layout_height="match_parent"
                                                 android:src="@drawable/circle_bg"
                                                 app:civ_border_color="@color/image_border_color"
@@ -828,7 +828,8 @@
                                         android:text="2,345"
                                         android:textColor="@color/black_color"
                                         android:textSize="@dimen/_12sdp"
-                                        android:textStyle="bold">
+                                        android:textStyle="bold"
+                                        android:visibility="gone">
 
                                     </TextView>
 
@@ -955,18 +956,37 @@
                     android:elevation="@dimen/_3sdp"
                     android:gravity="center">
 
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:fontFamily="@font/segoe_ui"
-                        android:text="Comment"
-                        android:textAllCaps="true"
-                        android:textColor="@color/white_color"
-                        android:textSize="@dimen/_14sdp">
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
-                    </TextView>
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/_22sdp"
+                            android:layout_marginRight="0dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/pink_color"
+                            android:src="@drawable/reply"
+                            android:tint="@color/sky_blue_color">
+
+                        </ImageView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/segoe_ui"
+                            android:text="Comment"
+                            android:textAllCaps="true"
+                            android:textColor="@color/white_color"
+                            android:textSize="@dimen/_14sdp">
+
+                        </TextView>
+                    </LinearLayout>
+
                 </RelativeLayout>
             </LinearLayout>
 
@@ -984,18 +1004,36 @@
                     android:elevation="@dimen/_3sdp"
                     android:gravity="center">
 
-                    <TextView
-                        android:id="@+id/tvNext"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/segoe_ui"
-                        android:text="Chat"
-                        android:textAllCaps="true"
-                        android:textColor="@color/white_color"
-                        android:textSize="@dimen/_14sdp">
+                        android:gravity="center"
+                        android:orientation="horizontal">
 
-                    </TextView>
+                        <ImageView
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/_22sdp"
+                            android:layout_marginRight="0dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/pink_color"
+                            android:src="@drawable/conversation"
+                            android:tint="@color/white_color">
 
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/tvNext"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/segoe_ui"
+                            android:text="Chat"
+                            android:textAllCaps="true"
+                            android:textColor="@color/white_color"
+                            android:textSize="@dimen/_14sdp">
+
+                        </TextView>
+                    </LinearLayout>
 
                 </RelativeLayout>
             </LinearLayout>

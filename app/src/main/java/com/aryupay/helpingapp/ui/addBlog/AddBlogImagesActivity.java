@@ -67,7 +67,7 @@ public class AddBlogImagesActivity extends Activity {
     ArrayList<ImageModel> imageList;
     ArrayList<String> selectedImageList;
     RecyclerView imageRecyclerView, selectedImageRecyclerView;
-    int[] resImg = {R.drawable.ic_camera_white_30dp, R.drawable.ic_folder_white_30dp};
+    int[] resImg = {R.drawable.arcamera, R.drawable.video};
     String[] title = {"Camera", "Folder"};
     String mCurrentPhotoPath;
     SelectedImageAdapter selectedImageAdapter;

@@ -739,7 +739,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     tvFollowers.setText(object.getData().getFollowers() + "");
                     tvFollowing.setText(object.getData().getFollowing() + "");
 //                    tvHelping.setText(object.getData().get() + "");
-//                    tvReviewNo.setText(object.getData().getReviews() + "");
+//                    tvReviewNo.setText(object.getData().getUserDetail+ "");
                     myCustomAdapterOther = new MyCustomAdapterOther(commentArrayLis);
                     rvReviews.setAdapter(myCustomAdapterOther);
 
@@ -750,7 +750,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                                 .centerCrop()
 //                    .transition(DrawableTransitionOptions.withCrossFade(500))
                                 .into(ivProfileImage);
-                        Log.e("Profile=>", BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage" + ""));
+//                        Log.e("Profile=>", BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage" + ""));
                     }
                 } else {
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();

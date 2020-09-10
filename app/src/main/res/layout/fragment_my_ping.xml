@@ -42,6 +42,7 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_toRightOf="@+id/ivBack"
                     android:text="@string/my_ping"
+                    android:textAllCaps="true"
                     android:textColor="@color/black_color"
                     android:textSize="@dimen/_16sdp"
                     android:textStyle="bold"/>
@@ -127,7 +128,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/segoe_ui"
                         android:gravity="center"
-                        android:text="All"
+                        android:textAllCaps="true"
+                        android:text="ALL"
                         android:textAlignment="center"
                         android:textColor="@color/white_color"
                         app:chipBackgroundColor="@color/sky_blue_color" />
@@ -138,7 +140,19 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/segoe_ui"
                         android:gravity="center"
-                        android:text="Urgent"
+                        android:text="URGENT"
+                        android:textAllCaps="true"
+                        android:textAlignment="center"
+                        android:textColor="@color/white_color"
+                        app:chipBackgroundColor="@color/dark_grey" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipGeneral"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/segoe_ui"
+                        android:gravity="center"
+                        android:text="GENERAL"
+                        android:textAllCaps="true"
                         android:textAlignment="center"
                         android:textColor="@color/white_color"
                         app:chipBackgroundColor="@color/dark_grey" />
@@ -149,21 +163,12 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/segoe_ui"
                         android:gravity="center"
-                        android:text="Information"
+                        android:textAllCaps="true"
+                        android:text="INFORMATION"
                         android:textAlignment="center"
                         android:textColor="@color/white_color"
                         app:chipBackgroundColor="@color/dark_grey" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipGeneral"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/segoe_ui"
-                        android:gravity="center"
-                        android:text="General"
-                        android:textAlignment="center"
-                        android:textColor="@color/white_color"
-                        app:chipBackgroundColor="@color/dark_grey" />
 
                     <com.google.android.material.chip.Chip
                         android:id="@+id/chipFav"
@@ -171,8 +176,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/segoe_ui"
                         android:gravity="center"
-                        android:text="Fav"
                         android:textAlignment="center"
+                        android:textAllCaps="true"
                         android:textColor="@color/white_color"
                         app:chipBackgroundColor="@color/dark_grey"
                         app:chipIcon="@drawable/ic_star"
@@ -222,6 +227,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/_10sdp"
                 android:layout_marginTop="@dimen/_5sdp"
+                android:visibility="gone"
                 android:text="@string/search_select"
                 android:textColor="@color/dark_grey"
                 android:textSize="@dimen/_10sdp">

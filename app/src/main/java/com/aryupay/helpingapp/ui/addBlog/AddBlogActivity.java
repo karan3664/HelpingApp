@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.aryupay.helpingapp.R;
@@ -37,7 +38,7 @@ public class AddBlogActivity extends AppCompatActivity implements View.OnClickLi
     String token, blogid;
     LoginModel loginModel;
     ImageView ivBack;
-    Button btnNext, btnBack;
+    RelativeLayout btnNext, btnBack;
     protected ViewDialog viewDialog;
 
     @Override

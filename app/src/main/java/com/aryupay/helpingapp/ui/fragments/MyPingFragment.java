@@ -27,6 +27,7 @@ import com.aryupay.helpingapp.modal.bloglist.Image;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.myping.Datum;
 import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
+import com.aryupay.helpingapp.ui.HomeActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.SearchBlogActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.SearchMyPingActivity;
@@ -64,6 +65,8 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
     String token;
     Chip chipAll, chipUrgent, chipInformation, chipGeneral, chipFav, chipSearch;
     EditText edtSearch;
+    ImageView ivBack;
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -123,6 +126,7 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
         chipGeneral = rootView.findViewById(R.id.chipGeneral);
         chipFav = rootView.findViewById(R.id.chipFav);
         edtSearch = rootView.findViewById(R.id.edtSearch);
+        ivBack = rootView.findViewById(R.id.ivBack);
 
 
         chipAll.setOnClickListener(this);
@@ -132,6 +136,14 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
         chipFav.setOnClickListener(this);
         edtSearch.setOnClickListener(this);
         BlogList();
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getContext(), HomeActivity.class);
+                startActivity(i);
+                getActivity().finish();
+            }
+        });
         return rootView;
     }
 

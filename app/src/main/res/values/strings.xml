@@ -56,9 +56,9 @@
 
     <!-- Add Ping-->
     <string name="add_your_ping">ADD YOUR PING DETAILS</string>
-    <string name="ping_heading">PING HEADING</string>
+    <string name="ping_heading">  PING HEADING  </string>
     <string name="add_feature">ADD FEATURED IMAGES</string>
-    <string name="describe">DESCRIBE</string>
+    <string name="describe">  DESCRIBE  </string>
     <string name="back">BACK</string>
     <string name="next">NEXT</string>
     <string name="add_location">ADD LOCATION</string>
