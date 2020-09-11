@@ -86,7 +86,7 @@
             android:layout_marginLeft="@dimen/_40sdp"
             android:layout_marginTop="@dimen/_24sdp"
             android:background="@color/white_color"
-            android:text="@string/location"
+            android:text=" LOCATION "
             android:textColor="@color/dark_grey"
             android:textSize="@dimen/_10sdp">
 

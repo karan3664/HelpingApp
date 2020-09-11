@@ -75,6 +75,7 @@ public class ChatListActivity extends AppCompatActivity {
     ImageView ivBack;
     private EditText et_search;
     private ImageButton bt_clear;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,6 +150,7 @@ public class ChatListActivity extends AppCompatActivity {
             }
         });
     }
+
     private void hideKeyboard() {
         View view = getCurrentFocus();
         if (view != null) {
@@ -317,7 +319,7 @@ public class ChatListActivity extends AppCompatActivity {
             holder.llChatDetail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Call<ChatDetailModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).ChatDetailModel(String.valueOf(datum.getId()), "Bearer " + token);
+                    Call<ChatDetailModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).ChatDetailModel(String.valueOf(datum.getUserId()), "Bearer " + token);
                     marqueCall.enqueue(new Callback<ChatDetailModel>() {
                         @Override
                         public void onResponse(@NonNull Call<ChatDetailModel> call, @NonNull Response<ChatDetailModel> response) {
@@ -346,7 +348,8 @@ public class ChatListActivity extends AppCompatActivity {
                                     Intent i = new Intent(ChatListActivity.this, ChatDetailsActivity.class);
                                     i.putExtra("name", datum.getName() + "");
                                     i.putExtra("image_path", datum.getPhoto() + "");
-                                    i.putExtra("id", datum.getId() + "");
+                                    i.putExtra("id", datum.getUserId() + "");
+                                    Log.e("ChatHas=>", datum.getUserId()  + "");
                                     startActivity(i);
                                 }
 

@@ -254,9 +254,14 @@ public class RetrofitHelper {
         Call<LoginModel> userUpdate(@Header("Authorization") String authorization,
                                     @PartMap Map<String, RequestBody> map);
 
-        @FormUrlEncoded
+//        @FormUrlEncoded
+//        @POST("register")
+//        Call<RegisterModel> register(@FieldMap HashMap<String, String> hashMap);
+
+        @Multipart
         @POST("register")
-        Call<RegisterModel> register(@FieldMap HashMap<String, String> hashMap);
+        Call<RegisterModel> register(
+                @PartMap Map<String, RequestBody> map);
 
         @FormUrlEncoded
         @POST("phone_signup")

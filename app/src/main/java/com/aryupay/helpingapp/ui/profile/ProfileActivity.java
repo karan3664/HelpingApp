@@ -240,6 +240,39 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     tvReviewNo.setText(object.getData().getReviews() + "");
 
 
+                    tv_name.setText(object.getData().getUser().getFullname() + "");
+                    tv_bio.setText(object.getData().getUser().getUserDetail().getBio() + "");
+                    try {
+
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            LocalDate today = LocalDate.now();
+                            LocalDate birthday = null;
+                            birthday = LocalDate.parse(object.getData().getUser().getUserDetail().getDob());
+                            Period p = Period.between(birthday, today);
+                            tvAgetxt.setText(p.getYears() + " Years " + p.getMonths() + " Months " + ",");
+                        } else {
+                            tvAgetxt.setText(object.getData().getUser().getUserDetail().getDob());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                    tv_gender.setText(object.getData().getUser().getUserDetail().getGender() + "");
+                    tv_location.setText(object.getData().getUser().getUserDetail().getCity().getCity() + "");
+                    tvEmailId.setText(object.getData().getUser().getEmail() + "");
+                    tvMobileNo.setText(object.getData().getUser().getUserDetail().getContact() + "");
+
+                    if (object.getData().getUser().getUserDetail().getPhoto() != null) {
+                        Glide.with(ProfileActivity.this)
+                                .load(BuildConstants.Main_Image + object.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
+                                .placeholder(R.drawable.placeholder)
+                                .centerCrop()
+//                    .transition(DrawableTransitionOptions.withCrossFade(500))
+                                .into(ivProfileImage);
+//                        Log.e("Profile=>", BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage" + ""));
+                    }
+
                 } else {
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
                 }
@@ -341,6 +374,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
 
         }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ProfileCall();
 
     }
 }

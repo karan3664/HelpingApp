@@ -7,6 +7,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Data {
 
+    @SerializedName("user")
+    @Expose
+    private User user;
     @SerializedName("comments")
     @Expose
     private ArrayList<Comment> comments = null;
@@ -25,6 +28,13 @@ public class Data {
     @SerializedName("rating")
     @Expose
     private Integer rating;
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public ArrayList<Comment> getComments() {
         return comments;

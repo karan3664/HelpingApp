@@ -211,7 +211,7 @@
                         app:chipBackgroundColor="@color/dark_grey"
                         app:chipIcon="@drawable/favourite_star"
                         app:chipIconEnabled="true"
-                        app:chipIconTint="@color/phone_login_color" />
+                        />
 
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>

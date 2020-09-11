@@ -16,18 +16,18 @@
         android:orientation="horizontal">
 
         <!--        <LinearLayout-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_weight="0.3">-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_weight="0.3">-->
 
-<!--           -->
-<!--        </LinearLayout>-->
+        <!--           -->
+        <!--        </LinearLayout>-->
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ivEmployee"
             android:layout_width="@dimen/_70sdp"
-            android:layout_margin="5dp"
             android:layout_height="@dimen/_70sdp"
+            android:layout_margin="5dp"
             android:src="@drawable/placeholder">
 
         </de.hdodenhof.circleimageview.CircleImageView>
@@ -65,25 +65,26 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.7"
+                    android:layout_weight="1"
                     android:gravity="center">
 
                     <RelativeLayout
                         android:id="@+id/rlCategory"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_20sdp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20.57dp"
+                        android:layout_gravity="center"
                         android:background="@drawable/general_cat_bg"
                         android:gravity="center">
-
                         <TextView
                             android:id="@+id/catName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="GENERAL"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
                             android:fontFamily="@font/segoe_ui"
+                            android:gravity="center"
+                            android:text=" information "
                             android:textAllCaps="true"
                             android:textColor="@color/white_color"
-                            android:textSize="@dimen/_7sdp" />
+                            android:textSize="8sp" />
 
                     </RelativeLayout>
                 </LinearLayout>
@@ -91,14 +92,14 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
+                    android:layout_weight="1"
                     android:gravity="center">
 
                     <TextView
                         android:id="@+id/tvTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="30 Min"
+                        android:text="26-08-2020"
                         android:textColor="@color/black_color"
                         android:textSize="@dimen/_10sdp"
                         android:textStyle="bold" />
@@ -116,22 +117,21 @@
                     android:id="@+id/tvHeading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Heading of Ping"
                     android:fontFamily="@font/segoe_ui_bold"
+                    android:text="Heading of Ping"
                     android:textColor="@color/black_color"
-                    android:textSize="@dimen/_14sdp"
-                     />
+                    android:textSize="@dimen/_14sdp" />
 
                 <TextView
                     android:id="@+id/tvSubHeading"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvHeading"
-                    android:maxLines="1"
                     android:layout_marginTop="@dimen/_5sdp"
+                    android:fontFamily="@font/segoe_ui"
+                    android:maxLines="1"
                     android:text="@string/loremipsum"
                     android:textColor="@color/black_color"
-                    android:fontFamily="@font/segoe_ui"
                     android:textSize="@dimen/_10sdp" />
 
             </LinearLayout>
@@ -244,8 +244,8 @@
                 <ImageView
                     android:id="@+id/favStar"
                     android:layout_width="20dp"
-                    android:layout_gravity="center"
                     android:layout_height="20dp"
+                    android:layout_gravity="center"
                     android:src="@drawable/unfavourite_star" />
 
                 <LinearLayout

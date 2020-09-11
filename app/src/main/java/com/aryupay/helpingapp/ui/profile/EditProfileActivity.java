@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.city.CityModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.profession.ProfessionModel;
+import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.modal.register.RegisterModel;
 import com.aryupay.helpingapp.ui.HomeActivity;
 
@@ -130,7 +132,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         professionEt.setOnClickListener(this);
         genderEt.setOnClickListener(this);
         ivProfile.setOnClickListener(this);
-        userNameEt.setText(loginModel.getData().getUser().getName() + "");
+        ProfileCall();
+      /*  userNameEt.setText(loginModel.getData().getUser().getName() + "");
         fullNameEt.setText(loginModel.getData().getUser().getFullname() + "");
         writeAboutYouEt.setText(loginModel.getData().getUser().getUserDetail().getBio() + "");
         genderEt.setText(loginModel.getData().getUser().getUserDetail().getGender() + "");
@@ -149,11 +152,58 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 //                    .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(ivProfile);
             Log.e("Profile=>", BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage" + ""));
-        }
+        }*/
         CityCall();
         ProfessionCall();
     }
+    private void ProfileCall() {
 
+        showProgressDialog();
+        Call<MyProfileModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).MyProfileModel("Bearer " + token);
+        marqueCall.enqueue(new Callback<MyProfileModel>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(@NonNull Call<MyProfileModel> call, @NonNull Response<MyProfileModel> response) {
+                MyProfileModel object = response.body();
+                hideProgressDialog();
+                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                if (object != null) {
+
+
+                    userNameEt.setText(object.getData().getUser().getName() + "");
+                    fullNameEt.setText(object.getData().getUser().getFullname() + "");
+                    writeAboutYouEt.setText(object.getData().getUser().getUserDetail().getBio() + "");
+                    genderEt.setText(object.getData().getUser().getUserDetail().getGender() + "");
+                    spin_cities.setText(object.getData().getUser().getUserDetail().getCity().getCity() + "");
+                    professionEt.setText(object.getData().getUser().getUserDetail().getProfession().getProfession() + "");
+                    emailEt.setText(object.getData().getUser().getEmail() + "");
+                    contactNumberEt.setText(object.getData().getUser().getUserDetail().getContact() + "");
+                    dobEt.setText(object.getData().getUser().getUserDetail().getDob() + "");
+                    profession_id = object.getData().getUser().getUserDetail().getProfessionId() + "";
+                    city_id = object.getData().getUser().getUserDetail().getCityId() + "";
+                    if (object.getData().getUser().getUserDetail().getPhoto() != null) {
+                        Glide.with(EditProfileActivity.this)
+                                .load(BuildConstants.Main_Image + object.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
+                                .placeholder(R.drawable.placeholder)
+                                .centerCrop()
+//                    .transition(DrawableTransitionOptions.withCrossFade(500))
+                                .into(ivProfile);
+                    }
+
+                } else {
+//                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MyProfileModel> call, @NonNull Throwable t) {
+                t.printStackTrace();
+                hideProgressDialog();
+                Log.e("ChatV_Response", t.getMessage() + "");
+            }
+        });
+
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -223,11 +273,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     public void RegisterCall() {
         File file = fileImage;
 
-        //        if (!file.exists()) {
-//            Toast.makeText(EditProfileActivity.this, "Failed to upload pic", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-
         Map<String, RequestBody> hashMap = new HashMap<>();
         File fileImage = null;
 
@@ -244,8 +289,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         try {
             assert file != null;
             assert fileImage != null;
-//            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(file).toString());
-//            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
             thumbnailimage = RequestBody.create(MediaType.parse("*/*"), file);
         } catch (Exception e) {
             e.printStackTrace();
@@ -261,15 +304,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         RequestBody cityid = RequestBody.create(MediaType.parse("text/plain"), city_id + "");
         RequestBody gender = RequestBody.create(MediaType.parse("text/plain"), genderEt.getText().toString() + "");
         RequestBody professionid = RequestBody.create(MediaType.parse("text/plain"), profession_id + "");
-//        RequestBody photo = null;
         RequestBody attachmentEmpty = RequestBody.create(MediaType.parse("text/plain"), "");
-//        photo = RequestBody.create(MediaType.parse("*/*"), file);
-//        if (loginModel.getData().getUser().getUserDetail().getPhoto() != null) {
-//            photo = RequestBody.create(MediaType.parse("*/*"), file);
-//        } else {
-//
-//
-//        }
+
         hashMap.put("name", name);
         hashMap.put("fullname", fullname);
         hashMap.put("bio", bio);
@@ -300,8 +336,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 if (response.isSuccessful()) {
                     assert object != null;
                     Toast.makeText(EditProfileActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
-                    PrefUtils.setUser(object, EditProfileActivity.this);
-
+//                    PrefUtils.setUser(object, EditProfileActivity.this);
+                    ProfileCall();
                 } else {
                     try {
                         JSONObject jObjError = new JSONObject(response.errorBody().string());
@@ -333,8 +369,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         dialog.getWindow().setAttributes(lpState);
 
         listView = (ListView) dialog.findViewById(R.id.list_sub_cat);
-        listView.setDivider(getResources().getDrawable(R.drawable.close));
-        listView.setDividerHeight(1);
+
         TextView txtState = (TextView) dialog.findViewById(R.id.dialogtitile);
         txtState.setText("Select City");
         showProgressDialog();
@@ -400,8 +435,6 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         dialo1.getWindow().setAttributes(lpState);
 
         listView1 = (ListView) dialo1.findViewById(R.id.list_sub_cat);
-        listView1.setDivider(getResources().getDrawable(R.drawable.close));
-        listView1.setDividerHeight(1);
         TextView txtState = (TextView) dialo1.findViewById(R.id.dialogtitile);
         txtState.setText("Select Profession");
         showProgressDialog();

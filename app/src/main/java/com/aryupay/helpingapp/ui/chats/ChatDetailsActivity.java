@@ -180,7 +180,7 @@ public class ChatDetailsActivity extends AppCompatActivity implements View.OnCli
 
         hashMap.put("to_user", id + "");
         hashMap.put("message", edtComment.getText().toString() + "");
-
+        Log.e("ChatHas=>", hashMap + "");
 
         Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).sendMessage("Bearer " + token, hashMap);
         marqueCall.enqueue(new Callback<JsonObject>() {
@@ -272,7 +272,10 @@ public class ChatDetailsActivity extends AppCompatActivity implements View.OnCli
                 if (response.isSuccessful()) {
                     assert object != null;
                     assert response.body() != null;
-                    if (response.body().getMessage().equalsIgnoreCase("User is Blocked!")) {
+                    datumArrayList = object.getData();
+                    myCustomAdapter = new MyCustomAdapter(datumArrayList);
+                    recycler_view.setAdapter(myCustomAdapter);
+                  /*  if (response.body().getMessage().equalsIgnoreCase("User is Blocked!")) {
                         alertDialogBuilder = new AlertDialog.Builder(ChatDetailsActivity.this, R.style.AlertDialogTheme);
                         alertDialogBuilder.setTitle(getResources().getString(R.string.app_name));
                         alertDialogBuilder.setIcon(R.drawable.eyu);
@@ -288,10 +291,8 @@ public class ChatDetailsActivity extends AppCompatActivity implements View.OnCli
                         alertDialog.show();
 
                     } else {
-                        datumArrayList = object.getData();
-                        myCustomAdapter = new MyCustomAdapter(datumArrayList);
-                        recycler_view.setAdapter(myCustomAdapter);
-                    }
+
+                    }*/
 
                 } else {
                     try {

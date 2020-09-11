@@ -176,12 +176,8 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/segoe_ui"
                         android:gravity="center"
-                        android:textAlignment="center"
-                        android:textAllCaps="true"
-                        android:textColor="@color/white_color"
                         app:chipBackgroundColor="@color/dark_grey"
-                        app:chipIcon="@drawable/ic_star"
-                        app:chipIconTint="@color/phone_login_color"
+                        app:chipIcon="@drawable/favourite_star"
                         app:chipIconEnabled="true" />
 
                 </com.google.android.material.chip.ChipGroup>

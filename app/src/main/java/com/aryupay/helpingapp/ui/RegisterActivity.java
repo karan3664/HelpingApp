@@ -3,11 +3,23 @@ package com.aryupay.helpingapp.ui;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -27,6 +39,7 @@ import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.login.Profession;
 import com.aryupay.helpingapp.modal.profession.ProfessionModel;
 import com.aryupay.helpingapp.modal.register.RegisterModel;
+
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.Tools;
 import com.aryupay.helpingapp.utils.ViewDialog;
@@ -38,15 +51,25 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.Manifest.permission_group.CAMERA;
+import static android.os.Build.VERSION_CODES.M;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
     CircleImageView ivProfile;
@@ -63,6 +86,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     ListView listView, listView1;
     BottomSheetDialog dialog, dialo1;
     String name, email, mobile;
+
+    public static final int PERMISSION_REQUEST_CODE = 1111;
+    private static final int REQUEST = 1337;
+    public static int SELECT_FROM_GALLERY = 2;
+    public static int CAMERA_PIC_REQUEST = 0;
+    private String currentPhotoPath;
+    private File photoFile = null;
+    File fileImage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +124,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         spin_cities.setOnClickListener(this);
         professionEt.setOnClickListener(this);
         genderEt.setOnClickListener(this);
+        ivProfile.setOnClickListener(this);
         if (i != null) {
             name = i.getStringExtra("name");
             email = i.getStringExtra("email");
@@ -125,6 +157,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.genderEt:
                 showGenderDialog(view);
+                break;
+            case R.id.ivProfile:
+                selectImage();
                 break;
         }
     }
@@ -172,19 +207,72 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void RegisterCall() {
-        HashMap<String, String> hashMap = new HashMap<>();
+        File file = fileImage;
 
-        hashMap.put("name", userNameEt.getText().toString() + "");
-        hashMap.put("fullname", fullNameEt.getText().toString() + "");
-        hashMap.put("bio", writeAboutYouEt.getText().toString() + "");
-        hashMap.put("contact", contactNumberEt.getText().toString() + "");
-        hashMap.put("email", emailEt.getText().toString() + "");
-        hashMap.put("dob", dobEt.getText().toString() + "");
-        hashMap.put("city_id", city_id + "");
-        hashMap.put("gender", genderEt.getText().toString() + "");
-        hashMap.put("profession_id", profession_id + "");
-        hashMap.put("photo", "");
-        hashMap.put("password", et_password.getText().toString() + "");
+        Map<String, RequestBody> hashMap = new HashMap<>();
+        File fileImage = null;
+
+        try {
+
+            fileImage = new File(String.valueOf(file));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        RequestBody thumbnailimage = null;
+        try {
+            assert file != null;
+            assert fileImage != null;
+            thumbnailimage = RequestBody.create(MediaType.parse("*/*"), file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), userNameEt.getText().toString() + "");
+        RequestBody fullname = RequestBody.create(MediaType.parse("text/plain"), fullNameEt.getText().toString() + "");
+        RequestBody bio = RequestBody.create(MediaType.parse("text/plain"), writeAboutYouEt.getText().toString() + "");
+        RequestBody contact = RequestBody.create(MediaType.parse("text/plain"), contactNumberEt.getText().toString() + "");
+        RequestBody email = RequestBody.create(MediaType.parse("text/plain"), emailEt.getText().toString() + "");
+        RequestBody dob = RequestBody.create(MediaType.parse("text/plain"), dobEt.getText().toString() + "");
+        RequestBody cityid = RequestBody.create(MediaType.parse("text/plain"), city_id + "");
+        RequestBody gender = RequestBody.create(MediaType.parse("text/plain"), genderEt.getText().toString() + "");
+        RequestBody professionid = RequestBody.create(MediaType.parse("text/plain"), profession_id + "");
+        RequestBody attachmentEmpty = RequestBody.create(MediaType.parse("text/plain"), "");
+        RequestBody password = RequestBody.create(MediaType.parse("text/plain"), et_password.getText().toString() + "");
+
+        hashMap.put("name", name);
+        hashMap.put("fullname", fullname);
+        hashMap.put("bio", bio);
+        hashMap.put("contact", contact);
+        hashMap.put("email", email);
+        hashMap.put("dob", dob);
+        hashMap.put("city_id", cityid);
+        hashMap.put("gender", gender);
+        hashMap.put("profession_id", professionid);
+        hashMap.put("password", password);
+        if (thumbnailimage != null) {
+            hashMap.put("photo\";  filename=\"" + fileImage.getName() + "\"", thumbnailimage);
+        } else {
+            hashMap.put("photo", attachmentEmpty);
+        }
+
+
+//        HashMap<String, String> hashMap = new HashMap<>();
+//
+//        hashMap.put("name", userNameEt.getText().toString() + "");
+//        hashMap.put("fullname", fullNameEt.getText().toString() + "");
+//        hashMap.put("bio", writeAboutYouEt.getText().toString() + "");
+//        hashMap.put("contact", contactNumberEt.getText().toString() + "");
+//        hashMap.put("email", emailEt.getText().toString() + "");
+//        hashMap.put("dob", dobEt.getText().toString() + "");
+//        hashMap.put("city_id", city_id + "");
+//        hashMap.put("gender", genderEt.getText().toString() + "");
+//        hashMap.put("profession_id", profession_id + "");
+//        hashMap.put("photo", "");
+//        hashMap.put("password", et_password.getText().toString() + "");
 
         showProgressDialog();
         Call<RegisterModel> registerModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).register(hashMap);
@@ -265,6 +353,156 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         });
     }
 
+    private void selectImage() {
+        final CharSequence[] options = {"From Camera", "From Gallery", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
+        builder.setTitle("Please choose an Image");
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (options[item].equals("From Camera")) {
+                    if (Build.VERSION.SDK_INT >= M) {
+                        if (checkCameraPermission())
+                            cameraIntent();
+                        else
+                            requestPermission();
+                    } else
+                        cameraIntent();
+                } else if (options[item].equals("From Gallery")) {
+                    if (Build.VERSION.SDK_INT >= M) {
+                        if (checkGalleryPermission())
+                            galleryIntent();
+                        else
+                            requestGalleryPermission();
+                    } else
+                        galleryIntent();
+                } else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.create().show();
+    }
+
+    private void galleryIntent() {
+        Intent intent = new Intent().setType("image/*").setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), SELECT_FROM_GALLERY);
+    }
+
+    private void cameraIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getApplicationContext().getPackageManager()) != null) {
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+            }
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), "com.aryupay.helpingapp.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, CAMERA_PIC_REQUEST);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                "image",  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        fileImage = new File(image.getAbsolutePath());
+        return image;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_PIC_REQUEST && photoFile != null) {
+            Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+            if (null != bitmap) {
+                ivProfile.setImageBitmap(bitmap);
+                final File userImageFile = getUserImageFile(bitmap);
+                if (null != userImageFile) {
+                    fileImage = userImageFile;
+                    //call presetner of manager for api it always required file
+                    // new ProfilePresenter(context, this).callImageUploadApi(userImageFile);
+//                    ((DashboardActivity) getActivity()).alertDialog("Click ok to upload image", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            uploadFile("pic", userImageFile);
+//                        }
+//                    });
+                }
+            }
+
+        } else if (requestCode == SELECT_FROM_GALLERY && resultCode == Activity.RESULT_OK && null != data) {
+            Uri galleryURI = data.getData();
+            Bitmap bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), galleryURI);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (null != bitmap) {
+                ivProfile.setImageBitmap(bitmap);
+                final File userImageFile = getUserImageFile(bitmap);
+                if (null != userImageFile) {
+                    fileImage = userImageFile;
+                    //call presetner of manager for api it always required file
+                    // new ProfilePresenter(context, this).callImageUploadApi(userImageFile);
+//                    ((DashboardActivity) getActivity()).alertDialog("Click ok to upload image", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            uploadFile("pic", userImageFile);
+//                        }
+//                    });
+                }
+            }
+        }
+    }
+
+    private File getUserImageFile(Bitmap bitmap) {
+        try {
+            File f = new File(getCacheDir(), ".jpg");
+            f.createNewFile();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 0 /*ignored for PNG*/, bos);
+            byte[] bitmapdata = bos.toByteArray();
+
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+            return f;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(RegisterActivity.this, new String[]{CAMERA}, PERMISSION_REQUEST_CODE);
+    }
+
+    private void requestGalleryPermission() {
+        ActivityCompat.requestPermissions(RegisterActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST);
+    }
+
+    private boolean checkCameraPermission() {
+        int result1 = ContextCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.CAMERA);
+        return result1 == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private boolean checkGalleryPermission() {
+        int result2 = ContextCompat.checkSelfPermission(RegisterActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        return result2 == PackageManager.PERMISSION_GRANTED;
+    }
+
 
     public void CityCall() {
         dialog = new BottomSheetDialog(this);
@@ -278,8 +516,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         dialog.getWindow().setAttributes(lpState);
 
         listView = (ListView) dialog.findViewById(R.id.list_sub_cat);
-        listView.setDivider(getResources().getDrawable(R.drawable.close));
-        listView.setDividerHeight(1);
+//        listView.setDivider(getResources().getDrawable(R.drawable.close));
+//        listView.setDividerHeight(1);
         TextView txtState = (TextView) dialog.findViewById(R.id.dialogtitile);
         txtState.setText("Select City");
         showProgressDialog();
@@ -345,8 +583,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         dialo1.getWindow().setAttributes(lpState);
 
         listView1 = (ListView) dialo1.findViewById(R.id.list_sub_cat);
-        listView1.setDivider(getResources().getDrawable(R.drawable.close));
-        listView1.setDividerHeight(1);
+//        listView1.setDivider(getResources().getDrawable(R.drawable.close));
+//        listView1.setDividerHeight(1);
         TextView txtState = (TextView) dialo1.findViewById(R.id.dialogtitile);
         txtState.setText("Select Profession");
         showProgressDialog();

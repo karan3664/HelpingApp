@@ -195,7 +195,7 @@
                 android:inputType="number"
                 android:itemBackground="@drawable/circle"
                 android:textColor="@color/sky_blue_color"
-                app:itemCount="4"
+                app:itemCount="6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.485"
                 app:layout_constraintStart_toStartOf="parent"

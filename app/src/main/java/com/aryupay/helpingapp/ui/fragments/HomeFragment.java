@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -317,20 +318,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 hideProgressDialog();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
+                    blogArrayList = object.getMessage().getBlog();
+                    Like = object.getMessage().getLikes();
+                    Comments = object.getMessage().getComments();
+                    Views = object.getMessage().getViews();
+                    Images = object.getMessage().getImages();
 
-                    if (object.getMessage().getBlog().size() != 0) {
-                        blogArrayList = object.getMessage().getBlog();
-                        Like = object.getMessage().getLikes();
-                        Comments = object.getMessage().getComments();
-                        Views = object.getMessage().getViews();
-                        Images = object.getMessage().getImages();
-
-                        myCustomAdapter = new MyCustomAdapter(blogArrayList);
-                        rvBlogList.setAdapter(myCustomAdapter);
-                    } else {
-                        tvNoNotification.setVisibility(View.VISIBLE);
-                    }
-
+                    myCustomAdapter = new MyCustomAdapter(blogArrayList);
+                    rvBlogList.setAdapter(myCustomAdapter);
 
                 } else {
 //                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
@@ -352,7 +347,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //        hashMap.put("location", "Atmakur,Andhra Pradesh");
         hashMap.put("location", tvLoc.getText().toString() + "");
 
-
+        Log.e("GAYA", hashMap + "");
         Call<BlogListModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).CategoryBlog(category, "Bearer " + token, hashMap);
         marqueCall.enqueue(new Callback<BlogListModel>() {
             @Override
@@ -361,18 +356,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
 
-                    if (object.getMessage().getBlog().size() != 0) {
-                        blogArrayList = object.getMessage().getBlog();
-                        Like = object.getMessage().getLikes();
-                        Comments = object.getMessage().getComments();
-                        Views = object.getMessage().getViews();
-                        Images = object.getMessage().getImages();
+                    blogArrayList = object.getMessage().getBlog();
+                    Like = object.getMessage().getLikes();
+                    Comments = object.getMessage().getComments();
+                    Views = object.getMessage().getViews();
+                    Images = object.getMessage().getImages();
 
-                        myCustomAdapter = new MyCustomAdapter(blogArrayList);
-                        rvBlogList.setAdapter(myCustomAdapter);
-                    } else {
-                        tvNoNotification.setVisibility(View.VISIBLE);
-                    }
+                    myCustomAdapter = new MyCustomAdapter(blogArrayList);
+                    rvBlogList.setAdapter(myCustomAdapter);
 //                    blogArrayList = object.getMessage().getBlog();
 //                    Like = object.getMessage().getLikes();
 //                    Comments = object.getMessage().getComments();
@@ -398,6 +389,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    @SuppressLint("ResourceAsColor")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -456,6 +448,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 chipInformation.setChipBackgroundColorResource(R.color.dark_grey);
                 chipGeneral.setChipBackgroundColorResource(R.color.dark_grey);
                 chipFav.setChipBackgroundColorResource(R.color.phone_login_color);
+//                chipFav.setTextColor(R.color.white_color);
                 CategoryBlogList("fav");
                 break;
 
