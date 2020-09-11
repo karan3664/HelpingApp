@@ -192,7 +192,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
     private void showGenderDialog(final View v) {
         final String[] array = new String[]{
-                "Male", "Female"
+                "Male", "Female", "Other"
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
         builder.setTitle("Gender");

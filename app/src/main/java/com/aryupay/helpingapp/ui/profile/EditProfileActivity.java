@@ -256,7 +256,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     private void showGenderDialog(final View v) {
         final String[] array = new String[]{
-                "Male", "Female"
+                "Male", "Female", "Other"
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
         builder.setTitle("Gender");
