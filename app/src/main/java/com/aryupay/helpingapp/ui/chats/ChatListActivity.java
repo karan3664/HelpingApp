@@ -1,11 +1,16 @@
 package com.aryupay.helpingapp.ui.chats;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -36,11 +41,23 @@ import com.aryupay.helpingapp.modal.chats.chatDetails.ChatDetailModel;
 import com.aryupay.helpingapp.modal.chats.chatList.ChatListModel;
 import com.aryupay.helpingapp.modal.chats.chatList.Datum;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.ui.chats.Model.Chat;
+import com.aryupay.helpingapp.ui.chats.fragments.ChatsFragment;
+import com.aryupay.helpingapp.ui.chats.fragments.ProfileFragment;
+import com.aryupay.helpingapp.ui.chats.fragments.UsersFragment;
 import com.aryupay.helpingapp.ui.profile.SearchFollowFollowingActivity;
 import com.aryupay.helpingapp.ui.profile.ui.SuggestedFragment;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
+import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.pusher.pushnotifications.PushNotifications;
 
@@ -66,16 +83,17 @@ import retrofit2.Response;
 
 public class ChatListActivity extends AppCompatActivity {
     protected ViewDialog viewDialog;
-    RecyclerView rvChatList;
-    private MyCustomAdapter myCustomAdapter;
+//    RecyclerView rvChatList;
+//    private MyCustomAdapter myCustomAdapter;
     LoginModel loginModel;
-    ArrayList<Datum> datumArrayList = new ArrayList<>();
-    private AlertDialog.Builder alertDialogBuilder;
+//    ArrayList<Datum> datumArrayList = new ArrayList<>();
+//    private AlertDialog.Builder alertDialogBuilder;
     String token;
     ImageView ivBack;
     private EditText et_search;
     private ImageButton bt_clear;
-
+    FirebaseUser firebaseUser;
+    DatabaseReference reference;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,45 +102,12 @@ public class ChatListActivity extends AppCompatActivity {
         token = loginModel.getData().getToken();
         viewDialog = new ViewDialog(ChatListActivity.this);
         viewDialog.setCancelable(false);
-        rvChatList = findViewById(R.id.rvChatList);
-        et_search = (EditText) findViewById(R.id.et_search);
-        bt_clear = (ImageButton) findViewById(R.id.bt_clear);
+//        rvChatList = findViewById(R.id.rvChatList);
         ivBack = findViewById(R.id.ivBack);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(ChatListActivity.this);
-        rvChatList.setLayoutManager(layoutManager);
-        rvChatList.setHasFixedSize(true);
-        FollowerList();
-        PushNotifications.start(getApplicationContext(), "12d80944-bbe7-4b7d-b37f-6d45cdeacdd5");
-        PushNotifications.addDeviceInterest("hello");
-        PusherOptions options = new PusherOptions();
-        options.setCluster("ap2");
-
-        Pusher pusher = new Pusher("be975eb78f96375382f6", options);
-        pusher.connect(new ConnectionEventListener() {
-            @Override
-            public void onConnectionStateChange(ConnectionStateChange change) {
-                Log.i("Pusher", "State changed from " + change.getPreviousState() +
-                        " to " + change.getCurrentState());
-            }
-
-            @Override
-            public void onError(String message, String code, Exception e) {
-                Log.i("Pusher", "There was a problem connecting! " +
-                        "\ncode: " + code +
-                        "\nmessage: " + message +
-                        "\nException: " + e
-                );
-            }
-        }, ConnectionState.ALL);
-
-        Channel channel = pusher.subscribe("my-channel");
-
-        channel.bind("my-event", new SubscriptionEventListener() {
-            @Override
-            public void onEvent(PusherEvent event) {
-                Log.i("Pusher", "Received event with data: " + event.toString());
-            }
-        });
+//        LinearLayoutManager layoutManager = new LinearLayoutManager(ChatListActivity.this);
+//        rvChatList.setLayoutManager(layoutManager);
+//        rvChatList.setHasFixedSize(true);
+//        FollowerList();
 
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,64 +115,108 @@ public class ChatListActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        bt_clear.setOnClickListener(new View.OnClickListener() {
+
+
+
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+        final TabLayout tabLayout = findViewById(R.id.tab_layout);
+        final ViewPager viewPager = findViewById(R.id.view_pager);
+
+
+        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                et_search.setText("");
-                FollowerList();
-//                productList();
-            }
-        });
-
-        et_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    hideKeyboard();
-                    searchAction();
-                    return true;
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+                int unread = 0;
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Chat chat = snapshot.getValue(Chat.class);
+                    if (chat.getReceiver().equals(firebaseUser.getUid()) && !chat.isIsseen()) {
+                        unread++;
+                    }
                 }
-                return false;
+
+                if (unread == 0) {
+                    viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
+                } else {
+                    viewPagerAdapter.addFragment(new ChatsFragment(), "(" + unread + ") Chats");
+                }
+
+                viewPagerAdapter.addFragment(new UsersFragment(), "Users");
+//                viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
+
+                viewPager.setAdapter(viewPagerAdapter);
+
+                tabLayout.setupWithViewPager(viewPager);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
+    class ViewPagerAdapter extends FragmentPagerAdapter {
 
-    private void hideKeyboard() {
-        View view = getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        private ArrayList<Fragment> fragments;
+        private ArrayList<String> titles;
+
+        ViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+            this.fragments = new ArrayList<>();
+            this.titles = new ArrayList<>();
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragments.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            fragments.add(fragment);
+            titles.add(title);
+        }
+
+        // Ctrl + O
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return titles.get(position);
         }
     }
 
-    private void searchAction() {
-//        progress_bar.setVisibility(View.VISIBLE);
-        showProgressDialog();
-        rvChatList.setVisibility(View.VISIBLE);
+    private void status(String status) {
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
 
-        final String query = et_search.getText().toString().trim();
-        if (!query.equals("")) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-//                    progress_bar.setVisibility(View.GONE);
-                    hideProgressDialog();
-                    SearchList();
-//                    if (resultProductLists.isEmpty())
-//                    {
-//                        productList();
-//                    }
-//                    else {
-//                        mProductListCustomAdapter = new ProductListCustomAdapter(resultProductLists);
-//                        searchRecyclerview.setAdapter(mProductListCustomAdapter);
-//
-//                    }
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
 
-                }
-            }, 500);
-        } else {
-            Toast.makeText(ChatListActivity.this, "Please fill search input", Toast.LENGTH_SHORT).show();
-        }
+        reference.updateChildren(hashMap);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("offline");
+    }
+
+
+
+/*
 
     private void SearchList() {
         HashMap<String, String> hashMap = new HashMap<>();
@@ -405,6 +434,7 @@ public class ChatListActivity extends AppCompatActivity {
         }
 
     }
+*/
 
 
     protected void hideProgressDialog() {

@@ -45,20 +45,13 @@ import com.aryupay.helpingapp.modal.blogdetails.BlogDetailsModel;
 import com.aryupay.helpingapp.modal.blogdetails.CommentsBlogModel;
 import com.aryupay.helpingapp.modal.blogdetails.Datum;
 import com.aryupay.helpingapp.modal.blogdetails.Image;
-import com.aryupay.helpingapp.modal.bloglist.Blog;
-import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.chats.chatDetails.ChatDetailModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.other_user.OtherUserProfileModel;
-import com.aryupay.helpingapp.modal.profile.my_profile.Comment;
-import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 
-import com.aryupay.helpingapp.ui.chats.ChatDetailsActivity;
 import com.aryupay.helpingapp.ui.chats.ChatListActivity;
-import com.aryupay.helpingapp.ui.fragments.HomeFragment;
-
-import com.aryupay.helpingapp.ui.profile.FollowerFollowingHelpingActivity;
-import com.aryupay.helpingapp.ui.profile.ProfileActivity;
+import com.aryupay.helpingapp.ui.chats.MessageActivity;
+import com.aryupay.helpingapp.ui.chats.Model.User;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
@@ -71,6 +64,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -92,7 +86,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
     ImageView iv_editprofile, ivOptionBlog, ivShare, ivOption, ivCloseProfile, ivClose;
     RecyclerView rvReviews;
     LinearLayout llFollowers, llFollowing, llHelping;
-
+    private List<User> mUsers;
     protected ViewDialog viewDialog;
     LinearLayout llDetailContain, llBottom;
 
@@ -124,7 +118,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         token = loginModel.getData().getToken() + "";
         Intent i = getIntent();
         blogid = i.getStringExtra("blogid");
-
+        mUsers =  new ArrayList<>();
         adapterViewFlipper = findViewById(R.id.adapterViewFlipper);
         llDetailContain = findViewById(R.id.llDetailContain);
         llBottom = findViewById(R.id.llBottom);
@@ -489,10 +483,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                                 alertDialog.show();
 
                             } else {
-                                Intent i = new Intent(DetailBlogsActivity.this, ChatDetailsActivity.class);
-                                i.putExtra("name", name + "");
-                                i.putExtra("image_path", image_path + "");
-                                i.putExtra("id", userid + "");
+                                Intent i = new Intent(DetailBlogsActivity.this, ChatListActivity.class);
+
                                 startActivity(i);
                             }
 

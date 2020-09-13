@@ -284,47 +284,61 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     hideProgressDialog();
 
                     if (response.isSuccessful()) {
+
+
                         PrefUtils.setUser(object, LoginActivity.this);
-                        String androidVersion = android.os.Build.VERSION.RELEASE; // e.g. myVersion := "1.6"
-                        HashMap<String, String> map = new HashMap<>();
-                        map.put("registration_id", tokenFirebase);
-                        map.put("device_id", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-                        map.put("device_os", "Android " + androidVersion);
-                        Log.d(tokenFirebase + " ", "jdgfhrugf");
-                        Log.e("Hasp", map + "");
-                        Call<JsonObject> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).updateAppInfo(map, "Bearer " + object.getData().getToken());
-                        loginModelCall.enqueue(new Callback<JsonObject>() {
 
-                            @Override
-                            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                                JsonObject object = response.body();
-                                Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+                        mAuth.signInWithEmailAndPassword(object.getData().getUser().getEmail() + "", pass_word)
+                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            String androidVersion = android.os.Build.VERSION.RELEASE; // e.g. myVersion := "1.6"
+                                            HashMap<String, String> map = new HashMap<>();
+                                            map.put("registration_id", tokenFirebase);
+                                            map.put("device_id", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+                                            map.put("device_os", "Android " + androidVersion);
+                                            Log.d(tokenFirebase + " ", "jdgfhrugf");
+                                            Log.e("Hasp", map + "");
+                                            Call<JsonObject> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).updateAppInfo(map, "Bearer " + object.getData().getToken());
+                                            loginModelCall.enqueue(new Callback<JsonObject>() {
 
-                                hideProgressDialog();
+                                                @Override
+                                                public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                                                    JsonObject object = response.body();
+                                                    Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
 
-                                if (response.isSuccessful()) {
+                                                    hideProgressDialog();
+
+                                                    if (response.isSuccessful()) {
 
 
-                                    Intent loginIntent = new Intent(LoginActivity.this, HomeActivity.class);
-                                    loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(loginIntent);
-                                    finish();
-                                } else {
-                                    try {
-                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        Toast.makeText(LoginActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
-                                    } catch (Exception e) {
+                                                        Intent loginIntent = new Intent(LoginActivity.this, HomeActivity.class);
+                                                        loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                        startActivity(loginIntent);
+                                                        finish();
+                                                    } else {
+                                                        try {
+                                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                            Toast.makeText(LoginActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                                        } catch (Exception e) {
+                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                                                    hideProgressDialog();
+                                                    t.printStackTrace();
+                                                    Log.e("Login_Response", t.getMessage() + "");
+                                                }
+                                            });
+
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, "Authentication failed!", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                                hideProgressDialog();
-                                t.printStackTrace();
-                                Log.e("Login_Response", t.getMessage() + "");
-                            }
-                        });
+                                });
 
 
                     } else {

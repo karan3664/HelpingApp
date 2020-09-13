@@ -34,12 +34,13 @@
         tools:ignore="AllowBackup"
         tools:replace="android:icon,android:allowBackup,android:usesCleartextTraffic"
         tools:targetApi="q">
+
+        <activity android:name=".ui.chats.MessageActivity"/>
         <activity android:name=".ui.profile.SearchFollowFollowingActivity"></activity>
         <activity android:name=".ui.profile.HelpAndSupportActivity" />
         <activity android:name=".ui.fragments.activity.HelpingActivity" />
         <activity android:name=".ui.fragments.activity.OtherFollowFollowingActivity" />
         <activity android:name=".ui.addBlog.BlogPreviewSettingsActivity" />
-        <activity android:name=".ui.chats.ChatDetailsActivity" />
         <activity android:name=".ui.chats.ChatListActivity" />
         <activity android:name=".ui.NotificationsAllActivity" />
         <activity android:name=".ui.fragments.activity.SearchMyPingActivity" />
@@ -109,6 +110,24 @@
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".ui.notifications.MyFirebaseInstanceIDService"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".ui.chats.Notifications.MyFirebaseMessaging"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

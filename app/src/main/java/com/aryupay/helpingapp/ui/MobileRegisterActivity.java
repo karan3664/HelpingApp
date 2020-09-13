@@ -28,8 +28,11 @@ import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mukesh.OnOtpCompletionListener;
@@ -51,7 +54,7 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
     OtpView otp_view;
     Button btnResend, btnVerifyOTP, btn_sumbitOtp;
 
-    String otp, mobile, name, password, token;
+    String otp, mobile, name, password, token, email, user_id;
     Boolean one = false;
     protected ViewDialog viewDialog;
     //firebase auth object
@@ -60,6 +63,8 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
     //It is the verification id that will be sent to the user
     private String mVerificationId;
     String code;
+    FirebaseAuth auth;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +76,7 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
         viewDialog.setCancelable(false);
         Intent i = getIntent();
 
-
+        auth = FirebaseAuth.getInstance();
         et_mobno = findViewById(R.id.et_mobno);
         otp_view = findViewById(R.id.otp_view);
         btnResend = findViewById(R.id.btnResend);
@@ -89,6 +94,8 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
             password = i.getStringExtra("password");
             mobile = i.getStringExtra("mobile");
             token = i.getStringExtra("token");
+            email = i.getStringExtra("email");
+            user_id = i.getStringExtra("user_id");
             one = i.getBooleanExtra("one", false);
 
             et_mobno.setText(mobile);
@@ -140,43 +147,78 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
 
                 if (response.isSuccessful()) {
                     if (one == true) {
-                        HashMap<String, String> hashMap = new HashMap<>();
 
-                        hashMap.put("name", name + "");
-                        hashMap.put("password", password + "");
 
-                        showProgressDialog();
-                        Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
-                        loginModelCall.enqueue(new Callback<LoginModel>() {
+                        auth.createUserWithEmailAndPassword(email + "", password + "")
+                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        Log.e("TASK", task + "");
 
-                            @Override
-                            public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
-                                LoginModel object = response.body();
-                                Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+                                        if (task.isSuccessful()) {
+                                            FirebaseUser firebaseUser = auth.getCurrentUser();
+                                            String userid = firebaseUser.getUid();
+                                            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
 
-                                hideProgressDialog();
+                                            HashMap<String, String> hashMap = new HashMap<>();
+                                            hashMap.put("id", userid);
+                                            hashMap.put("user_id", user_id + "");
+                                            hashMap.put("username", name + "");
+                                            hashMap.put("imageURL", "default");
+                                            hashMap.put("status", "offline");
+                                            hashMap.put("search", name.toLowerCase());
+                                            databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        HashMap<String, String> hashMap = new HashMap<>();
 
-                                if (response.isSuccessful()) {
-                                    PrefUtils.setUser(object, MobileRegisterActivity.this);
-                                    Intent loginIntent = new Intent(MobileRegisterActivity.this, HomeActivity.class);
-                                    loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(loginIntent);
-                                } else {
-                                    try {
-                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        Toast.makeText(MobileRegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
-                                    } catch (Exception e) {
+                                                        hashMap.put("name", name + "");
+                                                        hashMap.put("password", password + "");
+
+                                                        showProgressDialog();
+                                                        Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
+                                                        loginModelCall.enqueue(new Callback<LoginModel>() {
+
+                                                            @Override
+                                                            public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
+                                                                LoginModel object = response.body();
+                                                                Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+
+                                                                hideProgressDialog();
+
+                                                                if (response.isSuccessful()) {
+                                                                    PrefUtils.setUser(object, MobileRegisterActivity.this);
+                                                                    Intent loginIntent = new Intent(MobileRegisterActivity.this, HomeActivity.class);
+                                                                    loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                    startActivity(loginIntent);
+                                                                } else {
+                                                                    try {
+                                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                                        Toast.makeText(MobileRegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                                                    } catch (Exception e) {
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
+                                                                hideProgressDialog();
+                                                                t.printStackTrace();
+                                                                Log.e("Login_Response", t.getMessage() + "");
+                                                            }
+                                                        });
+
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            Toast.makeText(MobileRegisterActivity.this, "You can't register with this email and password", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            }
+                                });
 
-                            @Override
-                            public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
-                                hideProgressDialog();
-                                t.printStackTrace();
-                                Log.e("Login_Response", t.getMessage() + "");
-                            }
-                        });
+
                     } else {
                         Intent regIntent = new Intent(MobileRegisterActivity.this, RegisterActivity.class);
                         regIntent.putExtra("mobile", et_mobno.getText().toString() + "");
@@ -260,9 +302,9 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
             //Getting the code sent by SMS
             code = phoneAuthCredential.getSmsCode();
             Log.e("code", phoneAuthCredential.getSmsCode() + "");
-                    //sometime the code is not detected automatically
-                    //in this case the code will be null
-                    //so user has to manually enter the code
+            //sometime the code is not detected automatically
+            //in this case the code will be null
+            //so user has to manually enter the code
             if (code != null) {
 //                otp = code;
                 otp_view.setText(code);

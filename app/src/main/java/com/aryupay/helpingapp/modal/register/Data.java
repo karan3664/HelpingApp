@@ -17,7 +17,9 @@ public class Data {
     @SerializedName("token")
     @Expose
     private String token;
-
+    @SerializedName("user_id")
+    @Expose
+    private Integer userId;
     public String getName() {
         return name;
     }
@@ -50,4 +52,12 @@ public class Data {
         this.token = token;
     }
 
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
 }

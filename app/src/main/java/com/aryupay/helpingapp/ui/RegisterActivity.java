@@ -43,7 +43,14 @@ import com.aryupay.helpingapp.modal.register.RegisterModel;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.Tools;
 import com.aryupay.helpingapp.utils.ViewDialog;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -94,6 +101,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private String currentPhotoPath;
     private File photoFile = null;
     File fileImage = null;
+    FirebaseAuth auth;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +112,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         viewDialog = new ViewDialog(this);
         viewDialog.setCancelable(false);
         Intent i = getIntent();
+        auth = FirebaseAuth.getInstance();
 
 
         ivProfile = findViewById(R.id.ivProfile);
@@ -287,51 +297,87 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                 if (response.isSuccessful()) {
                     if (object.getData().getOtp().matches("0")) {
-                        HashMap<String, String> hashMap = new HashMap<>();
 
-                        hashMap.put("name", userNameEt.getText().toString() + "");
-                        hashMap.put("password", et_password.getText().toString() + "");
 
-                        showProgressDialog();
-                        Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
-                        loginModelCall.enqueue(new Callback<LoginModel>() {
+                        auth.createUserWithEmailAndPassword(emailEt.getText().toString() + "", et_password.getText().toString() + "")
+                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        Log.e("TASK", task + "");
 
-                            @Override
-                            public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
-                                LoginModel object = response.body();
-                                Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+                                        if (task.isSuccessful()) {
+                                            FirebaseUser firebaseUser = auth.getCurrentUser();
+                                            String userid = firebaseUser.getUid();
+                                            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
 
-                                hideProgressDialog();
+                                            HashMap<String, String> hashMap = new HashMap<>();
+                                            hashMap.put("id", userid);
+                                            hashMap.put("user_id", object.getData().getUserId() + "");
+                                            hashMap.put("username", userNameEt.getText().toString() + "");
+                                            hashMap.put("imageURL", "default");
+                                            hashMap.put("status", "offline");
+                                            hashMap.put("search", userNameEt.getText().toString().toLowerCase());
+                                            databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        HashMap<String, String> hashMap = new HashMap<>();
 
-                                if (response.isSuccessful()) {
-                                    PrefUtils.setUser(object, RegisterActivity.this);
-                                    Intent loginIntent = new Intent(RegisterActivity.this, HomeActivity.class);
-                                    loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(loginIntent);
-                                } else {
-                                    try {
-                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        Toast.makeText(RegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
-                                    } catch (Exception e) {
+                                                        hashMap.put("name", userNameEt.getText().toString() + "");
+                                                        hashMap.put("password", et_password.getText().toString() + "");
+
+                                                        showProgressDialog();
+                                                        Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
+                                                        loginModelCall.enqueue(new Callback<LoginModel>() {
+
+                                                            @Override
+                                                            public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
+                                                                LoginModel object = response.body();
+                                                                Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+
+                                                                hideProgressDialog();
+
+                                                                if (response.isSuccessful()) {
+                                                                    PrefUtils.setUser(object, RegisterActivity.this);
+                                                                    Intent loginIntent = new Intent(RegisterActivity.this, HomeActivity.class);
+                                                                    loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                    startActivity(loginIntent);
+                                                                } else {
+                                                                    try {
+                                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                                        Toast.makeText(RegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                                                    } catch (Exception e) {
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
+                                                                hideProgressDialog();
+                                                                t.printStackTrace();
+                                                                Log.e("Login_Response", t.getMessage() + "");
+                                                            }
+                                                        });
+
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            Toast.makeText(RegisterActivity.this, "You can't register with this email and password", Toast.LENGTH_SHORT).show();
+                                        }
                                     }
-                                }
-                            }
+                                });
 
-                            @Override
-                            public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
-                                hideProgressDialog();
-                                t.printStackTrace();
-                                Log.e("Login_Response", t.getMessage() + "");
-                            }
-                        });
                     } else {
                         Intent intent = new Intent(RegisterActivity.this, MobileRegisterActivity.class);
                         intent.putExtra("mobile", contactNumberEt.getText().toString() + "");
                         intent.putExtra("name", userNameEt.getText().toString() + "");
+                        intent.putExtra("email", emailEt.getText().toString() + "");
                         intent.putExtra("password", et_password.getText().toString() + "");
                         intent.putExtra("otp", object.getData().getOtp() + "");
                         intent.putExtra("token", object.getData().getToken() + "");
                         intent.putExtra("one", true);
+                        intent.putExtra("user_id", object.getData().getUserId() + "");
                         startActivity(intent);
                     }
 
