@@ -474,17 +474,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == SECOND_ACTIVITY_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
 
-                // Get String data from Intent
-                String returnString = data.getStringExtra("id");
-                String returnStringName = data.getStringExtra("cityname");
-                city_id = returnString;
-                spin_cities.setText(returnStringName);
-
-            }
-        }
         if (requestCode == CAMERA_PIC_REQUEST && photoFile != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
             if (null != bitmap) {
@@ -525,6 +515,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 //                        }
 //                    });
                 }
+            }
+        } else if (requestCode == SECOND_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+
+                // Get String data from Intent
+                String returnString = data.getStringExtra("id");
+                String returnStringName = data.getStringExtra("cityname");
+                city_id = returnString;
+                spin_cities.setText(returnStringName);
+
             }
         }
     }

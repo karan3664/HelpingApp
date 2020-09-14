@@ -331,11 +331,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 holder.tvTime.setText(datum.getTime() + "");
                 if (datum.getPhoto() != null) {
-                    Glide.with(ProfileActivity.this)
-                            .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
+                    if (datum.getPhoto().getPath()!= null){
+                        Glide.with(ProfileActivity.this)
+                                .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
 //                        .centerCrop()
-                            .placeholder(R.drawable.placeholder)
-                            .into(holder.ivEmployee);
+                                .placeholder(R.drawable.placeholder)
+                                .into(holder.ivEmployee);
+                    }
+
                 }
             }
 

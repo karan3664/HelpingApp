@@ -8,9 +8,9 @@ public class User {
     private String status;
     private String search;
     private String user_id;
-    private Long phone;
+    private String phone;
 
-    public User(String id, String username, String imageURL, String status, String search, String user_id, Long phone) {
+    public User(String id, String username, String imageURL, String status, String search, String user_id, String phone) {
         this.id = id;
         this.username = username;
         this.imageURL = imageURL;
@@ -72,11 +72,11 @@ public class User {
         this.user_id = user_id;
     }
 
-    public Long getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(Long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 }

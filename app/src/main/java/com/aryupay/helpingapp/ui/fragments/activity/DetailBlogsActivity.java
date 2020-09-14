@@ -118,7 +118,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         token = loginModel.getData().getToken() + "";
         Intent i = getIntent();
         blogid = i.getStringExtra("blogid");
-        mUsers =  new ArrayList<>();
+        mUsers = new ArrayList<>();
         adapterViewFlipper = findViewById(R.id.adapterViewFlipper);
         llDetailContain = findViewById(R.id.llDetailContain);
         llBottom = findViewById(R.id.llBottom);
@@ -350,6 +350,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     hideProgressDialog();
                     Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                     if (response.isSuccessful()) {
+                        BlogDetails();
+                        edtComment.setText("");
                         CommentsList();
                         llCommentSection.setVisibility(View.VISIBLE);
                         llAddComment.setVisibility(View.GONE);
@@ -516,6 +518,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.btnCommentSave:
                 AddComments();
+
                 break;
             case R.id.ivLike:
                 LikeBlog();
