@@ -44,6 +44,7 @@ import com.aryupay.helpingapp.modal.register.RegisterModel;
 import com.aryupay.helpingapp.ui.HomeActivity;
 
 import com.aryupay.helpingapp.ui.LoginActivity;
+import com.aryupay.helpingapp.ui.SearchCityActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.Tools;
 import com.aryupay.helpingapp.utils.ViewDialog;
@@ -76,6 +77,7 @@ import static android.Manifest.permission_group.CAMERA;
 import static android.os.Build.VERSION_CODES.M;
 
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final int SECOND_ACTIVITY_REQUEST_CODE = 0;
     CircleImageView ivProfile;
     EditText userNameEt, fullNameEt, writeAboutYouEt, contactNumberEt, emailEt,
             dobEt, genderEt, professionEt, spin_cities, et_password, et_confirmpassword;
@@ -214,7 +216,9 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 dialogDatePickerLight();
                 break;
             case R.id.spin_cities:
-                dialog.show();
+                Intent intent = new Intent(this, SearchCityActivity.class);
+                startActivityForResult(intent, SECOND_ACTIVITY_REQUEST_CODE);
+//                dialog.show();
                 break;
             case R.id.professionEt:
                 dialo1.show();
@@ -558,6 +562,17 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SECOND_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+
+                // Get String data from Intent
+                String returnString = data.getStringExtra("id");
+                String returnStringName = data.getStringExtra("cityname");
+                city_id = returnString;
+                spin_cities.setText(returnStringName);
+
+            }
+        }
         if (requestCode == CAMERA_PIC_REQUEST && photoFile != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
             if (null != bitmap) {

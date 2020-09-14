@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -51,6 +52,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -58,6 +60,7 @@ import com.google.gson.JsonObject;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -91,7 +94,7 @@ public class MessageActivity extends AppCompatActivity {
 
     APIService apiService;
     LoginModel loginModel;
-
+    String calls;
     boolean notify = false;
     ImageView ivClose, ivCall, ivOption;
 
@@ -102,6 +105,7 @@ public class MessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message);
         loginModel = PrefUtils.getUser(MessageActivity.this);
         token = loginModel.getData().getToken() + "";
+//        calls = loginModel.getData().getUser().getUserDetail().getContact() + "";
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //        getSupportActionBar().setTitle("");
@@ -141,9 +145,21 @@ public class MessageActivity extends AppCompatActivity {
                 OpenOptionDialog();
             }
         });
+        ivCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (calls != null) {
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + calls));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(MessageActivity.this, "No Contact Avaiable", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         intent = getIntent();
         userid = intent.getStringExtra("userid");
         user_id = intent.getStringExtra("user_id");
+        calls = intent.getStringExtra("phone");
         fuser = FirebaseAuth.getInstance().getCurrentUser();
 
         btn_send.setOnClickListener(new View.OnClickListener() {
@@ -214,10 +230,14 @@ public class MessageActivity extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
 
         HashMap<String, Object> hashMap = new HashMap<>();
+
+
         hashMap.put("sender", sender);
         hashMap.put("receiver", receiver);
         hashMap.put("message", message);
         hashMap.put("isseen", false);
+
+        hashMap.put("timestamp", ServerValue.TIMESTAMP);
 
         reference.child("Chats").push().setValue(hashMap);
 
@@ -442,8 +462,9 @@ public class MessageActivity extends AppCompatActivity {
                                 JsonObject object = response.body();
                                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                                 if (object != null) {
+                                    reference = FirebaseDatabase.getInstance().getReference("Chats");
 //                                    DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-//                                    rootRef.child("Chats").child(mchat.get(0).getReceiver()).child(mchat.get(0).getSender()).child(userid).removeValue();
+                                    reference.child("messages").child(userid).removeValue();
                                     Toast.makeText(MessageActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
 //                                    onBackPressed();
 

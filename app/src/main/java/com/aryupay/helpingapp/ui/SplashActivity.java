@@ -270,6 +270,8 @@ public class SplashActivity extends AppCompatActivity implements LocationListene
                 } else {
                     if (addresses.size() > 0) {
                         editor.putString("location", addresses.get(0).getSubLocality() + ", " + addresses.get(0).getLocality() + "");
+                        editor.putString("city", addresses.get(0).getLocality() + "");
+
                         editor.commit();
 //                        address.setText(/*addresses.get(0).getFeatureName() + ", " + addresses.get(0).getSubLocality() + ", " + addresses.get(0).getSubAdminArea() + ", " +*/ addresses.get(0).getAddressLine(0) + "");
 //                        Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();

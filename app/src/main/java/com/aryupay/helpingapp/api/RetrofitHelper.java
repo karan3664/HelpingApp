@@ -24,6 +24,7 @@ import com.aryupay.helpingapp.modal.profile.followers.FollowersModel;
 import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.modal.register.RegisterModel;
 import com.aryupay.helpingapp.modal.search.my_ping.SearchMyPingModel;
+import com.aryupay.helpingapp.modal.search_city.SearchCityModel;
 import com.aryupay.helpingapp.modal.search_user.SearchUserModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -254,9 +255,9 @@ public class RetrofitHelper {
         Call<LoginModel> userUpdate(@Header("Authorization") String authorization,
                                     @PartMap Map<String, RequestBody> map);
 
-//        @FormUrlEncoded
-//        @POST("register")
-//        Call<RegisterModel> register(@FieldMap HashMap<String, String> hashMap);
+        @FormUrlEncoded
+        @POST("search_city")
+        Call<ArrayList<CityModel>> search_city(@FieldMap HashMap<String, String> hashMap);
 
         @Multipart
         @POST("register")

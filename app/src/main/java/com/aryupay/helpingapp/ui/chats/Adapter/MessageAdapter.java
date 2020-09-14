@@ -1,6 +1,10 @@
 package com.aryupay.helpingapp.ui.chats.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +12,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.ui.chats.Model.Chat;
 import com.aryupay.helpingapp.ui.chats.Model.User;
+import com.aryupay.helpingapp.utils.Tools;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,7 +29,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -56,12 +66,50 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
 
         Chat chat = mChat.get(position);
 
+
         holder.show_message.setText(chat.getMessage());
+
+        holder.show_message.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                CharSequence options[] = new CharSequence[]{"Delete", "Cancel"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("Delete this message");
+                builder.setItems(options, new AlertDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (which == 0) {
+                                /*
+                                        ....CODE FOR DELETING THE MESSAGE IS YET TO BE WRITTEN HERE...
+                                 */
+                            long mesPos = holder.getAdapterPosition();
+                            String mesId = mChat.get((int) mesPos).toString();
+                            Log.e("Message Id is ", mesId);
+                            Log.e("Message is : ", mChat.get((int) mesPos).getMessage());
+//                            DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+//                            rootRef.child("Chats").child(mesId)
+//                                    .removeValue();
+                        }
+
+                        if (which == 1) {
+
+                        }
+
+                    }
+                });
+                builder.show();
+                return true;
+            }
+        });
+
+        holder.text_time.setText(Tools.getMessageTime(chat.getTimestamp()) + "");
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
@@ -129,7 +177,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView show_message;
+        public TextView show_message, text_time;
         public CircleImageView profile_image;
         public TextView txt_seen;
 
@@ -139,6 +187,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             show_message = itemView.findViewById(R.id.show_message);
             profile_image = itemView.findViewById(R.id.profile_image);
             txt_seen = itemView.findViewById(R.id.txt_seen);
+            text_time = itemView.findViewById(R.id.text_time);
 
         }
     }

@@ -36,9 +36,15 @@ import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Tools {
 
+    public static String getMessageTime(long timestamp) {
+        SimpleDateFormat format = new SimpleDateFormat("hh:mm a", Locale.ENGLISH);
+        Date date = new Date(timestamp);
+        return format.format(date);
+    }
     public static void setSystemBarColor(Activity act) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = act.getWindow();

@@ -84,6 +84,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             dobEt, genderEt, professionEt, spin_cities, et_password, et_confirmpassword;
     Button btnSaveRegister;
     protected ViewDialog viewDialog;
+    private static final int SECOND_ACTIVITY_REQUEST_CODE = 0;
 
     ArrayList<CityModel> resultGetpostcodes;
     ArrayList<ProfessionModel> professions;
@@ -160,7 +161,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 dialogDatePickerLight();
                 break;
             case R.id.spin_cities:
-                dialog.show();
+                Intent intent = new Intent(this, SearchCityActivity.class);
+                startActivityForResult(intent, SECOND_ACTIVITY_REQUEST_CODE);
+//                dialog.show();
                 break;
             case R.id.professionEt:
                 dialo1.show();
@@ -173,6 +176,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 break;
         }
     }
+
 
     private void dialogDatePickerLight() {
         Calendar cur_calender = Calendar.getInstance();
@@ -316,6 +320,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                             hashMap.put("username", userNameEt.getText().toString() + "");
                                             hashMap.put("imageURL", "default");
                                             hashMap.put("status", "offline");
+                                            hashMap.put("phone", contactNumberEt.getText().toString());
                                             hashMap.put("search", userNameEt.getText().toString().toLowerCase());
                                             databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
@@ -468,6 +473,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SECOND_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+
+                // Get String data from Intent
+                String returnString = data.getStringExtra("id");
+                String returnStringName = data.getStringExtra("cityname");
+                city_id = returnString;
+                spin_cities.setText(returnStringName);
+
+            }
+        }
         if (requestCode == CAMERA_PIC_REQUEST && photoFile != null) {
             Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
             if (null != bitmap) {

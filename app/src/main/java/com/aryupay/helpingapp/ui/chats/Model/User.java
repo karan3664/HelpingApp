@@ -8,14 +8,16 @@ public class User {
     private String status;
     private String search;
     private String user_id;
+    private Long phone;
 
-    public User(String id, String username, String imageURL, String status, String search, String user_id) {
+    public User(String id, String username, String imageURL, String status, String search, String user_id, Long phone) {
         this.id = id;
         this.username = username;
         this.imageURL = imageURL;
         this.status = status;
         this.search = search;
         this.user_id = user_id;
+        this.phone = phone;
     }
 
     public User() {
@@ -68,5 +70,13 @@ public class User {
 
     public void setUser_id(String user_id) {
         this.user_id = user_id;
+    }
+
+    public Long getPhone() {
+        return phone;
+    }
+
+    public void setPhone(Long phone) {
+        this.phone = phone;
     }
 }

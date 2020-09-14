@@ -166,6 +166,7 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
                                             hashMap.put("username", name + "");
                                             hashMap.put("imageURL", "default");
                                             hashMap.put("status", "offline");
+                                            hashMap.put("phone", et_mobno.getText().toString());
                                             hashMap.put("search", name.toLowerCase());
                                             databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
