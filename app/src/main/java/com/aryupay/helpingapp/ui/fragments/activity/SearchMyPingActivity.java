@@ -65,7 +65,7 @@ public class SearchMyPingActivity extends AppCompatActivity {
     private ImageButton bt_clear;
     String token;
     ImageView ivBack;
-
+    RelativeLayout rlSearchPing;
     LoginModel loginModel;
 
     @Override
@@ -80,6 +80,7 @@ public class SearchMyPingActivity extends AppCompatActivity {
         bt_clear = (ImageButton) findViewById(R.id.bt_clear);
 //        productList();
         ivBack = findViewById(R.id.ivBack);
+        rlSearchPing = findViewById(R.id.rlSearchPing);
         searchRecyclerview = findViewById(R.id.searchRecyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         searchRecyclerview.setLayoutManager(layoutManager);
@@ -93,6 +94,12 @@ public class SearchMyPingActivity extends AppCompatActivity {
             }
         });
         ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+        rlSearchPing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();

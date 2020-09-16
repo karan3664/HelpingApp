@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.aryupay.helpingapp.R;
 
 public class HelpAndSupportActivity extends AppCompatActivity implements View.OnClickListener {
+
     public static final String TAG = HelpAndSupportActivity.class.getSimpleName();
 
     ImageView imageViewCall;
@@ -32,7 +33,7 @@ public class HelpAndSupportActivity extends AppCompatActivity implements View.On
     ImageView imageViewMsg;
     TextView textViewMsg;
     LinearLayout relativeLayoutMessageMe;
-    ImageView imageViewWhatsUp;
+    ImageView imageViewWhatsUp, ivBack;
     TextView textViewWhatsUp;
     LinearLayout relativeLayoutWhatsUs;
 
@@ -57,7 +58,9 @@ public class HelpAndSupportActivity extends AppCompatActivity implements View.On
         imageViewWhatsUp = findViewById(R.id.imageViewWhatsUp);
         textViewWhatsUp = findViewById(R.id.textViewWhatsUp);
         relativeLayoutWhatsUs = findViewById(R.id.relativeLayoutWhatsUs);
+        ivBack = findViewById(R.id.ivBack);
 
+        ivBack.setOnClickListener(this);
         relativeLayoutCall.setOnClickListener(this);
         relativeLayoutEmail.setOnClickListener(this);
         relativeLayoutMessageMe.setOnClickListener(this);
@@ -74,8 +77,8 @@ public class HelpAndSupportActivity extends AppCompatActivity implements View.On
 
 
     private void openWhatsApp() {
-        if (!isWhatsaapClientInstalled(context)) {
-            goToMarketForWhats(context);
+        if (!isWhatsaapClientInstalled(this)) {
+            goToMarketForWhats(this);
             return;
         }
 
@@ -86,7 +89,7 @@ public class HelpAndSupportActivity extends AppCompatActivity implements View.On
         try {
             startActivity(i);
         } catch (ActivityNotFoundException ex) {
-            Toast.makeText(context, "Opps not able to connect", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Opps not able to connect", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -101,6 +104,7 @@ public class HelpAndSupportActivity extends AppCompatActivity implements View.On
 
     public boolean isWhatsaapClientInstalled(Context myContext) {
         PackageManager myPackageMgr = myContext.getPackageManager();
+        ;
         try {
             myPackageMgr.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException e) {
@@ -152,7 +156,8 @@ public class HelpAndSupportActivity extends AppCompatActivity implements View.On
         return result1 == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void requestCallPermission() { ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, CALL_REQUEST);
+    private void requestCallPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, CALL_REQUEST);
     }
 
     @Override
@@ -169,6 +174,9 @@ public class HelpAndSupportActivity extends AppCompatActivity implements View.On
                 break;
             case R.id.relativeLayoutWhatsUs:
                 openWhatsApp();
+                break;
+            case R.id.ivBack:
+                onBackPressed();
                 break;
 
         }

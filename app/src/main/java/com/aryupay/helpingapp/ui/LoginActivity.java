@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TextView tvForgotPassword;
     Button btnLogin, btn_phone, btn_facebook, btn_google;
     protected ViewDialog viewDialog;
-    LoginModel loginModel;
+
     CallbackManager callbackManager;
     LoginButton loginButton;
     //a constant for detecting the login intent result
@@ -81,7 +81,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         callbackManager = CallbackManager.Factory.create();
         loginButton = (LoginButton) findViewById(R.id.login_button);
 //        loginButton.setReadPermissions("email");
-        loginModel = PrefUtils.getUser(LoginActivity.this);
+
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         //first we intialized the FirebaseAuth object
@@ -120,15 +120,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btn_facebook.setOnClickListener(this);
         btn_google.setOnClickListener(this);
 
-        try {
-            if (loginModel.getStatus().matches("success")) {
-                Intent i = new Intent(LoginActivity.this, HomeActivity.class);
-                startActivity(i);
-                finish();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {

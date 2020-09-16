@@ -1,9 +1,12 @@
 package com.aryupay.helpingapp.ui.profile;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
@@ -50,6 +53,17 @@ EditText edtSearch;
         int defaultValue = 0;
         int page = getIntent().getIntExtra("frag1", defaultValue);
         view_pager.setCurrentItem(page);
+        view_pager.setOffscreenPageLimit(2);
+//        view_pager.setCurrentItem(page);
+
+
+        if (page == defaultValue) {
+
+            LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
+            Intent i = new Intent("TAG_REFRESH");
+            lbm.sendBroadcast(i);
+
+        }
         tab_layout.setupWithViewPager(view_pager);
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,6 +79,13 @@ EditText edtSearch;
                 startActivity(i);
             }
         });
+    }
+    public void onTabSelected(ActionBar.Tab tab,
+                              FragmentTransaction fragmentTransaction) {
+        // When the given tab is selected, switch to the corresponding page in
+        // the ViewPager.
+
+
     }
 
     private void setupViewPager(ViewPager viewPager) {

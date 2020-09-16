@@ -258,6 +258,17 @@ public class FollowersFragment extends Fragment {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        FollowerList();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        FollowerList();
+    }
 
     protected void hideProgressDialog() {
         viewDialog.dismiss();

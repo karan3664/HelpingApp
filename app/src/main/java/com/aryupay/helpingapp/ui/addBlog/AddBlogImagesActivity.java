@@ -111,24 +111,27 @@ public class AddBlogImagesActivity extends Activity {
         ivClose = findViewById(R.id.ivClose);
         selectedImageList = new ArrayList<>();
         imageList = new ArrayList<>();
+        done.setVisibility(View.GONE);
+/*
 
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < selectedImageList.size(); i++) {
-                    ImageNameFile = new File(selectedImageList.get(i));
-                    btnNext.setEnabled(true);
-                    uploadFile();
-//                    Toast.makeText(getApplicationContext(), ImageNameFile + "", Toast.LENGTH_LONG).show();
 
-                }
             }
         });
+*/
 
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                for (int i = 0; i < selectedImageList.size(); i++) {
+                    ImageNameFile = new File(selectedImageList.get(i));
+//                    btnNext.setEnabled(true);
+                    uploadFile();
+//                    Toast.makeText(getApplicationContext(), ImageNameFile + "", Toast.LENGTH_LONG).show();
 
+                }
                 Intent addLoc = new Intent(AddBlogImagesActivity.this, AddLocationActivity.class);
                 addLoc.putExtra("id", id + "");
                 startActivity(addLoc);
@@ -476,7 +479,7 @@ public class AddBlogImagesActivity extends Activity {
                 hideProgressDialog();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (response.isSuccessful()) {
-                    Toast.makeText(AddBlogImagesActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(AddBlogImagesActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
 
                 } else {
                     try {

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aryupay.helpingapp.R;
@@ -24,7 +25,8 @@ public class OpenOptionsActivity extends AppCompatActivity implements View.OnCli
     CircleImageView ivProfileImage;
     TextView tv_name;
     LoginModel loginModel;
-    ImageView ivClose,iv_editprofile;
+    ImageView ivClose, iv_editprofile;
+    RelativeLayout rvOpenEditProfile, rvBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,8 @@ public class OpenOptionsActivity extends AppCompatActivity implements View.OnCli
         llSettings = findViewById(R.id.llSettings);
         tv_name = findViewById(R.id.tv_name);
         iv_editprofile = findViewById(R.id.iv_editprofile);
+        rvOpenEditProfile = findViewById(R.id.rvOpenEditProfile);
+        rvBack = findViewById(R.id.rvBack);
         tv_name.setText(loginModel.getData().getUser().getFullname() + "");
         if (loginModel.getData().getUser().getUserDetail().getPhoto() != null) {
             Glide.with(this)
@@ -51,6 +55,8 @@ public class OpenOptionsActivity extends AppCompatActivity implements View.OnCli
         llSettings.setOnClickListener(this);
         llHelpSupport.setOnClickListener(this);
         iv_editprofile.setOnClickListener(this);
+        rvOpenEditProfile.setOnClickListener(this);
+        rvBack.setOnClickListener(this);
     }
 
     @Override
@@ -67,10 +73,17 @@ public class OpenOptionsActivity extends AppCompatActivity implements View.OnCli
             case R.id.ivClose:
                 onBackPressed();
                 break;
+            case R.id.rvBack:
+                onBackPressed();
+                break;
 
             case R.id.iv_editprofile:
                 Intent i = new Intent(OpenOptionsActivity.this, EditProfileActivity.class);
                 startActivity(i);
+                break;
+            case R.id.rvOpenEditProfile:
+                Intent ii = new Intent(OpenOptionsActivity.this, EditProfileActivity.class);
+                startActivity(ii);
                 break;
         }
     }

@@ -1,12 +1,17 @@
 package com.aryupay.helpingapp.ui.profile.ui;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -60,7 +65,7 @@ public class FollowingFragment extends Fragment {
     public FollowingFragment() {
         // Required empty public constructor
     }
-
+    MyReceiver r;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -88,6 +93,30 @@ public class FollowingFragment extends Fragment {
         }
     }
 
+    public void refresh() {
+        //yout code in refresh.
+        FollowerList();
+        Log.i("Refresh", "YES");
+    }
+
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(r);
+    }
+
+    public void onResume() {
+        super.onResume();
+        r = new MyReceiver();
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(r,
+                new IntentFilter("TAG_REFRESH"));
+    }
+
+    private class MyReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            FollowingFragment.this.refresh();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,24 +137,23 @@ public class FollowingFragment extends Fragment {
 
     private void FollowerList() {
 
-        showProgressDialog();
+//        showProgressDialog();
         Call<FollowersModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).following("Bearer " + token);
         marqueCall.enqueue(new Callback<FollowersModel>() {
             @Override
             public void onResponse(@NonNull Call<FollowersModel> call, @NonNull Response<FollowersModel> response) {
                 FollowersModel object = response.body();
                 hideProgressDialog();
-                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
-                if (object != null) {
+                Log.e("TAG", "Following : " + new Gson().toJson(response.body()));
 
-
+                if (response.isSuccessful()){
                     datumArrayList = object.getData();
                     myCustomAdapter = new MyCustomAdapter(datumArrayList);
                     rvFollowers.setAdapter(myCustomAdapter);
+                    myCustomAdapter.notifyDataSetChanged();
+                }
+                else {
 
-                } else {
-
-//                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -237,5 +265,14 @@ public class FollowingFragment extends Fragment {
 
     protected void showProgressDialog() {
         viewDialog.show();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser){
+            FollowerList();
+            //do something  //Load or Refresh Data
+        }
     }
 }

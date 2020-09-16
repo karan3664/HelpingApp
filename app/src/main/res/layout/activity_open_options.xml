@@ -23,6 +23,7 @@
                 android:orientation="vertical">
 
                 <RelativeLayout
+                    android:id="@+id/rvBack"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_30sdp"
                     android:layout_marginLeft="@dimen/_10sdp"
@@ -101,6 +102,7 @@
                                     android:textStyle="bold" />
 
                                 <RelativeLayout
+                                    android:id="@+id/rvOpenEditProfile"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginLeft="@dimen/_3sdp"

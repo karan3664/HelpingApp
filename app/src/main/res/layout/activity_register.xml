@@ -93,6 +93,7 @@
                                     android:layout_height="match_parent"
                                     android:background="@null"
                                     android:gravity="center"
+                                    android:imeOptions="actionNext"
                                     android:hint="Enter Username"
                                     android:inputType="text"
                                     android:singleLine="true" />
@@ -128,7 +129,7 @@
                                     android:background="@null"
                                     android:gravity="center"
                                     android:hint="@string/enter_name"
-
+                                    android:imeOptions="actionNext"
                                     android:inputType="text"
                                     android:singleLine="true" />
                             </RelativeLayout>
@@ -213,7 +214,7 @@
                                             android:id="@+id/contactNumberEt"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-
+                                            android:imeOptions="actionNext"
                                             android:background="@null"
                                             android:drawableLeft="@drawable/ic_contact"
                                             android:gravity="center"
@@ -265,6 +266,7 @@
                                             android:background="@null"
                                             android:drawableRight="@drawable/ic_email_id"
                                             android:gravity="center"
+                                            android:imeOptions="actionNext"
                                             android:hint="@string/email_hint"
                                             android:inputType="textEmailAddress"
                                             android:paddingRight="@dimen/_7sdp"
@@ -533,8 +535,8 @@
                                             android:hint="password"
                                             android:inputType="textPassword"
                                             android:paddingLeft="@dimen/_5sdp"
+                                            android:imeOptions="actionNext"
                                             android:singleLine="true"
-
                                             android:textSize="@dimen/_10sdp" />
                                     </RelativeLayout>
 
@@ -577,6 +579,7 @@
                                             android:layout_height="match_parent"
                                             android:background="@null"
                                             android:gravity="center"
+                                            android:imeOptions="actionDone"
                                             android:hint="Confirm password"
                                             android:inputType="textPassword"
                                             android:paddingRight="@dimen/_7sdp"

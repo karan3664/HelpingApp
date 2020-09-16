@@ -221,57 +221,98 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void RegisterCall() {
-        File file = fileImage;
-
-        Map<String, RequestBody> hashMap = new HashMap<>();
-        File fileImage = null;
-
-        try {
-
-            fileImage = new File(String.valueOf(file));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
 
-        RequestBody thumbnailimage = null;
-        try {
-            assert file != null;
-            assert fileImage != null;
-            thumbnailimage = RequestBody.create(MediaType.parse("*/*"), file);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if (userNameEt.getText().toString().isEmpty()) {
+            userNameEt.setError("Username Required...");
+            userNameEt.requestFocus();
 
-
-        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), userNameEt.getText().toString() + "");
-        RequestBody fullname = RequestBody.create(MediaType.parse("text/plain"), fullNameEt.getText().toString() + "");
-        RequestBody bio = RequestBody.create(MediaType.parse("text/plain"), writeAboutYouEt.getText().toString() + "");
-        RequestBody contact = RequestBody.create(MediaType.parse("text/plain"), contactNumberEt.getText().toString() + "");
-        RequestBody email = RequestBody.create(MediaType.parse("text/plain"), emailEt.getText().toString() + "");
-        RequestBody dob = RequestBody.create(MediaType.parse("text/plain"), dobEt.getText().toString() + "");
-        RequestBody cityid = RequestBody.create(MediaType.parse("text/plain"), city_id + "");
-        RequestBody gender = RequestBody.create(MediaType.parse("text/plain"), genderEt.getText().toString() + "");
-        RequestBody professionid = RequestBody.create(MediaType.parse("text/plain"), profession_id + "");
-        RequestBody attachmentEmpty = RequestBody.create(MediaType.parse("text/plain"), "");
-        RequestBody password = RequestBody.create(MediaType.parse("text/plain"), et_password.getText().toString() + "");
-
-        hashMap.put("name", name);
-        hashMap.put("fullname", fullname);
-        hashMap.put("bio", bio);
-        hashMap.put("contact", contact);
-        hashMap.put("email", email);
-        hashMap.put("dob", dob);
-        hashMap.put("city_id", cityid);
-        hashMap.put("gender", gender);
-        hashMap.put("profession_id", professionid);
-        hashMap.put("password", password);
-        if (thumbnailimage != null) {
-            hashMap.put("photo\";  filename=\"" + fileImage.getName() + "\"", thumbnailimage);
+        } else if (fullNameEt.getText().toString().isEmpty()) {
+            fullNameEt.setError("Full Name Required...");
+            fullNameEt.requestFocus();
+        } else if (writeAboutYouEt.getText().toString().isEmpty()) {
+            writeAboutYouEt.setError("Bio Required...");
+            writeAboutYouEt.requestFocus();
+        } else if (contactNumberEt.getText().toString().isEmpty()) {
+            contactNumberEt.setError("Contact Required...");
+            contactNumberEt.requestFocus();
+        } else if (emailEt.getText().toString().isEmpty()) {
+            emailEt.setError("Email Required...");
+            emailEt.requestFocus();
+        } else if (spin_cities.getText().toString().isEmpty()) {
+            spin_cities.setError("City Required...");
+            spin_cities.requestFocus();
+        } else if (dobEt.getText().toString().isEmpty()) {
+            dobEt.setError("Date of Birth Required...");
+            dobEt.requestFocus();
+        } else if (genderEt.getText().toString().isEmpty()) {
+            genderEt.setError("Gender Required...");
+            genderEt.requestFocus();
+        } else if (professionEt.getText().toString().isEmpty()) {
+            professionEt.setError("Profession Required...");
+            professionEt.requestFocus();
+        } else if (et_password.getText().toString().isEmpty()) {
+            et_password.setError("Password Required...");
+            et_password.requestFocus();
+        } else if (et_confirmpassword.getText().toString().isEmpty()) {
+            et_confirmpassword.setError("Confirm Password  Required...");
+            et_confirmpassword.requestFocus();
+        } else if (!et_confirmpassword.getText().toString().matches(et_password.getText().toString())) {
+            et_confirmpassword.setError("Confirm Password Not Match...");
+            et_confirmpassword.requestFocus();
         } else {
-            hashMap.put("photo", attachmentEmpty);
-        }
+
+            File file = fileImage;
+
+            Map<String, RequestBody> hashMap = new HashMap<>();
+            File fileImage = null;
+
+            try {
+
+                fileImage = new File(String.valueOf(file));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            RequestBody thumbnailimage = null;
+            try {
+                assert file != null;
+                assert fileImage != null;
+                thumbnailimage = RequestBody.create(MediaType.parse("*/*"), file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            RequestBody name = RequestBody.create(MediaType.parse("text/plain"), userNameEt.getText().toString() + "");
+            RequestBody fullname = RequestBody.create(MediaType.parse("text/plain"), fullNameEt.getText().toString() + "");
+            RequestBody bio = RequestBody.create(MediaType.parse("text/plain"), writeAboutYouEt.getText().toString() + "");
+            RequestBody contact = RequestBody.create(MediaType.parse("text/plain"), contactNumberEt.getText().toString() + "");
+            RequestBody email = RequestBody.create(MediaType.parse("text/plain"), emailEt.getText().toString() + "");
+            RequestBody dob = RequestBody.create(MediaType.parse("text/plain"), dobEt.getText().toString() + "");
+            RequestBody cityid = RequestBody.create(MediaType.parse("text/plain"), city_id + "");
+            RequestBody gender = RequestBody.create(MediaType.parse("text/plain"), genderEt.getText().toString() + "");
+            RequestBody professionid = RequestBody.create(MediaType.parse("text/plain"), profession_id + "");
+            RequestBody attachmentEmpty = RequestBody.create(MediaType.parse("text/plain"), "");
+            RequestBody password = RequestBody.create(MediaType.parse("text/plain"), et_password.getText().toString() + "");
+
+            hashMap.put("name", name);
+            hashMap.put("fullname", fullname);
+            hashMap.put("bio", bio);
+            hashMap.put("contact", contact);
+            hashMap.put("email", email);
+            hashMap.put("dob", dob);
+            hashMap.put("city_id", cityid);
+            hashMap.put("gender", gender);
+            hashMap.put("profession_id", professionid);
+            hashMap.put("password", password);
+            if (thumbnailimage != null) {
+                hashMap.put("photo\";  filename=\"" + fileImage.getName() + "\"", thumbnailimage);
+            } else {
+                hashMap.put("photo", attachmentEmpty);
+            }
 
 
 //        HashMap<String, String> hashMap = new HashMap<>();
@@ -288,120 +329,123 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 //        hashMap.put("photo", "");
 //        hashMap.put("password", et_password.getText().toString() + "");
 
-        showProgressDialog();
-        Call<RegisterModel> registerModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).register(hashMap);
-        registerModelCall.enqueue(new Callback<RegisterModel>() {
+            showProgressDialog();
+            Call<RegisterModel> registerModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).register(hashMap);
+            registerModelCall.enqueue(new Callback<RegisterModel>() {
 
-            @Override
-            public void onResponse(@NonNull Call<RegisterModel> call, @NonNull Response<RegisterModel> response) {
-                RegisterModel object = response.body();
-                Log.e("TAG", "Register_Response : " + new Gson().toJson(response.body()));
-                hideProgressDialog();
-
-
-                if (response.isSuccessful()) {
-                    if (object.getData().getOtp().matches("0")) {
+                @Override
+                public void onResponse(@NonNull Call<RegisterModel> call, @NonNull Response<RegisterModel> response) {
+                    RegisterModel object = response.body();
+                    Log.e("TAG", "Register_Response : " + new Gson().toJson(response.body()));
+                    hideProgressDialog();
 
 
-                        auth.createUserWithEmailAndPassword(emailEt.getText().toString() + "", et_password.getText().toString() + "")
-                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        Log.e("TASK", task + "");
+                    if (response.isSuccessful()) {
+                        if (object.getData().getOtp().matches("0")) {
 
-                                        if (task.isSuccessful()) {
-                                            FirebaseUser firebaseUser = auth.getCurrentUser();
-                                            String userid = firebaseUser.getUid();
-                                            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
 
-                                            HashMap<String, String> hashMap = new HashMap<>();
-                                            hashMap.put("id", userid);
-                                            hashMap.put("user_id", object.getData().getUserId() + "");
-                                            hashMap.put("username", userNameEt.getText().toString() + "");
-                                            hashMap.put("imageURL", "default");
-                                            hashMap.put("status", "offline");
-                                            hashMap.put("phone", contactNumberEt.getText().toString());
-                                            hashMap.put("search", userNameEt.getText().toString().toLowerCase());
-                                            databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        HashMap<String, String> hashMap = new HashMap<>();
+                            auth.createUserWithEmailAndPassword(emailEt.getText().toString() + "", et_password.getText().toString() + "")
+                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<AuthResult> task) {
+                                            Log.e("TASK", task + "");
 
-                                                        hashMap.put("name", userNameEt.getText().toString() + "");
-                                                        hashMap.put("password", et_password.getText().toString() + "");
+                                            if (task.isSuccessful()) {
+                                                FirebaseUser firebaseUser = auth.getCurrentUser();
+                                                String userid = firebaseUser.getUid();
+                                                databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
 
-                                                        showProgressDialog();
-                                                        Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
-                                                        loginModelCall.enqueue(new Callback<LoginModel>() {
+                                                HashMap<String, String> hashMap = new HashMap<>();
+                                                hashMap.put("id", userid);
+                                                hashMap.put("user_id", object.getData().getUserId() + "");
+                                                hashMap.put("username", userNameEt.getText().toString() + "");
+                                                hashMap.put("imageURL", "default");
+                                                hashMap.put("status", "offline");
+                                                hashMap.put("phone", contactNumberEt.getText().toString());
+                                                hashMap.put("search", userNameEt.getText().toString().toLowerCase());
+                                                databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            HashMap<String, String> hashMap = new HashMap<>();
 
-                                                            @Override
-                                                            public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
-                                                                LoginModel object = response.body();
-                                                                Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+                                                            hashMap.put("name", userNameEt.getText().toString() + "");
+                                                            hashMap.put("password", et_password.getText().toString() + "");
 
-                                                                hideProgressDialog();
+                                                            showProgressDialog();
+                                                            Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
+                                                            loginModelCall.enqueue(new Callback<LoginModel>() {
 
-                                                                if (response.isSuccessful()) {
-                                                                    PrefUtils.setUser(object, RegisterActivity.this);
-                                                                    Intent loginIntent = new Intent(RegisterActivity.this, HomeActivity.class);
-                                                                    loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                    startActivity(loginIntent);
-                                                                } else {
-                                                                    try {
-                                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                                                        Toast.makeText(RegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
-                                                                    } catch (Exception e) {
+                                                                @Override
+                                                                public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
+                                                                    LoginModel object = response.body();
+                                                                    Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+
+                                                                    hideProgressDialog();
+
+                                                                    if (response.isSuccessful()) {
+                                                                        PrefUtils.setUser(object, RegisterActivity.this);
+                                                                        Intent loginIntent = new Intent(RegisterActivity.this, HomeActivity.class);
+                                                                        loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                        startActivity(loginIntent);
+                                                                    } else {
+                                                                        try {
+                                                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                                            Toast.makeText(RegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                                                        } catch (Exception e) {
+                                                                        }
                                                                     }
                                                                 }
-                                                            }
 
-                                                            @Override
-                                                            public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
-                                                                hideProgressDialog();
-                                                                t.printStackTrace();
-                                                                Log.e("Login_Response", t.getMessage() + "");
-                                                            }
-                                                        });
+                                                                @Override
+                                                                public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
+                                                                    hideProgressDialog();
+                                                                    t.printStackTrace();
+                                                                    Log.e("Login_Response", t.getMessage() + "");
+                                                                }
+                                                            });
 
+                                                        }
                                                     }
-                                                }
-                                            });
-                                        } else {
-                                            Toast.makeText(RegisterActivity.this, "You can't register with this email and password", Toast.LENGTH_SHORT).show();
+                                                });
+                                            } else {
+                                                Toast.makeText(RegisterActivity.this, "You can't register with this email and password", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
-                                    }
-                                });
+                                    });
+
+                        } else {
+                            Intent intent = new Intent(RegisterActivity.this, MobileRegisterActivity.class);
+                            intent.putExtra("mobile", contactNumberEt.getText().toString() + "");
+                            intent.putExtra("name", userNameEt.getText().toString() + "");
+                            intent.putExtra("email", emailEt.getText().toString() + "");
+                            intent.putExtra("password", et_password.getText().toString() + "");
+                            intent.putExtra("otp", object.getData().getOtp() + "");
+                            intent.putExtra("token", object.getData().getToken() + "");
+                            intent.putExtra("one", true);
+                            intent.putExtra("user_id", object.getData().getUserId() + "");
+                            startActivity(intent);
+                        }
 
                     } else {
-                        Intent intent = new Intent(RegisterActivity.this, MobileRegisterActivity.class);
-                        intent.putExtra("mobile", contactNumberEt.getText().toString() + "");
-                        intent.putExtra("name", userNameEt.getText().toString() + "");
-                        intent.putExtra("email", emailEt.getText().toString() + "");
-                        intent.putExtra("password", et_password.getText().toString() + "");
-                        intent.putExtra("otp", object.getData().getOtp() + "");
-                        intent.putExtra("token", object.getData().getToken() + "");
-                        intent.putExtra("one", true);
-                        intent.putExtra("user_id", object.getData().getUserId() + "");
-                        startActivity(intent);
-                    }
-
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(RegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            Toast.makeText(RegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<RegisterModel> call, @NonNull Throwable t) {
-                hideProgressDialog();
-                t.printStackTrace();
-                Log.e("Register_Response", t.getMessage() + "");
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<RegisterModel> call, @NonNull Throwable t) {
+                    hideProgressDialog();
+                    t.printStackTrace();
+                    Log.e("Register_Response", t.getMessage() + "");
+                }
+            });
+        }
+
+
     }
 
     private void selectImage() {

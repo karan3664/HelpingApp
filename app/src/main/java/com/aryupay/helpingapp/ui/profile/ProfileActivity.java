@@ -63,7 +63,7 @@ import retrofit2.Response;
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
     CircleImageView ivProfileImage;
-    TextView tv_name, tvBiotxt, tv_bio, tvAgetxt, tv_gender, tv_location,
+    TextView tv_name, tvBiotxt, tv_bio, tvAgetxt, tv_gender, profession, tv_location,
             tvEmailId, tvMobileNo, tvFollowers, tvFollowing, tvHelping, tvReviewNo, tvNocomments;
     ImageView iv_editprofile, ivClose, ivShare, ivOption;
     RecyclerView rvReviews;
@@ -93,6 +93,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         tvAgetxt = findViewById(R.id.tvAgetxt);
         tv_gender = findViewById(R.id.tv_gender);
         tv_location = findViewById(R.id.tv_location);
+        profession = findViewById(R.id.profession);
         tvEmailId = findViewById(R.id.tvEmailId);
         tvMobileNo = findViewById(R.id.tvMobileNo);
         tvFollowers = findViewById(R.id.tvFollowers);
@@ -242,6 +243,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                     tv_name.setText(object.getData().getUser().getFullname() + "");
                     tv_bio.setText(object.getData().getUser().getUserDetail().getBio() + "");
+                    profession.setText(object.getData().getUser().getUserDetail().getProfession().getProfession() + "");
                     try {
 
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -249,7 +251,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                             LocalDate birthday = null;
                             birthday = LocalDate.parse(object.getData().getUser().getUserDetail().getDob());
                             Period p = Period.between(birthday, today);
-                            tvAgetxt.setText(p.getYears() + " Years " + p.getMonths() + " Months " + ",");
+                            tvAgetxt.setText(p.getYears() + " Years " + p.getMonths() + " Months " + " | ");
                         } else {
                             tvAgetxt.setText(object.getData().getUser().getUserDetail().getDob());
                         }
@@ -258,7 +260,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     }
 
 
-                    tv_gender.setText(object.getData().getUser().getUserDetail().getGender() + "");
+                    tv_gender.setText(" | " + object.getData().getUser().getUserDetail().getGender() + "");
                     tv_location.setText(object.getData().getUser().getUserDetail().getCity().getCity() + "");
                     tvEmailId.setText(object.getData().getUser().getEmail() + "");
                     tvMobileNo.setText(object.getData().getUser().getUserDetail().getContact() + "");
@@ -331,7 +333,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 }
                 holder.tvTime.setText(datum.getTime() + "");
                 if (datum.getPhoto() != null) {
-                    if (datum.getPhoto().getPath()!= null){
+                    if (datum.getPhoto().getPath() != null) {
                         Glide.with(ProfileActivity.this)
                                 .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
 //                        .centerCrop()

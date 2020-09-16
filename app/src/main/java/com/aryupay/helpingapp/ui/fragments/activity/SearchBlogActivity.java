@@ -70,6 +70,7 @@ public class SearchBlogActivity extends AppCompatActivity {
     String token;
     ImageView ivBack;
     LoginModel loginModel;
+    RelativeLayout rlSearchPing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,7 @@ public class SearchBlogActivity extends AppCompatActivity {
         et_search = (EditText) findViewById(R.id.et_search);
         bt_clear = (ImageButton) findViewById(R.id.bt_clear);
         ivBack = findViewById(R.id.ivBack);
+        rlSearchPing = findViewById(R.id.rlSearchPing);
 //        productList();
 
         searchRecyclerview = findViewById(R.id.searchRecyclerview);
@@ -100,6 +102,12 @@ public class SearchBlogActivity extends AppCompatActivity {
         });
 
         ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+        rlSearchPing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();

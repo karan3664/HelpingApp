@@ -330,13 +330,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         HashMap<String, String> hashMap = new HashMap<>();
 //        hashMap.put("location", "Atmakur,Andhra Pradesh");
         hashMap.put("location", tvLoc.getText().toString() + "");
-
+showProgressDialog();
         Log.e("GAYA", hashMap + "");
         Call<BlogListModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).CategoryBlog(category, "Bearer " + token, hashMap);
         marqueCall.enqueue(new Callback<BlogListModel>() {
             @Override
             public void onResponse(@NonNull Call<BlogListModel> call, @NonNull Response<BlogListModel> response) {
                 BlogListModel object = response.body();
+                hideProgressDialog();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
 
@@ -366,10 +367,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(@NonNull Call<BlogListModel> call, @NonNull Throwable t) {
                 t.printStackTrace();
-
+                hideProgressDialog();
                 Log.e("ChatV_Response", t.getMessage() + "");
             }
         });
+
+    }
+//    @Override
+//    public void onActivityCreated(Bundle savedInstanceState) {
+//        super.onActivityCreated(savedInstanceState);
+//        //your code which you want to refresh
+//        BlogList();
+//    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        BlogList();
 
     }
 
