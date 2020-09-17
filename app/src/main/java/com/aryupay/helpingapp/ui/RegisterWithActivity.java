@@ -167,9 +167,10 @@ public class RegisterWithActivity extends AppCompatActivity implements View.OnCl
                     Intent reg = new Intent(RegisterWithActivity.this, RegisterActivity.class);
                     reg.putExtra("name", user.getDisplayName() + "");
                     reg.putExtra("email", user.getEmail() + "");
+
                     startActivity(reg);
 
-                    Toast.makeText(RegisterWithActivity.this, "User Signed In", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(RegisterWithActivity.this, "User Signed In", Toast.LENGTH_SHORT).show();
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.getException());

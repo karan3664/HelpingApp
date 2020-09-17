@@ -138,42 +138,46 @@ public class ChangePasswordMobileNumberActivity extends AppCompatActivity implem
     }
 
     public void GetOTP() {
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("mobile", et_mobno.getText().toString() + "");
-        showProgressDialog();
-        Call<OTPModel> postCodeModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).OTPModel(hashMap);
-        postCodeModelCall.enqueue(new Callback<OTPModel>() {
-            @Override
-            public void onResponse(@NonNull Call<OTPModel> call, @NonNull Response<OTPModel> response) {
-                final OTPModel object = response.body();
-                hideProgressDialog();
+        if (et_mobno.getText().toString().length() != 10) {
+            et_mobno.setError("Enter 10 Digit Mobile Number");
+            et_mobno.requestFocus();
+        } else {
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("mobile", et_mobno.getText().toString() + "");
+            showProgressDialog();
+            Call<OTPModel> postCodeModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).OTPModel(hashMap);
+            postCodeModelCall.enqueue(new Callback<OTPModel>() {
+                @Override
+                public void onResponse(@NonNull Call<OTPModel> call, @NonNull Response<OTPModel> response) {
+                    final OTPModel object = response.body();
+                    hideProgressDialog();
 
-                if (object != null) {
-                    Log.e("TAG", "Postcode_Response : " + new Gson().toJson(response.body()));
-                    if (response.isSuccessful()) {
-                        Toast.makeText(ChangePasswordMobileNumberActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
-                        otp = object.getData().getOtp() + "";
-                        sendVerificationCode(et_mobno.getText().toString());
+                    if (object != null) {
+                        Log.e("TAG", "Postcode_Response : " + new Gson().toJson(response.body()));
+                        if (response.isSuccessful()) {
+                            Toast.makeText(ChangePasswordMobileNumberActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
+                            otp = object.getData().getOtp() + "";
+                            sendVerificationCode(et_mobno.getText().toString());
 //                        token = object.getData().getToken() + "";
+                        } else {
+                            Toast.makeText(ChangePasswordMobileNumberActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
+
+                        }
+
                     } else {
-                        Toast.makeText(ChangePasswordMobileNumberActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
 
                     }
-
-                } else {
-
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<OTPModel> call, @NonNull Throwable t) {
+                @Override
+                public void onFailure(@NonNull Call<OTPModel> call, @NonNull Throwable t) {
 
-                hideProgressDialog();
-                t.printStackTrace();
-                Log.e("Postcode_Response", t.getMessage() + "");
-            }
-        });
-
+                    hideProgressDialog();
+                    t.printStackTrace();
+                    Log.e("Postcode_Response", t.getMessage() + "");
+                }
+            });
+        }
     }
 
     //the method is sending verification code

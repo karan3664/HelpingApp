@@ -10,15 +10,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +42,6 @@ import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.ui.fragments.ChatFragment;
 import com.aryupay.helpingapp.ui.fragments.HomeFragment;
 import com.aryupay.helpingapp.ui.fragments.MyPingFragment;
-import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.HelpingActivity;
 import com.aryupay.helpingapp.ui.profile.ui.FollowersFragment;
 import com.aryupay.helpingapp.ui.profile.ui.FollowingFragment;
@@ -42,8 +49,13 @@ import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.jakewharton.threetenabp.AndroidThreeTen;
+
+import org.json.JSONObject;
 
 import java.text.ParseException;
 
@@ -54,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -74,6 +87,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     LinearLayout llFollowers, llFollowing, llHelping;
     protected ViewDialog viewDialog;
     ArrayList<Comment> commentArrayLis = new ArrayList<>();
+    String report = "";
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -343,7 +357,121 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                 }
             }
+            holder.rlReply.setVisibility(View.GONE);
+            holder.ivHide.setVisibility(View.GONE);
 
+            holder.rvReport.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final Dialog dialogs = new Dialog(Objects.requireNonNull(ProfileActivity.this));
+                    dialogs.requestWindowFeature(Window.FEATURE_NO_TITLE); // before
+                    dialogs.setContentView(R.layout.dialog_rating_comment);
+                    dialogs.setCancelable(true);
+
+                    WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                    lp.copyFrom(Objects.requireNonNull(dialogs.getWindow()).getAttributes());
+                    lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                    lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+
+                    dialogs.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+//
+                    Button btnSendReport = dialogs.findViewById(R.id.btnSendReport);
+
+                    ChipGroup chipGroup = dialogs.findViewById(R.id.chipReportCommentGroup);
+
+                    chipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(ChipGroup chipGroup, int i) {
+                            Chip chip = chipGroup.findViewById(i);
+                            report = chip.getText().toString();
+
+                        }
+                    });
+
+
+//                    String finalReport = report;
+                    btnSendReport.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (report.isEmpty()) {
+                                Toast.makeText(ProfileActivity.this, "Please Select Reason", Toast.LENGTH_SHORT).show();
+                            } else {
+                                HashMap<String, String> hashMap = new HashMap<>();
+
+                                hashMap.put("report", report + "");
+                                showProgressDialog();
+                                Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).report_comment(datum.getId() + "", "Bearer " + token, hashMap);
+                                marqueCall.enqueue(new Callback<JsonObject>() {
+                                    @Override
+                                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                                        JsonObject object = response.body();
+                                        hideProgressDialog();
+                                        Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                                        if (response.isSuccessful()) {
+                                            dialogs.dismiss();
+
+                                            Toast.makeText(ProfileActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            try {
+                                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                Toast.makeText(ProfileActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                            } catch (Exception e) {
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                                        t.printStackTrace();
+                                        hideProgressDialog();
+                                        Log.e("ChatV_Response", t.getMessage() + "");
+                                    }
+                                });
+                            }
+                        }
+                    });
+
+
+                    dialogs.show();
+                    dialogs.getWindow().setAttributes(lp);
+                }
+            });
+
+            holder.rvLikeComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    showProgressDialog();
+                    Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).like_comment(datum.getId() + "", "Bearer " + token);
+                    marqueCall.enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                            JsonObject object = response.body();
+                            hideProgressDialog();
+                            Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                            if (response.isSuccessful()) {
+
+
+                                ProfileCall();
+                                Toast.makeText(ProfileActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    Toast.makeText(ProfileActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                            t.printStackTrace();
+                            hideProgressDialog();
+                            Log.e("ChatV_Response", t.getMessage() + "");
+                        }
+                    });
+                }
+            });
 
 //            holder.tvTotalComment.setText(Comments.get(position) + "");
 //            holder.tvTotalView.setText(Views.get(position) + "");
@@ -360,7 +488,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         public class MyViewHolder extends RecyclerView.ViewHolder {
             CircleImageView ivEmployee;
             TextView tvName, tvTime, tvHeading, tvTotalLikes;
-            RelativeLayout rlReply;
+            RelativeLayout rlReply, rvReport, rvLikeComment;
+            View ivHide;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -371,9 +500,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
                 tvTime = view.findViewById(R.id.tvTime);
                 tvHeading = view.findViewById(R.id.tvComments);
+                ivHide = view.findViewById(R.id.ivHide);
 
                 tvTotalLikes = view.findViewById(R.id.tvTotalLikes);
                 rlReply = view.findViewById(R.id.rlReply);
+                rvReport = view.findViewById(R.id.rvReport);
+                rvLikeComment = view.findViewById(R.id.rvLikeComment);
 
 
             }
@@ -388,4 +520,6 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         ProfileCall();
 
     }
+
+
 }

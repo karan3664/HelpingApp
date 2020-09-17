@@ -40,6 +40,8 @@ import com.aryupay.helpingapp.modal.bloglist.Image;
 import com.aryupay.helpingapp.modal.location.LocationModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.ui.NotificationsAllActivity;
+import com.aryupay.helpingapp.ui.SearchCityActivity;
+import com.aryupay.helpingapp.ui.SelectLocationActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.SearchBlogActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
@@ -81,6 +83,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     BottomSheetDialog locationDialog;
     protected ViewDialog viewDialog;
     TextView tvNoNotification;
+    private static final int SECOND_ACTIVITY_REQUEST_CODE = 0;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -135,8 +138,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         tvLoc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OpenLocationDialog();
-
+//                OpenLocationDialog();
+                Intent intent = new Intent(getContext(), SelectLocationActivity.class);
+                startActivityForResult(intent, SECOND_ACTIVITY_REQUEST_CODE);
             }
         });
         return rootView;
@@ -167,7 +171,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         rlLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showProgressDialog();
+
+             /*   showProgressDialog();
                 BottomSheetDialog locationDialog = new BottomSheetDialog(getContext());
                 locationDialog.setContentView(R.layout.sub_location);
 
@@ -227,7 +232,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         Log.e("Postcode_Response", t.getMessage() + "");
                     }
                 });
-                locationDialog.show();
+                locationDialog.show();*/
             }
         });
 
@@ -330,7 +335,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         HashMap<String, String> hashMap = new HashMap<>();
 //        hashMap.put("location", "Atmakur,Andhra Pradesh");
         hashMap.put("location", tvLoc.getText().toString() + "");
-showProgressDialog();
+        showProgressDialog();
         Log.e("GAYA", hashMap + "");
         Call<BlogListModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).CategoryBlog(category, "Bearer " + token, hashMap);
         marqueCall.enqueue(new Callback<BlogListModel>() {
@@ -574,6 +579,23 @@ showProgressDialog();
 
         }
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SECOND_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == getActivity().RESULT_OK) {
+
+                // Get String data from Intent
+                String returnString = data.getStringExtra("id");
+                String returnStringName = data.getStringExtra("cityname");
+//                city_id = returnString;
+//                spin_cities.setText(returnStringName);
+                tvLoc.setText(returnStringName);
+
+            }
+        }
     }
 
     @Override

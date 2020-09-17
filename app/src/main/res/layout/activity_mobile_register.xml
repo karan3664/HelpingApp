@@ -213,7 +213,6 @@
                     android:layout_height="45dp"
                     android:layout_marginTop="16dp"
                     android:background="@drawable/register_page_btn_bg"
-                    android:enabled="false"
                     android:fontFamily="@font/segoe_ui_bold"
                     android:text="Verify"
                     android:textColor="@android:color/white"

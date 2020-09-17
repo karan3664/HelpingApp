@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,6 +23,7 @@ import com.aryupay.helpingapp.modal.profession.ProfessionModel;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskExecutors;
 import com.google.firebase.FirebaseException;
@@ -31,6 +33,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
@@ -106,17 +109,16 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
 
         }
 
-        otp_view.setOtpCompletionListener(new OnOtpCompletionListener() {
-            @Override
-            public void onOtpCompleted(String otp_s) {
-                if (otp_s.matches(code)) {
-                    Toast.makeText(MobileRegisterActivity.this, "OTP Verified...", Toast.LENGTH_SHORT).show();
-                    btnVerifyOTP.setEnabled(true);
-                } else {
-                    Toast.makeText(MobileRegisterActivity.this, "OTP Invalid!!!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+//        otp_view.setOtpCompletionListener(new OnOtpCompletionListener() {
+//            @Override
+//            public void onOtpCompleted(String otp_s) {
+//                if (otp_s == code) {
+//
+//                } else {
+//                    Toast.makeText(MobileRegisterActivity.this, "OTP Invalid!!!", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
 
     }
 
@@ -128,8 +130,9 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
                 GetOTP();
                 break;
             case R.id.btnResend:
-
-                GetOTP();
+                Toast.makeText(this, "OTP sent Successfully", Toast.LENGTH_SHORT).show();
+                sendVerificationCode(et_mobno.getText().toString());
+//                GetOTP();
                 break;
             case R.id.btnVerifyOTP:
                 VerifyOtpCall();
@@ -147,82 +150,50 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
 
                 if (response.isSuccessful()) {
                     if (one == true) {
+                        HashMap<String, String> hashMap = new HashMap<>();
 
+                        hashMap.put("name", name + "");
+                        hashMap.put("password", password + "");
 
-                        auth.createUserWithEmailAndPassword(email + "", password + "")
-                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<AuthResult> task) {
-                                        Log.e("TASK", task + "");
+                        showProgressDialog();
+                        Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
+                        loginModelCall.enqueue(new Callback<LoginModel>() {
 
-                                        if (task.isSuccessful()) {
-                                            FirebaseUser firebaseUser = auth.getCurrentUser();
-                                            String userid = firebaseUser.getUid();
-                                            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+                            @Override
+                            public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
+                                LoginModel object = response.body();
+                                Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
 
-                                            HashMap<String, String> hashMap = new HashMap<>();
-                                            hashMap.put("id", userid);
-                                            hashMap.put("user_id", user_id + "");
-                                            hashMap.put("username", name + "");
-                                            hashMap.put("imageURL", "default");
-                                            hashMap.put("status", "offline");
-                                            hashMap.put("phone", et_mobno.getText().toString());
-                                            hashMap.put("search", name.toLowerCase());
-                                            databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        HashMap<String, String> hashMap = new HashMap<>();
+                                hideProgressDialog();
 
-                                                        hashMap.put("name", name + "");
-                                                        hashMap.put("password", password + "");
-
-                                                        showProgressDialog();
-                                                        Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
-                                                        loginModelCall.enqueue(new Callback<LoginModel>() {
-
-                                                            @Override
-                                                            public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
-                                                                LoginModel object = response.body();
-                                                                Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
-
-                                                                hideProgressDialog();
-
-                                                                if (response.isSuccessful()) {
-                                                                    PrefUtils.setUser(object, MobileRegisterActivity.this);
-                                                                    Intent loginIntent = new Intent(MobileRegisterActivity.this, HomeActivity.class);
-                                                                    loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                    startActivity(loginIntent);
-                                                                } else {
-                                                                    try {
-                                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                                                        Toast.makeText(MobileRegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
-                                                                    } catch (Exception e) {
-                                                                    }
-                                                                }
-                                                            }
-
-                                                            @Override
-                                                            public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
-                                                                hideProgressDialog();
-                                                                t.printStackTrace();
-                                                                Log.e("Login_Response", t.getMessage() + "");
-                                                            }
-                                                        });
-
-                                                    }
-                                                }
-                                            });
-                                        } else {
-                                            Toast.makeText(MobileRegisterActivity.this, "You can't register with this email and password", Toast.LENGTH_SHORT).show();
-                                        }
+                                if (response.isSuccessful()) {
+                                    PrefUtils.setUser(object, MobileRegisterActivity.this);
+                                    Intent loginIntent = new Intent(MobileRegisterActivity.this, HomeActivity.class);
+                                    loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(loginIntent);
+                                } else {
+                                    try {
+                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                        Toast.makeText(MobileRegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                    } catch (Exception e) {
                                     }
-                                });
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
+                                hideProgressDialog();
+                                t.printStackTrace();
+                                Log.e("Login_Response", t.getMessage() + "");
+                            }
+                        });
+
 
 
                     } else {
                         Intent regIntent = new Intent(MobileRegisterActivity.this, RegisterActivity.class);
                         regIntent.putExtra("mobile", et_mobno.getText().toString() + "");
+                        regIntent.putExtra("one", true);
                         startActivity(regIntent);
                     }
 
@@ -244,40 +215,55 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
             }
         });
     }
-
+    public boolean isValidPhone(CharSequence phone) {
+        if (TextUtils.isEmpty(phone)) {
+            return false;
+        } else {
+            return android.util.Patterns.PHONE.matcher(phone).matches();
+        }
+    }
     public void GetOTP() {
-        HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("contact", et_mobno.getText().toString() + "");
-        showProgressDialog();
-        Call<PhoneSignupModel> postCodeModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).PhoneSignupModel(hashMap);
-        postCodeModelCall.enqueue(new Callback<PhoneSignupModel>() {
-            @Override
-            public void onResponse(@NonNull Call<PhoneSignupModel> call, @NonNull Response<PhoneSignupModel> response) {
-                final PhoneSignupModel object = response.body();
-                hideProgressDialog();
 
-                if (response.isSuccessful()) {
-                    Toast.makeText(MobileRegisterActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
+        if(isValidPhone(et_mobno.getText().toString())){
+
+
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("contact", et_mobno.getText().toString() + "");
+            showProgressDialog();
+            Call<PhoneSignupModel> postCodeModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).PhoneSignupModel(hashMap);
+            postCodeModelCall.enqueue(new Callback<PhoneSignupModel>() {
+                @Override
+                public void onResponse(@NonNull Call<PhoneSignupModel> call, @NonNull Response<PhoneSignupModel> response) {
+                    final PhoneSignupModel object = response.body();
+                    hideProgressDialog();
+
+                    if (response.isSuccessful()) {
+                        Toast.makeText(MobileRegisterActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
 //                        otp = object.getData().getOtp() + "";
-                    token = object.getData().getToken() + "";
-                    sendVerificationCode(et_mobno.getText().toString());
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(MobileRegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
+                        token = object.getData().getToken() + "";
+                        sendVerificationCode(et_mobno.getText().toString());
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            Toast.makeText(MobileRegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<PhoneSignupModel> call, @NonNull Throwable t) {
+                @Override
+                public void onFailure(@NonNull Call<PhoneSignupModel> call, @NonNull Throwable t) {
 
-                hideProgressDialog();
-                t.printStackTrace();
-                Log.e("Postcode_Response", t.getMessage() + "");
-            }
-        });
+                    hideProgressDialog();
+                    t.printStackTrace();
+                    Log.e("Postcode_Response", t.getMessage() + "");
+                }
+            });
+        }else {
+
+            Toast.makeText(getApplicationContext(),"Phone number is not valid",Toast.LENGTH_SHORT).show();
+
+        }
 
     }
 
@@ -301,17 +287,17 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
 
             //Getting the code sent by SMS
-            code = phoneAuthCredential.getSmsCode();
-            Log.e("code", phoneAuthCredential.getSmsCode() + "");
+             code = phoneAuthCredential.getSmsCode();
+            Toast.makeText(MobileRegisterActivity.this, "OTP Verified...", Toast.LENGTH_SHORT).show();
             //sometime the code is not detected automatically
             //in this case the code will be null
             //so user has to manually enter the code
-            if (code != null) {
-//                otp = code;
-                otp_view.setText(code);
-                //verifying the code
-                verifyVerificationCode(code);
-            }
+            otp_view.setText(code);
+            //verifying the code
+            verifyVerificationCode(code);
+
+
+
         }
 
         @Override
@@ -324,6 +310,7 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
             super.onCodeSent(s, forceResendingToken);
 
             //storing the verification id that is sent to the user
+            Log.e("OTP==>", s + " ===== " + code + "");
             mVerificationId = s;
         }
     };
@@ -332,7 +319,7 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
     private void verifyVerificationCode(String code) {
         //creating the credential
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
-
+//        btnVerifyOTP.setEnabled(true);
         //signing the user
         signInWithPhoneAuthCredential(credential);
     }

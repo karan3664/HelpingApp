@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:isScrollContainer="true"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -256,12 +256,21 @@
                                 android:orientation="horizontal">
 
                                 <ImageView
+                                    android:id="@+id/ivCallP"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:src="@drawable/ic_phone_cancel" />
+
+                                <ImageView
                                     android:id="@+id/ivCall"
                                     android:layout_width="20dp"
                                     android:layout_height="20dp"
                                     android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
                                     android:src="@drawable/call_phone" />
+
 
                                 <ImageView
                                     android:id="@+id/ivFav"
@@ -366,6 +375,7 @@
                         android:id="@+id/cvOpenComment"
                         android:layout_width="match_parent"
                         android:layout_height="38dp"
+                        android:background="@drawable/add_comment_edittext_bg"
                         app:cardCornerRadius="20dp"
                         app:cardElevation="10dp">
 
@@ -446,7 +456,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:isScrollContainer="true"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -494,7 +504,7 @@
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="@dimen/_150sdp"
+                                android:layout_height="@dimen/_130sdp"
                                 android:layout_marginLeft="@dimen/_10sdp"
                                 android:layout_marginRight="@dimen/_10sdp"
                                 android:background="@drawable/profile_bg"
@@ -549,6 +559,8 @@
                                             android:text="Deep Singh Baghel"
                                             android:textColor="@color/white_color"
                                             android:textSize="@dimen/_16sdp"
+                                            android:ellipsize="end"
+                                            android:maxLines="1"
                                             android:textStyle="bold" />
 
                                         <RelativeLayout
@@ -571,6 +583,7 @@
                                                 android:layout_height="wrap_content"
                                                 android:layout_centerInParent="true"
                                                 android:layout_toRightOf="@+id/tvBiotxt"
+                                                android:ellipsize="end"
                                                 android:maxLines="1"
                                                 android:textColor="@color/white_color"
                                                 android:textSize="@dimen/_8sdp" />
@@ -607,6 +620,7 @@
                                             android:layout_marginTop="@dimen/_1sdp">
 
                                             <TextView
+                                                android:id="@+id/profession"
                                                 android:layout_width="wrap_content"
                                                 android:layout_height="wrap_content"
                                                 android:text="Student"
@@ -669,9 +683,9 @@
                         <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/_50sdp"
-                            android:layout_marginLeft="@dimen/_35sdp"
+                            android:layout_marginLeft="@dimen/_25sdp"
                             android:layout_marginTop="@dimen/_10sdp"
-                            android:layout_marginRight="@dimen/_35sdp"
+                            android:layout_marginRight="@dimen/_25sdp"
                             android:background="@drawable/profile_white_bg"
                             android:elevation="@dimen/_3sdp">
 
@@ -715,8 +729,10 @@
                                 <View
                                     android:layout_width="0.5dp"
                                     android:layout_height="match_parent"
-                                    android:layout_marginTop="@dimen/_20sdp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
                                     android:layout_marginBottom="@dimen/_5sdp"
+                                    android:layout_marginTop="5dp"
                                     android:background="@color/pink_color" />
 
                                 <LinearLayout
@@ -753,8 +769,10 @@
                                 <View
                                     android:layout_width="0.5dp"
                                     android:layout_height="match_parent"
-                                    android:layout_marginTop="@dimen/_20sdp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
                                     android:layout_marginBottom="@dimen/_5sdp"
+                                    android:layout_marginTop="5dp"
                                     android:background="@color/pink_color" />
 
                                 <LinearLayout
@@ -943,100 +961,89 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/btnComment"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2">
+                android:layout_height="@dimen/_45sdp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_back_bg"
+                android:elevation="@dimen/_3sdp"
+                android:gravity="center">
 
-                <RelativeLayout
-                    android:id="@+id/btnComment"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_45sdp"
-                    android:background="@drawable/btn_back_bg"
-                    android:elevation="@dimen/_3sdp"
-                    android:gravity="center">
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:layout_marginRight="0dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/pink_color"
+                        android:src="@drawable/reply"
+                        android:tint="@color/sky_blue_color">
+
+                    </ImageView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/segoe_ui"
+                        android:text="Comment"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white_color"
+                        android:textSize="@dimen/_14sdp">
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/_22sdp"
-                            android:layout_marginRight="0dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="@color/pink_color"
-                            android:src="@drawable/reply"
-                            android:tint="@color/sky_blue_color">
+                    </TextView>
+                </LinearLayout>
 
-                        </ImageView>
+            </RelativeLayout>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/_5sdp"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/segoe_ui"
-                            android:text="Comment"
-                            android:textAllCaps="true"
-                            android:textColor="@color/white_color"
-                            android:textSize="@dimen/_14sdp">
-
-                        </TextView>
-                    </LinearLayout>
-
-                </RelativeLayout>
-            </LinearLayout>
-
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/btnChat"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_2sdp"
-                android:layout_weight="2">
+                android:layout_height="@dimen/_45sdp"
+                android:layout_weight="1"
+                android:background="@drawable/next_btn_bg"
+                android:elevation="@dimen/_3sdp"
+                android:gravity="center">
 
-                <RelativeLayout
-                    android:id="@+id/btnChat"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_45sdp"
-                    android:background="@drawable/next_btn_bg"
-                    android:elevation="@dimen/_3sdp"
-                    android:gravity="center">
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/_22sdp"
+                        android:layout_marginRight="0dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/pink_color"
+                        android:src="@drawable/conversation"
+                        android:tint="@color/white_color">
+
+                    </ImageView>
+
+                    <TextView
+                        android:id="@+id/tvNext"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:fontFamily="@font/segoe_ui"
+                        android:text="Chat"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white_color"
+                        android:textSize="@dimen/_14sdp">
 
-                        <ImageView
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/_22sdp"
-                            android:layout_marginRight="0dp"
-                            android:layout_weight="1"
-                            android:backgroundTint="@color/pink_color"
-                            android:src="@drawable/conversation"
-                            android:tint="@color/white_color">
+                    </TextView>
+                </LinearLayout>
 
-                        </ImageView>
-
-                        <TextView
-                            android:id="@+id/tvNext"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:fontFamily="@font/segoe_ui"
-                            android:text="Chat"
-                            android:textAllCaps="true"
-                            android:textColor="@color/white_color"
-                            android:textSize="@dimen/_14sdp">
-
-                        </TextView>
-                    </LinearLayout>
-
-                </RelativeLayout>
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

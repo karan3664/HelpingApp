@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,17 +84,19 @@ import retrofit2.Response;
 
 public class ChatListActivity extends AppCompatActivity {
     protected ViewDialog viewDialog;
-//    RecyclerView rvChatList;
+    //    RecyclerView rvChatList;
 //    private MyCustomAdapter myCustomAdapter;
     LoginModel loginModel;
-//    ArrayList<Datum> datumArrayList = new ArrayList<>();
+    //    ArrayList<Datum> datumArrayList = new ArrayList<>();
 //    private AlertDialog.Builder alertDialogBuilder;
     String token;
     ImageView ivBack;
+    RelativeLayout rlSearchPing;
     private EditText et_search;
     private ImageButton bt_clear;
     FirebaseUser firebaseUser;
     DatabaseReference reference;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +107,7 @@ public class ChatListActivity extends AppCompatActivity {
         viewDialog.setCancelable(false);
 //        rvChatList = findViewById(R.id.rvChatList);
         ivBack = findViewById(R.id.ivBack);
+        rlSearchPing = findViewById(R.id.rlSearchPing);
 //        LinearLayoutManager layoutManager = new LinearLayoutManager(ChatListActivity.this);
 //        rvChatList.setLayoutManager(layoutManager);
 //        rvChatList.setHasFixedSize(true);
@@ -116,6 +120,12 @@ public class ChatListActivity extends AppCompatActivity {
             }
         });
 
+        rlSearchPing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -123,7 +133,7 @@ public class ChatListActivity extends AppCompatActivity {
         final TabLayout tabLayout = findViewById(R.id.tab_layout);
         final ViewPager viewPager = findViewById(R.id.view_pager);
 
-showProgressDialog();
+        showProgressDialog();
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -159,6 +169,7 @@ showProgressDialog();
             }
         });
     }
+
     class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private ArrayList<Fragment> fragments;

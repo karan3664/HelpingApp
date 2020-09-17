@@ -157,6 +157,9 @@ public class RetrofitHelper {
         @GET("favourite/{blog_id}")
         Call<JsonObject> favourite(@Path("blog_id") String blog_id, @Header("Authorization") String token);
 
+        @GET("like_comment/{comment_id}")
+        Call<JsonObject> like_comment(@Path("comment_id") String comment_id, @Header("Authorization") String token);
+
 
         @GET("myping")
         Call<MyPingBlogModel> MyPingBlogModel(@Header("Authorization") String token);
@@ -235,6 +238,10 @@ public class RetrofitHelper {
         @FormUrlEncoded()
         @POST("rateprofile/{user_id}")
         Call<JsonObject> rateprofile(@Path("user_id") String user_id, @Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
+
+        @FormUrlEncoded()
+        @POST("report_comment/{comment_id} ")
+        Call<JsonObject> report_comment(@Path("comment_id") String comment_id, @Header("Authorization") String token, @FieldMap HashMap<String, String> hashMap);
 
         @FormUrlEncoded()
         @POST("messages")

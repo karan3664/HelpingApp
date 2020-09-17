@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -44,11 +45,13 @@ import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.Tools;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
@@ -104,6 +107,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     File fileImage = null;
     FirebaseAuth auth;
     DatabaseReference databaseReference;
+    Boolean one = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +144,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             name = i.getStringExtra("name");
             email = i.getStringExtra("email");
             mobile = i.getStringExtra("mobile");
+            one = i.getBooleanExtra("one", false);
             fullNameEt.setText(name);
             emailEt.setText(email);
             contactNumberEt.setText(mobile);
@@ -220,6 +225,14 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         builder.show();
     }
 
+    public boolean isValidPhone(CharSequence phone) {
+        if (TextUtils.isEmpty(phone)) {
+            return false;
+        } else {
+            return android.util.Patterns.PHONE.matcher(phone).matches();
+        }
+    }
+
     public void RegisterCall() {
 
 
@@ -235,6 +248,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             writeAboutYouEt.requestFocus();
         } else if (contactNumberEt.getText().toString().isEmpty()) {
             contactNumberEt.setError("Contact Required...");
+            contactNumberEt.requestFocus();
+        } else if (!isValidPhone(contactNumberEt.getText().toString())) {
+            contactNumberEt.setError("Phone number is not valid");
             contactNumberEt.requestFocus();
         } else if (emailEt.getText().toString().isEmpty()) {
             emailEt.setError("Email Required...");
@@ -314,21 +330,6 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 hashMap.put("photo", attachmentEmpty);
             }
 
-
-//        HashMap<String, String> hashMap = new HashMap<>();
-//
-//        hashMap.put("name", userNameEt.getText().toString() + "");
-//        hashMap.put("fullname", fullNameEt.getText().toString() + "");
-//        hashMap.put("bio", writeAboutYouEt.getText().toString() + "");
-//        hashMap.put("contact", contactNumberEt.getText().toString() + "");
-//        hashMap.put("email", emailEt.getText().toString() + "");
-//        hashMap.put("dob", dobEt.getText().toString() + "");
-//        hashMap.put("city_id", city_id + "");
-//        hashMap.put("gender", genderEt.getText().toString() + "");
-//        hashMap.put("profession_id", profession_id + "");
-//        hashMap.put("photo", "");
-//        hashMap.put("password", et_password.getText().toString() + "");
-
             showProgressDialog();
             Call<RegisterModel> registerModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).register(hashMap);
             registerModelCall.enqueue(new Callback<RegisterModel>() {
@@ -341,91 +342,248 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
                     if (response.isSuccessful()) {
-                        if (object.getData().getOtp().matches("0")) {
 
 
-                            auth.createUserWithEmailAndPassword(emailEt.getText().toString() + "", et_password.getText().toString() + "")
-                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            Log.e("TASK", task + "");
-
-                                            if (task.isSuccessful()) {
-                                                FirebaseUser firebaseUser = auth.getCurrentUser();
-                                                String userid = firebaseUser.getUid();
-                                                databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
-
-                                                HashMap<String, String> hashMap = new HashMap<>();
-                                                hashMap.put("id", userid);
-                                                hashMap.put("user_id", object.getData().getUserId() + "");
-                                                hashMap.put("username", userNameEt.getText().toString() + "");
-                                                hashMap.put("imageURL", "default");
-                                                hashMap.put("status", "offline");
-                                                hashMap.put("phone", contactNumberEt.getText().toString());
-                                                hashMap.put("search", userNameEt.getText().toString().toLowerCase());
-                                                databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        auth.fetchSignInMethodsForEmail(emailEt.getText().toString()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                                Log.d("REgisterEMIAL", "" + task.getResult().getSignInMethods().size());
+                                if (task.getResult().getSignInMethods().size() == 0) {
+                                    // email not existed
+                                    if (one == true) {
+                                        auth.createUserWithEmailAndPassword(emailEt.getText().toString() + "", et_password.getText().toString() + "")
+                                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                                     @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                                        Log.e("TASK", task + "");
+                                                        showProgressDialog();
                                                         if (task.isSuccessful()) {
+                                                            FirebaseUser firebaseUser = auth.getCurrentUser();
+                                                            String userid = firebaseUser.getUid();
+                                                            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+
                                                             HashMap<String, String> hashMap = new HashMap<>();
-
-                                                            hashMap.put("name", userNameEt.getText().toString() + "");
-                                                            hashMap.put("password", et_password.getText().toString() + "");
-
-                                                            showProgressDialog();
-                                                            Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
-                                                            loginModelCall.enqueue(new Callback<LoginModel>() {
-
+                                                            hashMap.put("id", userid);
+                                                            hashMap.put("user_id", object.getData().getUserId() + "");
+                                                            hashMap.put("username", userNameEt.getText().toString() + "");
+                                                            hashMap.put("imageURL", "default");
+                                                            hashMap.put("status", "offline");
+                                                            hashMap.put("phone", contactNumberEt.getText().toString());
+                                                            hashMap.put("search", userNameEt.getText().toString().toLowerCase());
+                                                            databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
-                                                                public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
-                                                                    LoginModel object = response.body();
-                                                                    Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        HashMap<String, String> hashMap = new HashMap<>();
 
-                                                                    hideProgressDialog();
+                                                                        hashMap.put("name", userNameEt.getText().toString() + "");
+                                                                        hashMap.put("password", et_password.getText().toString() + "");
 
-                                                                    if (response.isSuccessful()) {
-                                                                        PrefUtils.setUser(object, RegisterActivity.this);
-                                                                        Intent loginIntent = new Intent(RegisterActivity.this, HomeActivity.class);
-                                                                        loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                                                        startActivity(loginIntent);
-                                                                    } else {
-                                                                        try {
-                                                                            JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                                                            Toast.makeText(RegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
-                                                                        } catch (Exception e) {
-                                                                        }
+                                                                        showProgressDialog();
+                                                                        Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
+                                                                        loginModelCall.enqueue(new Callback<LoginModel>() {
+
+                                                                            @Override
+                                                                            public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
+                                                                                LoginModel object = response.body();
+                                                                                Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+
+                                                                                hideProgressDialog();
+
+                                                                                if (response.isSuccessful()) {
+                                                                                    PrefUtils.setUser(object, RegisterActivity.this);
+                                                                                    Intent loginIntent = new Intent(RegisterActivity.this, HomeActivity.class);
+                                                                                    loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                                    startActivity(loginIntent);
+                                                                                } else {
+                                                                                    try {
+                                                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                                                        Toast.makeText(RegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                                                                    } catch (Exception e) {
+                                                                                    }
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
+                                                                                hideProgressDialog();
+                                                                                t.printStackTrace();
+                                                                                Log.e("Login_Response", t.getMessage() + "");
+                                                                            }
+                                                                        });
+
                                                                     }
                                                                 }
-
-                                                                @Override
-                                                                public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
-                                                                    hideProgressDialog();
-                                                                    t.printStackTrace();
-                                                                    Log.e("Login_Response", t.getMessage() + "");
-                                                                }
                                                             });
-
+                                                        } else {
+                                                            Toast.makeText(RegisterActivity.this, "You can't register with this email and password", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
                                                 });
-                                            } else {
-                                                Toast.makeText(RegisterActivity.this, "You can't register with this email and password", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
+                                    } else {
+                                        auth.createUserWithEmailAndPassword(emailEt.getText().toString() + "", et_password.getText().toString() + "")
+                                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                                        Log.e("TASK", task + "");
+                                                        showProgressDialog();
+                                                        if (task.isSuccessful()) {
+                                                            FirebaseUser firebaseUser = auth.getCurrentUser();
+                                                            String userid = firebaseUser.getUid();
+                                                            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+
+                                                            HashMap<String, String> hashMap = new HashMap<>();
+                                                            hashMap.put("id", userid);
+                                                            hashMap.put("user_id", object.getData().getUserId() + "");
+                                                            hashMap.put("username", userNameEt.getText().toString() + "");
+                                                            hashMap.put("imageURL", "default");
+                                                            hashMap.put("status", "offline");
+                                                            hashMap.put("phone", contactNumberEt.getText().toString());
+                                                            hashMap.put("search", userNameEt.getText().toString().toLowerCase());
+                                                            databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<Void> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        Intent intent = new Intent(RegisterActivity.this, MobileRegisterActivity.class);
+                                                                        intent.putExtra("mobile", contactNumberEt.getText().toString() + "");
+                                                                        intent.putExtra("name", userNameEt.getText().toString() + "");
+                                                                        intent.putExtra("email", emailEt.getText().toString() + "");
+                                                                        intent.putExtra("password", et_password.getText().toString() + "");
+                                                                        intent.putExtra("otp", object.getData().getOtp() + "");
+                                                                        intent.putExtra("token", object.getData().getToken() + "");
+                                                                        intent.putExtra("one", true);
+                                                                        intent.putExtra("user_id", object.getData().getUserId() + "");
+                                                                        startActivity(intent);
+
+                                                                    }
+                                                                }
+                                                            });
+                                                        } else {
+                                                            Toast.makeText(RegisterActivity.this, "You can't register with this email and password", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+
+                                    }
+
+                                } else {
+                                    auth.signInWithEmailAndPassword(emailEt.getText().toString() + "", et_password.getText().toString() + "")
+                                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                                    if (one == true) {
+                                                        FirebaseUser firebaseUser = auth.getCurrentUser();
+                                                        String userid = firebaseUser.getUid();
+                                                        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+
+                                                        HashMap<String, String> hashMap = new HashMap<>();
+                                                        hashMap.put("id", userid);
+                                                        hashMap.put("user_id", object.getData().getUserId() + "");
+                                                        hashMap.put("username", userNameEt.getText().toString() + "");
+                                                        hashMap.put("imageURL", "default");
+                                                        hashMap.put("status", "offline");
+                                                        hashMap.put("phone", contactNumberEt.getText().toString());
+                                                        hashMap.put("search", userNameEt.getText().toString().toLowerCase());
+                                                        databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    HashMap<String, String> hashMap = new HashMap<>();
+
+                                                                    hashMap.put("name", userNameEt.getText().toString() + "");
+                                                                    hashMap.put("password", et_password.getText().toString() + "");
+
+                                                                    showProgressDialog();
+                                                                    Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
+                                                                    loginModelCall.enqueue(new Callback<LoginModel>() {
+
+                                                                        @Override
+                                                                        public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
+                                                                            LoginModel object = response.body();
+                                                                            Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+
+                                                                            hideProgressDialog();
+
+                                                                            if (response.isSuccessful()) {
+                                                                                PrefUtils.setUser(object, RegisterActivity.this);
+                                                                                Intent loginIntent = new Intent(RegisterActivity.this, HomeActivity.class);
+                                                                                loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                                startActivity(loginIntent);
+                                                                            } else {
+                                                                                try {
+                                                                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                                                    Toast.makeText(RegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                                                                } catch (Exception e) {
+                                                                                }
+                                                                            }
+                                                                        }
+
+                                                                        @Override
+                                                                        public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
+                                                                            hideProgressDialog();
+                                                                            t.printStackTrace();
+                                                                            Log.e("Login_Response", t.getMessage() + "");
+                                                                        }
+                                                                    });
+
+                                                                }
+                                                            }
+                                                        });
+                                                    } else {
+                                                        FirebaseUser firebaseUser = auth.getCurrentUser();
+                                                        String userid = firebaseUser.getUid();
+                                                        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
+
+                                                        HashMap<String, String> hashMap = new HashMap<>();
+                                                        hashMap.put("id", userid);
+                                                        hashMap.put("user_id", object.getData().getUserId() + "");
+                                                        hashMap.put("username", userNameEt.getText().toString() + "");
+                                                        hashMap.put("imageURL", "default");
+                                                        hashMap.put("status", "offline");
+                                                        hashMap.put("phone", contactNumberEt.getText().toString());
+                                                        hashMap.put("search", userNameEt.getText().toString().toLowerCase());
+                                                        databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                if (task.isSuccessful()) {
+                                                                    Intent intent = new Intent(RegisterActivity.this, MobileRegisterActivity.class);
+                                                                    intent.putExtra("mobile", contactNumberEt.getText().toString() + "");
+                                                                    intent.putExtra("name", userNameEt.getText().toString() + "");
+                                                                    intent.putExtra("email", emailEt.getText().toString() + "");
+                                                                    intent.putExtra("password", et_password.getText().toString() + "");
+                                                                    intent.putExtra("otp", object.getData().getOtp() + "");
+                                                                    intent.putExtra("token", object.getData().getToken() + "");
+                                                                    intent.putExtra("one", true);
+                                                                    intent.putExtra("user_id", object.getData().getUserId() + "");
+                                                                    startActivity(intent);
+
+                                                                }
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            });
+                                    // email existed
+                                }
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+
+
+
+
+                        /*if (object.getData().getOtp().matches("0")) {
+
+
 
                         } else {
-                            Intent intent = new Intent(RegisterActivity.this, MobileRegisterActivity.class);
-                            intent.putExtra("mobile", contactNumberEt.getText().toString() + "");
-                            intent.putExtra("name", userNameEt.getText().toString() + "");
-                            intent.putExtra("email", emailEt.getText().toString() + "");
-                            intent.putExtra("password", et_password.getText().toString() + "");
-                            intent.putExtra("otp", object.getData().getOtp() + "");
-                            intent.putExtra("token", object.getData().getToken() + "");
-                            intent.putExtra("one", true);
-                            intent.putExtra("user_id", object.getData().getUserId() + "");
-                            startActivity(intent);
-                        }
+
+                        }*/
 
                     } else {
                         try {

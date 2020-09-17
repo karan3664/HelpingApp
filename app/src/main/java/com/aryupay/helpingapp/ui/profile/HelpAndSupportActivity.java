@@ -81,16 +81,27 @@ public class HelpAndSupportActivity extends AppCompatActivity implements View.On
             goToMarketForWhats(this);
             return;
         }
-
-        Uri uri = Uri.parse("smsto:" + textViewWhatsUp.getText().toString().trim());
-        Intent i = new Intent(Intent.ACTION_SENDTO, uri);
-        i.putExtra("sms_body", "Hello whatsaap");
-        i.setPackage("com.whatsapp");
+        String contact = "+91 9713550801"; // use country code with your phone number
+        String url = "https://api.whatsapp.com/send?phone=" + contact;
         try {
+            PackageManager pm = this.getPackageManager();
+            pm.getPackageInfo("com.whatsapp", PackageManager.GET_ACTIVITIES);
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
             startActivity(i);
-        } catch (ActivityNotFoundException ex) {
-            Toast.makeText(this, "Opps not able to connect", Toast.LENGTH_SHORT).show();
+        } catch (PackageManager.NameNotFoundException e) {
+            Toast.makeText(HelpAndSupportActivity.this, "Whatsapp app not installed in your phone", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
+//        Uri uri = Uri.parse(url);
+//        Intent i = new Intent(Intent.ACTION_SENDTO, uri);
+////        i.putExtra("sms_body", "Hello whatsaap");
+//        i.setPackage("com.whatsapp");
+//        try {
+//            startActivity(i);
+//        } catch (ActivityNotFoundException ex) {
+//            Toast.makeText(this, "Opps not able to connect", Toast.LENGTH_SHORT).show();
+//        }
 
     }
 
@@ -116,9 +127,9 @@ public class HelpAndSupportActivity extends AppCompatActivity implements View.On
 
     private void sendMail() {
         Intent intent = new Intent(Intent.ACTION_SEND);
-        String[] recipients = {"info@shriji.com"};
+        String[] recipients = {"helpingindia.app@gmail.com"};
         intent.putExtra(Intent.EXTRA_EMAIL, recipients);
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Shri Ji cab Vendor Care");
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Helping App Support Care");
         intent.putExtra(Intent.EXTRA_TEXT, "Body of the content here...");
         intent.setType("text/html");
         intent.setPackage("com.google.android.gm");
@@ -141,9 +152,9 @@ public class HelpAndSupportActivity extends AppCompatActivity implements View.On
         switch (requestCode) {
             case CALL_REQUEST: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    makeCall("8602830015");
+                    makeCall("9713550801");
                 } else {
-                    makeCall("8602830015");
+                    makeCall("9713550801");
                 }
                 return;
             }
@@ -164,13 +175,13 @@ public class HelpAndSupportActivity extends AppCompatActivity implements View.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.relativeLayoutCall:
-                makeCall("458796321");
+                makeCall("9713550801");
                 break;
             case R.id.relativeLayoutEmail:
                 sendMail();
                 break;
             case R.id.relativeLayoutMessageMe:
-                sendMsg("1234569875");
+                sendMsg("9713550801");
                 break;
             case R.id.relativeLayoutWhatsUs:
                 openWhatsApp();

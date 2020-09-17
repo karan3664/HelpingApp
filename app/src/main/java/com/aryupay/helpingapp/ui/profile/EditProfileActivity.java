@@ -275,91 +275,123 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     public void RegisterCall() {
-        File file = fileImage;
+        if (userNameEt.getText().toString().isEmpty()) {
+            userNameEt.setError("Username Required...");
+            userNameEt.requestFocus();
 
-        Map<String, RequestBody> hashMap = new HashMap<>();
-        File fileImage = null;
-
-        try {
-
-            fileImage = new File(String.valueOf(file));
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        RequestBody thumbnailimage = null;
-        try {
-            assert file != null;
-            assert fileImage != null;
-            thumbnailimage = RequestBody.create(MediaType.parse("*/*"), file);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), userNameEt.getText().toString() + "");
-        RequestBody fullname = RequestBody.create(MediaType.parse("text/plain"), fullNameEt.getText().toString() + "");
-        RequestBody bio = RequestBody.create(MediaType.parse("text/plain"), writeAboutYouEt.getText().toString() + "");
-        RequestBody contact = RequestBody.create(MediaType.parse("text/plain"), contactNumberEt.getText().toString() + "");
-        RequestBody email = RequestBody.create(MediaType.parse("text/plain"), emailEt.getText().toString() + "");
-        RequestBody dob = RequestBody.create(MediaType.parse("text/plain"), dobEt.getText().toString() + "");
-        RequestBody cityid = RequestBody.create(MediaType.parse("text/plain"), city_id + "");
-        RequestBody gender = RequestBody.create(MediaType.parse("text/plain"), genderEt.getText().toString() + "");
-        RequestBody professionid = RequestBody.create(MediaType.parse("text/plain"), profession_id + "");
-        RequestBody attachmentEmpty = RequestBody.create(MediaType.parse("text/plain"), "");
-
-        hashMap.put("name", name);
-        hashMap.put("fullname", fullname);
-        hashMap.put("bio", bio);
-        hashMap.put("contact", contact);
-        hashMap.put("email", email);
-        hashMap.put("dob", dob);
-        hashMap.put("city_id", cityid);
-        hashMap.put("gender", gender);
-        hashMap.put("profession_id", professionid);
-        if (thumbnailimage != null) {
-            hashMap.put("photo\";  filename=\"" + fileImage.getName() + "\"", thumbnailimage);
+        } else if (fullNameEt.getText().toString().isEmpty()) {
+            fullNameEt.setError("Full Name Required...");
+            fullNameEt.requestFocus();
+        } else if (writeAboutYouEt.getText().toString().isEmpty()) {
+            writeAboutYouEt.setError("Bio Required...");
+            writeAboutYouEt.requestFocus();
+        } else if (contactNumberEt.getText().toString().isEmpty()) {
+            contactNumberEt.setError("Contact Required...");
+            contactNumberEt.requestFocus();
+        } else if (contactNumberEt.getText().toString().length() != 10) {
+            contactNumberEt.setError("Enter 10 Digit Mobile Number");
+            contactNumberEt.requestFocus();
+        } else if (emailEt.getText().toString().isEmpty()) {
+            emailEt.setError("Email Required...");
+            emailEt.requestFocus();
+        } else if (spin_cities.getText().toString().isEmpty()) {
+            spin_cities.setError("City Required...");
+            spin_cities.requestFocus();
+        } else if (dobEt.getText().toString().isEmpty()) {
+            dobEt.setError("Date of Birth Required...");
+            dobEt.requestFocus();
+        } else if (genderEt.getText().toString().isEmpty()) {
+            genderEt.setError("Gender Required...");
+            genderEt.requestFocus();
+        } else if (professionEt.getText().toString().isEmpty()) {
+            professionEt.setError("Profession Required...");
+            professionEt.requestFocus();
         } else {
-            hashMap.put("photo", attachmentEmpty);
-        }
+            File file = fileImage;
+
+            Map<String, RequestBody> hashMap = new HashMap<>();
+            File fileImage = null;
+
+            try {
+
+                fileImage = new File(String.valueOf(file));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
-        showProgressDialog();
-        Call<LoginModel> registerModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).userUpdate("Bearer " + token, hashMap);
-        registerModelCall.enqueue(new Callback<LoginModel>() {
+            RequestBody thumbnailimage = null;
+            try {
+                assert file != null;
+                assert fileImage != null;
+                thumbnailimage = RequestBody.create(MediaType.parse("*/*"), file);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-            @Override
-            public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
-                LoginModel object = response.body();
-                Log.e("TAG", "Register_Response : " + new Gson().toJson(response.body()));
-                hideProgressDialog();
+
+            RequestBody name = RequestBody.create(MediaType.parse("text/plain"), userNameEt.getText().toString() + "");
+            RequestBody fullname = RequestBody.create(MediaType.parse("text/plain"), fullNameEt.getText().toString() + "");
+            RequestBody bio = RequestBody.create(MediaType.parse("text/plain"), writeAboutYouEt.getText().toString() + "");
+            RequestBody contact = RequestBody.create(MediaType.parse("text/plain"), contactNumberEt.getText().toString() + "");
+            RequestBody email = RequestBody.create(MediaType.parse("text/plain"), emailEt.getText().toString() + "");
+            RequestBody dob = RequestBody.create(MediaType.parse("text/plain"), dobEt.getText().toString() + "");
+            RequestBody cityid = RequestBody.create(MediaType.parse("text/plain"), city_id + "");
+            RequestBody gender = RequestBody.create(MediaType.parse("text/plain"), genderEt.getText().toString() + "");
+            RequestBody professionid = RequestBody.create(MediaType.parse("text/plain"), profession_id + "");
+            RequestBody attachmentEmpty = RequestBody.create(MediaType.parse("text/plain"), "");
+
+            hashMap.put("name", name);
+            hashMap.put("fullname", fullname);
+            hashMap.put("bio", bio);
+            hashMap.put("contact", contact);
+            hashMap.put("email", email);
+            hashMap.put("dob", dob);
+            hashMap.put("city_id", cityid);
+            hashMap.put("gender", gender);
+            hashMap.put("profession_id", professionid);
+            if (thumbnailimage != null) {
+                hashMap.put("photo\";  filename=\"" + fileImage.getName() + "\"", thumbnailimage);
+            } else {
+                hashMap.put("photo", attachmentEmpty);
+            }
 
 
-                if (response.isSuccessful()) {
-                    assert object != null;
-                    Toast.makeText(EditProfileActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
+            showProgressDialog();
+            Call<LoginModel> registerModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).userUpdate("Bearer " + token, hashMap);
+            registerModelCall.enqueue(new Callback<LoginModel>() {
+
+                @Override
+                public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
+                    LoginModel object = response.body();
+                    Log.e("TAG", "Register_Response : " + new Gson().toJson(response.body()));
+                    hideProgressDialog();
+
+
+                    if (response.isSuccessful()) {
+                        assert object != null;
+                        Toast.makeText(EditProfileActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
 //                    PrefUtils.setUser(object, EditProfileActivity.this);
-                    ProfileCall();
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(EditProfileActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
+                        ProfileCall();
+                    } else {
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            Toast.makeText(EditProfileActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
-                hideProgressDialog();
-                t.printStackTrace();
-                Log.e("Register_Response", t.getMessage() + "");
-            }
-        });
+                @Override
+                public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
+                    hideProgressDialog();
+                    t.printStackTrace();
+                    Log.e("Register_Response", t.getMessage() + "");
+                }
+            });
+        }
     }
-
 
     public void CityCall() {
         dialog = new BottomSheetDialog(this);

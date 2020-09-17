@@ -35,7 +35,8 @@
         tools:ignore="AllowBackup"
         tools:replace="android:icon,android:allowBackup,android:usesCleartextTraffic"
         tools:targetApi="q">
-        <activity android:name=".ui.SearchCityActivity"></activity>
+        <activity android:name=".ui.SelectLocationActivity"></activity>
+        <activity android:name=".ui.SearchCityActivity" />
         <activity android:name=".ui.chats.MessageActivity" />
         <activity android:name=".ui.profile.SearchFollowFollowingActivity" />
         <activity android:name=".ui.profile.HelpAndSupportActivity" />
