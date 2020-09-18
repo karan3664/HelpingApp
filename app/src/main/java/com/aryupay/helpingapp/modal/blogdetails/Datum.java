@@ -59,7 +59,9 @@ public class Datum {
     @SerializedName("photo")
     @Expose
     private Photo photo;
-
+    @SerializedName("comment_like")
+    @Expose
+    private Boolean commentLike;
     public Integer getId() {
         return id;
     }
@@ -204,4 +206,11 @@ public class Datum {
         this.photo = photo;
     }
 
+    public Boolean getCommentLike() {
+        return commentLike;
+    }
+
+    public void setCommentLike(Boolean commentLike) {
+        this.commentLike = commentLike;
+    }
 }

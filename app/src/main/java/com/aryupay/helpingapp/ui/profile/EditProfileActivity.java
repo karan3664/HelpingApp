@@ -10,6 +10,8 @@ import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -50,7 +52,19 @@ import com.aryupay.helpingapp.utils.Tools;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
 import com.facebook.login.Login;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
@@ -94,6 +108,13 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     String name, email, mobile;
     LoginModel loginModel;
     String token;
+    DatabaseReference reference;
+    FirebaseUser fuser;
+
+    StorageReference storageReference;
+    private static final int IMAGE_REQUEST = 1;
+    private Uri imageUri;
+    private StorageTask uploadTask;
 
 
     public static final int PERMISSION_REQUEST_CODE = 1111;
@@ -113,6 +134,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         viewDialog.setCancelable(false);
         loginModel = PrefUtils.getUser(EditProfileActivity.this);
         token = loginModel.getData().getToken();
+
+        storageReference = FirebaseStorage.getInstance().getReference("uploads");
+
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+
 
         ivProfile = findViewById(R.id.ivProfile);
         userNameEt = findViewById(R.id.userNameEt);
@@ -210,6 +237,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnSaveRegister:
+                uploadImage();
                 RegisterCall();
                 break;
             case R.id.dobEt:
@@ -591,6 +619,60 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         return image;
     }
 
+    private String getFileExtension(Uri uri){
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
+    }
+
+    private void uploadImage(){
+//        final ProgressDialog pd = new ProgressDialog(getContext());
+//        pd.setMessage("Uploading");
+//        pd.show();
+
+        if (imageUri != null){
+            final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
+                    +"."+getFileExtension(imageUri));
+
+            uploadTask = fileReference.putFile(imageUri);
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()){
+                        throw  task.getException();
+                    }
+
+                    return  fileReference.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()){
+                        Uri downloadUri = task.getResult();
+                        String mUri = downloadUri.toString();
+
+                        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("imageURL", ""+mUri);
+                        reference.updateChildren(map);
+
+//                        pd.dismiss();
+                    } else {
+                        Toast.makeText(EditProfileActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
+//                        pd.dismiss();
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(EditProfileActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                    pd.dismiss();
+                }
+            });
+        } else {
+            Toast.makeText(EditProfileActivity.this, "No image selected", Toast.LENGTH_SHORT).show();
+        }
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -602,6 +684,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 final File userImageFile = getUserImageFile(bitmap);
                 if (null != userImageFile) {
                     fileImage = userImageFile;
+                    imageUri = Uri.fromFile(userImageFile);
                     //call presetner of manager for api it always required file
                     // new ProfilePresenter(context, this).callImageUploadApi(userImageFile);
 //                    ((DashboardActivity) getActivity()).alertDialog("Click ok to upload image", new DialogInterface.OnClickListener() {
@@ -626,6 +709,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 final File userImageFile = getUserImageFile(bitmap);
                 if (null != userImageFile) {
                     fileImage = userImageFile;
+                    imageUri = Uri.fromFile(userImageFile);
                     //call presetner of manager for api it always required file
                     // new ProfilePresenter(context, this).callImageUploadApi(userImageFile);
 //                    ((DashboardActivity) getActivity()).alertDialog("Click ok to upload image", new DialogInterface.OnClickListener() {

@@ -28,6 +28,9 @@ import android.widget.Toast;
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.city.CityModel;
+import com.aryupay.helpingapp.modal.location.LocationModel;
+import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.google.gson.Gson;
 
@@ -44,19 +47,23 @@ public class SelectLocationActivity extends AppCompatActivity {
     RecyclerView rvCityList;
     LinearLayout llCurrentCity;
     private MyCustomAdapter myCustomAdapter;
-    ArrayList<CityModel> datumArrayList = new ArrayList<>();
+    ArrayList<LocationModel> datumArrayList = new ArrayList<>();
     protected ViewDialog viewDialog;
     EditText et_search;
-
+    LoginModel loginModel;
+    String token;
     String cityId, cityName, city;
     SharedPreferences preferences;
     TextView tvCurrentCity;
     ImageButton bt_clear;
     ImageView ivBack;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_location);
+        loginModel = PrefUtils.getUser(this);
+        token = loginModel.getData().getToken();
         viewDialog = new ViewDialog(SelectLocationActivity.this);
         viewDialog.setCancelable(false);
         et_search = findViewById(R.id.et_search);
@@ -69,7 +76,7 @@ public class SelectLocationActivity extends AppCompatActivity {
         rvCityList.setLayoutManager(layoutManager);
         rvCityList.setHasFixedSize(true);
         preferences = getSharedPreferences("user_info", Context.MODE_PRIVATE);
-        city = preferences.getString("city", "");
+        city = preferences.getString("location", "");
         FollowerList();
         tvCurrentCity.setText(city);
         et_search.addTextChangedListener(new TextWatcher() {
@@ -102,28 +109,28 @@ public class SelectLocationActivity extends AppCompatActivity {
             }
         });
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("city", city + "");
-
+        hashMap.put("location", city + "");
+        Log.e("SearchLocation", hashMap + "");
         showProgressDialog();
-        Call<ArrayList<CityModel>> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).search_city(hashMap);
-        marqueCall.enqueue(new Callback<ArrayList<CityModel>>() {
+        Call<ArrayList<LocationModel>> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LocationModel(hashMap);
+        marqueCall.enqueue(new Callback<ArrayList<LocationModel>>() {
             @Override
-            public void onResponse(@NonNull Call<ArrayList<CityModel>> call, @NonNull Response<ArrayList<CityModel>> response) {
-                ArrayList<CityModel> object = response.body();
+            public void onResponse(@NonNull Call<ArrayList<LocationModel>> call, @NonNull Response<ArrayList<LocationModel>> response) {
+                ArrayList<LocationModel> object = response.body();
                 hideProgressDialog();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (response.isSuccessful()) {
                     if (object != null) {
                         for (int i = 0; i < object.size(); i++) {
-                            cityName = object.get(i).getCity() + "";
-                            cityId = object.get(i).getId() + "";
+                            cityName = object.get(i).getLocation() + "";
+//                            cityId = object.get(i).getId() + "";
                         }
 
                         llCurrentCity.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
                                 Intent intent = new Intent();
-                                intent.putExtra("id", cityId + "");
+//                                intent.putExtra("id", cityId + "");
                                 intent.putExtra("cityname", cityName + "");
                                 setResult(RESULT_OK, intent);
                                 finish();
@@ -141,7 +148,7 @@ public class SelectLocationActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ArrayList<CityModel>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<ArrayList<LocationModel>> call, @NonNull Throwable t) {
                 t.printStackTrace();
                 hideProgressDialog();
                 Log.e("ChatV_Response", t.getMessage() + "");
@@ -151,14 +158,14 @@ public class SelectLocationActivity extends AppCompatActivity {
 
     private void SearchList(String s) {
         HashMap<String, String> hashMap = new HashMap<>();
-        hashMap.put("city", s + "");
+        hashMap.put("location", s + "");
 
         showProgressDialog();
-        Call<ArrayList<CityModel>> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).search_city(hashMap);
-        marqueCall.enqueue(new Callback<ArrayList<CityModel>>() {
+        Call<ArrayList<LocationModel>> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LocationModel(hashMap);
+        marqueCall.enqueue(new Callback<ArrayList<LocationModel>>() {
             @Override
-            public void onResponse(@NonNull Call<ArrayList<CityModel>> call, @NonNull Response<ArrayList<CityModel>> response) {
-                ArrayList<CityModel> object = response.body();
+            public void onResponse(@NonNull Call<ArrayList<LocationModel>> call, @NonNull Response<ArrayList<LocationModel>> response) {
+                ArrayList<LocationModel> object = response.body();
                 hideProgressDialog();
                 Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                 if (object != null) {
@@ -179,7 +186,7 @@ public class SelectLocationActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ArrayList<CityModel>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<ArrayList<LocationModel>> call, @NonNull Throwable t) {
                 t.printStackTrace();
                 hideProgressDialog();
                 Log.e("ChatV_Response", t.getMessage() + "");
@@ -193,11 +200,11 @@ public class SelectLocationActivity extends AppCompatActivity {
         showProgressDialog();
         HashMap<String, String> hashMap = new HashMap<>();
 
-        Call<ArrayList<CityModel>> postCodeModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).cities(hashMap);
-        postCodeModelCall.enqueue(new Callback<ArrayList<CityModel>>() {
+        Call<ArrayList<LocationModel>> postCodeModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LocationModelG("Bearer " + token);
+        postCodeModelCall.enqueue(new Callback<ArrayList<LocationModel>>() {
             @Override
-            public void onResponse(@NonNull retrofit2.Call<ArrayList<CityModel>> call, @NonNull Response<ArrayList<CityModel>> response) {
-                final ArrayList<CityModel> object = response.body();
+            public void onResponse(@NonNull retrofit2.Call<ArrayList<LocationModel>> call, @NonNull Response<ArrayList<LocationModel>> response) {
+                final ArrayList<LocationModel> object = response.body();
                 hideProgressDialog();
 
                 if (response.isSuccessful()) {
@@ -218,7 +225,7 @@ public class SelectLocationActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(@NonNull retrofit2.Call<ArrayList<CityModel>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull retrofit2.Call<ArrayList<LocationModel>> call, @NonNull Throwable t) {
 
                 hideProgressDialog();
                 t.printStackTrace();
@@ -237,9 +244,9 @@ public class SelectLocationActivity extends AppCompatActivity {
 
     public class MyCustomAdapter extends RecyclerView.Adapter<MyCustomAdapter.MyViewHolder> {
 
-        private ArrayList<CityModel> moviesList;
+        private ArrayList<LocationModel> moviesList;
 
-        public MyCustomAdapter(ArrayList<CityModel> moviesList) {
+        public MyCustomAdapter(ArrayList<LocationModel> moviesList) {
             this.moviesList = moviesList;
         }
 
@@ -267,14 +274,14 @@ public class SelectLocationActivity extends AppCompatActivity {
         public void onBindViewHolder(MyViewHolder holder, final int position) {
 
 
-            CityModel cityModel = moviesList.get(position);
-            holder.cityName.setText(cityModel.getCity() + "");
+            LocationModel cityModel = moviesList.get(position);
+            holder.cityName.setText(cityModel.getLocation() + "");
             holder.llCity.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent();
-                    intent.putExtra("id", cityModel.getId() + "");
-                    intent.putExtra("cityname", cityModel.getCity() + "");
+//                    intent.putExtra("id", cityModel.get() + "");
+                    intent.putExtra("cityname", cityModel.getLocation() + "");
                     setResult(RESULT_OK, intent);
                     finish();
                 }

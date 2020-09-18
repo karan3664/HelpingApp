@@ -49,6 +49,8 @@ import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.gson.Gson;
@@ -150,6 +152,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         if (loginModel.getData().getUser().getUserDetail().getPhoto() != null) {
             Glide.with(this)
                     .load(BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .placeholder(R.drawable.placeholder)
                     .centerCrop()
 //                    .transition(DrawableTransitionOptions.withCrossFade(500))
@@ -436,7 +439,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     dialogs.getWindow().setAttributes(lp);
                 }
             });
+            if (datum.getLike().booleanValue() == false) {
+                holder.rvLikeComment.setBackgroundResource(R.drawable.add_ping_edittext_bg);
+            } else {
 
+            }
             holder.rvLikeComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

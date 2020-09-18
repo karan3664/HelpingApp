@@ -111,6 +111,9 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
     LinearLayout llRating;
     private AlertDialog.Builder alertDialogBuilder;
 
+    ArrayList<String> timeArrayList = new ArrayList<>();
+    ArrayList<Boolean> commentBooleanArrayList = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -770,7 +773,11 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     dialogs.getWindow().setAttributes(lp);
                 }
             });
+            if (datum.getCommentLike().booleanValue() == false) {
+                holder.rvLikeComment.setBackgroundResource(R.drawable.add_ping_edittext_bg);
+            } else {
 
+            }
             holder.rvLikeComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -860,6 +867,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     commentArrayLis = object.getData().getComments();
                     tvEmailId.setText(object.getData().getEmail() + "");
                     tv_name.setText(object.getData().getName() + "");
+                    timeArrayList = object.getData().getTime();
+                    commentBooleanArrayList = object.getData().getCommentLike();
                     if (object.getData().getUserDetail() != null) {
                         tvBiotxt.setText(object.getData().getUserDetail().getBio() + "");
 //                    tvAgetxt.setText(object.getData().getUserDetail().getDob() + "");
@@ -879,6 +888,14 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                         } catch (Exception e) {
                             e.printStackTrace();
                         }*/
+
+                        if (object.getData().getFollow() == true) {
+                            btnFollow.setText("Following");
+                        } else {
+                            btnFollow.setText("Follow");
+                        }
+
+
                         try {
 
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -962,7 +979,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
             final com.aryupay.helpingapp.modal.other_user.Comment datum = moviesList.get(position);
             holder.tvName.setText(datum.getFullname() + "");
             holder.tvHeading.setText(datum.getComment() + "");
-            holder.tvTime.setText(datum.getCreatedAt() + "");
+            holder.tvTime.setText(timeArrayList.get(position) + "");
 
 
 //            holder.tvTotalComment.setText(Comments.get(position) + "");
@@ -1060,6 +1077,12 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 }
             });
 
+            if (commentBooleanArrayList.get(position).booleanValue() == false) {
+                holder.rvLikeComment.setBackgroundResource(R.drawable.add_ping_edittext_bg);
+            } else {
+
+            }
+
             holder.rvLikeComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1110,7 +1133,6 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
             public MyViewHolder(View view) {
                 super(view);
-
 
 
                 ivEmployee = view.findViewById(R.id.ivEmployee);

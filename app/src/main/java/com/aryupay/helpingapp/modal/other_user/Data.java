@@ -37,12 +37,21 @@ public class Data {
     @SerializedName("comments")
     @Expose
     private ArrayList<Comment> comments = null;
+    @SerializedName("time")
+    @Expose
+    private ArrayList<String> time = null;
+    @SerializedName("comment_like")
+    @Expose
+    private ArrayList<Boolean> commentLike = null;
     @SerializedName("followers")
     @Expose
     private Integer followers;
     @SerializedName("following")
     @Expose
     private Integer following;
+    @SerializedName("follow")
+    @Expose
+    private Boolean follow;
     @SerializedName("user_detail")
     @Expose
     private UserDetail userDetail;
@@ -151,4 +160,27 @@ public class Data {
         this.userDetail = userDetail;
     }
 
+    public Boolean getFollow() {
+        return follow;
+    }
+
+    public void setFollow(Boolean follow) {
+        this.follow = follow;
+    }
+
+    public ArrayList<String> getTime() {
+        return time;
+    }
+
+    public void setTime(ArrayList<String> time) {
+        this.time = time;
+    }
+
+    public ArrayList<Boolean> getCommentLike() {
+        return commentLike;
+    }
+
+    public void setCommentLike(ArrayList<Boolean> commentLike) {
+        this.commentLike = commentLike;
+    }
 }

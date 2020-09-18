@@ -16,6 +16,7 @@ import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.Target;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -47,6 +48,7 @@ public class OpenOptionsActivity extends AppCompatActivity implements View.OnCli
                     .load(BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
                     .placeholder(R.drawable.placeholder)
                     .centerCrop()
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
 //                    .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(ivProfileImage);
             Log.e("Profile=>", BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage" + ""));

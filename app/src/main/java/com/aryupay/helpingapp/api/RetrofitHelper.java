@@ -197,7 +197,7 @@ public class RetrofitHelper {
         Call<ChatListModel> ChatListModel(@Header("Authorization") String token);
 
         @GET("location")
-        Call<ArrayList<LocationModel>> LocationModel(@Header("Authorization") String token);
+        Call<ArrayList<LocationModel>> LocationModelG(@Header("Authorization") String token);
 
         @GET("messages/{user_id}")
         Call<ChatDetailModel> ChatDetailModel(@Path("user_id") String user_id, @Header("Authorization") String token);
@@ -265,6 +265,10 @@ public class RetrofitHelper {
         @FormUrlEncoded
         @POST("search_city")
         Call<ArrayList<CityModel>> search_city(@FieldMap HashMap<String, String> hashMap);
+
+        @FormUrlEncoded
+        @POST("search_location")
+        Call<ArrayList<LocationModel>> LocationModel(@FieldMap HashMap<String, String> hashMap);
 
         @Multipart
         @POST("register")
