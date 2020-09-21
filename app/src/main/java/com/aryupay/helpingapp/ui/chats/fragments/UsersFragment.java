@@ -3,6 +3,7 @@ package com.aryupay.helpingapp.ui.chats.fragments;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,7 +115,7 @@ public class UsersFragment extends Fragment {
 
     }
 
-    private void readUsers() {
+   /* private void readUsers() {
 
         final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
@@ -129,6 +130,43 @@ public class UsersFragment extends Fragment {
 
                         if (!user.getId().equals(firebaseUser.getUid())) {
                             mUsers.add(user);
+                        }
+
+                    }
+
+                    userAdapter = new UserAdapter(getContext(), mUsers, false);
+                    recyclerView.setAdapter(userAdapter);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+*/
+    private void readUsers() {
+
+        final FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        Log.e("firebaseUser.getUid()", firebaseUser.getUid()+"");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (search_users.getText().toString().equals("")) {
+                    mUsers.clear();
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        User user = snapshot.getValue(User.class);
+
+                        assert firebaseUser != null;
+                        assert user != null;
+                        if (!user.getId().equals(firebaseUser.getUid())) {
+                            mUsers.add(user);
+                        }
+                        else {
+
                         }
 
                     }

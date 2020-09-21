@@ -272,6 +272,19 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
+
+        ivShare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "http://play.google.com/store/apps/details?id=" + getApplication().getPackageName());
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        });
+
+
 //        if (datum.getFollow() == false) {
 //            holder.rlCategory.setBackgroundResource(R.drawable.btn_follow_bg);
 //            holder.rlCategory.setText("Follow");
@@ -333,6 +346,10 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     } else {
                         ivCallP.setVisibility(View.VISIBLE);
                         ivCall.setVisibility(View.GONE);
+                    }
+
+                    if (userid.matches(loginModel.getData().getUser().getId() + "")) {
+                        ivOptionBlog.setVisibility(View.GONE);
                     }
                     if (userid != null) {
                         ProfileCall();

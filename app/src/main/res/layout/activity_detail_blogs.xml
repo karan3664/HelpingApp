@@ -62,13 +62,14 @@
 
 
                                 <ImageView
+                                    android:id="@+id/ivShare"
                                     android:layout_width="@dimen/_15sdp"
                                     android:layout_height="@dimen/_15sdp"
                                     android:layout_margin="@dimen/_12sdp"
                                     android:layout_marginTop="@dimen/_13sdp"
                                     android:src="@drawable/ic_share"
                                     android:tint="@color/sky_blue_color"
-                                    android:visibility="gone" />
+                                    android:visibility="visible" />
 
                                 <ImageView
                                     android:id="@+id/ivOptionBlog"

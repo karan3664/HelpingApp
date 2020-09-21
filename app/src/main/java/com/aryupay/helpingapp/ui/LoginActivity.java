@@ -271,20 +271,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 @Override
                 public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
                     LoginModel object = response.body();
-                    Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+                    Log.e("TAG_P", "Login_Response : " + new Gson().toJson(response.body()));
 
                     hideProgressDialog();
 
                     if (response.isSuccessful()) {
-
-
-                        PrefUtils.setUser(object, LoginActivity.this);
-
-                        mAuth.signInWithEmailAndPassword(object.getData().getUser().getEmail() + "", pass_word)
+                        showProgressDialog();
+                        assert object != null;
+                        Log.e("EMAIL", object.getData().getUser().getEmail() + "");
+                        mAuth.signInWithEmailAndPassword( object.getData().getUser().getEmail() , "123456")
                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
+                                        hideProgressDialog();
+                                        Log.e("FIRE==>", new Gson().toJson(task) + "");
                                         if (task.isSuccessful()) {
+                                            final FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                                            Log.e("firebaseUser.getUid()", firebaseUser.getUid()+"");
+                                            showProgressDialog();
                                             String androidVersion = android.os.Build.VERSION.RELEASE; // e.g. myVersion := "1.6"
                                             HashMap<String, String> map = new HashMap<>();
                                             map.put("registration_id", tokenFirebase);
@@ -297,19 +301,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                                 @Override
                                                 public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                                                    JsonObject object = response.body();
+                                                    JsonObject object1 = response.body();
                                                     Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
 
                                                     hideProgressDialog();
 
                                                     if (response.isSuccessful()) {
-
-
+                                                        PrefUtils.setUser(object, LoginActivity.this);
                                                         Intent loginIntent = new Intent(LoginActivity.this, HomeActivity.class);
                                                         loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                         startActivity(loginIntent);
                                                         finish();
+
                                                     } else {
+                                                        hideProgressDialog();
                                                         try {
                                                             JSONObject jObjError = new JSONObject(response.errorBody().string());
                                                             Toast.makeText(LoginActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
@@ -325,15 +330,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                                     Log.e("Login_Response", t.getMessage() + "");
                                                 }
                                             });
-
                                         } else {
+                                            hideProgressDialog();
                                             Toast.makeText(LoginActivity.this, "Authentication failed!", Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
 
 
+
+
                     } else {
+                        hideProgressDialog();
                         try {
                             JSONObject jObjError = new JSONObject(response.errorBody().string());
                             Toast.makeText(LoginActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();

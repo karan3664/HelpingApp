@@ -343,15 +343,16 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                     if (response.isSuccessful()) {
 
-
+                        showProgressDialog();
                         auth.fetchSignInMethodsForEmail(emailEt.getText().toString()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
                             @Override
                             public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
                                 Log.d("REgisterEMIAL", "" + task.getResult().getSignInMethods().size());
                                 if (task.getResult().getSignInMethods().size() == 0) {
                                     // email not existed
+                                    showProgressDialog();
                                     if (one == true) {
-                                        auth.createUserWithEmailAndPassword(emailEt.getText().toString() + "", et_password.getText().toString() + "")
+                                        auth.createUserWithEmailAndPassword(emailEt.getText().toString() + "",   "123456")
                                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -421,7 +422,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                                     }
                                                 });
                                     } else {
-                                        auth.createUserWithEmailAndPassword(emailEt.getText().toString() + "", et_password.getText().toString() + "")
+                                        auth.createUserWithEmailAndPassword(emailEt.getText().toString() + "",   "123456")
                                                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -467,11 +468,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                     }
 
                                 } else {
-                                    auth.signInWithEmailAndPassword(emailEt.getText().toString() + "", et_password.getText().toString() + "")
+                                    showProgressDialog();
+                                    auth.signInWithEmailAndPassword(emailEt.getText().toString() + "",   "123456")
                                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                                 @Override
                                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                                     if (one == true) {
+                                                        hideProgressDialog();
                                                         FirebaseUser firebaseUser = auth.getCurrentUser();
                                                         String userid = firebaseUser.getUid();
                                                         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);

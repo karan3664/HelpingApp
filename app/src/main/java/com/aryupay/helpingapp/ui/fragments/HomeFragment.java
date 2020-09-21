@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
@@ -50,6 +51,9 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -506,8 +510,81 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
             if (datum.getFav() == true) {
-                holder.favStar.setImageResource(R.drawable.favourite_star);
+                holder.favStar.setVisibility(View.VISIBLE);
+                holder.unfavStar.setVisibility(View.GONE);
+//                holder.favStar.setImageResource(R.drawable.favourite_star);
             }
+
+            holder.favStar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.favStar.setVisibility(View.GONE);
+                    holder.unfavStar.setVisibility(View.VISIBLE);
+                    showProgressDialog();
+                    Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).favourite(datum.getId() + "", "Bearer " + token);
+                    marqueCall.enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                            JsonObject object = response.body();
+                            hideProgressDialog();
+                            Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                            if (response.isSuccessful()) {
+//                                BlogDetails();
+                                Toast.makeText(getContext(), response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    Toast.makeText(getContext(), jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                            t.printStackTrace();
+                            hideProgressDialog();
+                            Log.e("ChatV_Response", t.getMessage() + "");
+                        }
+                    });
+                }
+            });
+            holder.unfavStar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.favStar.setVisibility(View.VISIBLE);
+                    holder.unfavStar.setVisibility(View.GONE);
+                    showProgressDialog();
+                    Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).favourite(datum.getId() + "", "Bearer " + token);
+                    marqueCall.enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                            JsonObject object = response.body();
+                            hideProgressDialog();
+                            Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                            if (response.isSuccessful()) {
+//                                BlogDetails();
+                                Toast.makeText(getContext(), response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    Toast.makeText(getContext(), jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                            t.printStackTrace();
+                            hideProgressDialog();
+                            Log.e("ChatV_Response", t.getMessage() + "");
+                        }
+                    });
+                }
+            });
             holder.tvName.setText(datum.getName() + "");
             holder.tvHeading.setText(datum.getHeading() + "");
             holder.tvSubHeading.setText(datum.getDescription() + "");
@@ -554,7 +631,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             CircleImageView ivEmployee;
             TextView tvName, catName, tvTime, tvSubHeading, tvHeading, tvTotalView, tvTotalLikes, tvTotalComment, tvLocation;
             RelativeLayout rlCategory;
-            ImageView favStar;
+            ImageView favStar, unfavStar;
             CardView CVReview;
 
             public MyViewHolder(View view) {
@@ -573,6 +650,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 tvLocation = view.findViewById(R.id.tvLocation);
                 rlCategory = view.findViewById(R.id.rlCategory);
                 favStar = view.findViewById(R.id.favStar);
+                unfavStar = view.findViewById(R.id.unfavStar);
                 CVReview = view.findViewById(R.id.CVReview);
 
             }
@@ -611,4 +689,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     protected void showProgressDialog() {
         viewDialog.show();
     }
+
+
 }

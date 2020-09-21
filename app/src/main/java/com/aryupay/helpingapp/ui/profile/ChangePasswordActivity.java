@@ -18,6 +18,12 @@ import com.aryupay.helpingapp.modal.changePassword.otp.OTPModel;
 import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -36,6 +42,9 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
     Button btnSavePassword;
     protected ViewDialog viewDialog;
     ImageView ivClose;
+    String email, password;
+    FirebaseAuth mAuth;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +53,8 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
         Intent i = getIntent();
         viewDialog = new ViewDialog(this);
         viewDialog.setCancelable(false);
-
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
         contactNumberEt = findViewById(R.id.contactNumberEt);
         et_password = findViewById(R.id.et_password);
         et_confirmpassword = findViewById(R.id.et_confirmpassword);
@@ -55,7 +65,11 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
 
         if (i != null) {
             mobile = i.getStringExtra("mobile");
+            email = i.getStringExtra("email");
+            password = i.getStringExtra("password");
             contactNumberEt.setText(mobile);
+
+
         }
 
     }
@@ -81,8 +95,6 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
             et_confirmpassword.setError("Confirm Password Required...");
             et_confirmpassword.requestFocus();
         } else {
-
-
             HashMap<String, String> hashMap = new HashMap<>();
             hashMap.put("mobile", contactNumberEt.getText().toString() + "");
             hashMap.put("password", et_password.getText().toString() + "");
@@ -125,8 +137,11 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
                     Log.e("Postcode_Response", t.getMessage() + "");
                 }
             });
+
+
         }
     }
+
 
     protected void hideProgressDialog() {
         viewDialog.dismiss();

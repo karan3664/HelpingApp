@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.telecom.PhoneAccountSuggestion;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -50,12 +51,13 @@ public class ChangePasswordMobileNumberActivity extends AppCompatActivity implem
     OtpView otp_view;
     Button btnResend, btnVerifyOTP, btn_sumbitOtp;
     LoginModel loginModel;
-    String otp, mobile, name, password, token;
+    String otp, mobile, name, password, email;
     Boolean one = false;
     protected ViewDialog viewDialog;
     private FirebaseAuth mAuth;
     String code;
     private String mVerificationId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,17 +76,17 @@ public class ChangePasswordMobileNumberActivity extends AppCompatActivity implem
         btnVerifyOTP.setOnClickListener(this);
         btn_sumbitOtp.setOnClickListener(this);
 
-        otp_view.setOtpCompletionListener(new OnOtpCompletionListener() {
-            @Override
-            public void onOtpCompleted(String otp_s) {
-                if (otp_s.matches(code)) {
-                    Toast.makeText(ChangePasswordMobileNumberActivity.this, "OTP Verified...", Toast.LENGTH_SHORT).show();
-                    btnVerifyOTP.setEnabled(true);
-                } else {
-                    Toast.makeText(ChangePasswordMobileNumberActivity.this, "OTP Invalid!!!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+//        otp_view.setOtpCompletionListener(new OnOtpCompletionListener() {
+//            @Override
+//            public void onOtpCompleted(String otp_s) {
+//                if (otp_s.matches(code)) {
+//                    Toast.makeText(ChangePasswordMobileNumberActivity.this, "OTP Verified...", Toast.LENGTH_SHORT).show();
+//                    btnVerifyOTP.setEnabled(true);
+//                } else {
+//                    Toast.makeText(ChangePasswordMobileNumberActivity.this, "OTP Invalid!!!", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
     }
 
 
@@ -95,7 +97,8 @@ public class ChangePasswordMobileNumberActivity extends AppCompatActivity implem
                 GetOTP();
                 break;
             case R.id.btnResend:
-                GetOTP();
+                Toast.makeText(this, "OTP sent Successfully", Toast.LENGTH_SHORT).show();
+                sendVerificationCode(et_mobno.getText().toString());
                 break;
             case R.id.btnVerifyOTP:
                 VerifyOtpCall();
@@ -105,7 +108,11 @@ public class ChangePasswordMobileNumberActivity extends AppCompatActivity implem
 
 
     public void VerifyOtpCall() {
-        Call<JsonObject> postCodeModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).verifyotp("Bearer " + token);
+        Intent regIntent = new Intent(ChangePasswordMobileNumberActivity.this, ChangePasswordActivity.class);
+        regIntent.putExtra("mobile", et_mobno.getText().toString() + "");
+        startActivity(regIntent);
+
+        /* Call<JsonObject> postCodeModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).verifyotp("Bearer " + token);
         postCodeModelCall.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
@@ -115,9 +122,7 @@ public class ChangePasswordMobileNumberActivity extends AppCompatActivity implem
                 if (object != null) {
 
                     if (response.isSuccessful()) {
-                        Intent regIntent = new Intent(ChangePasswordMobileNumberActivity.this, ChangePasswordActivity.class);
-                        regIntent.putExtra("mobile", et_mobno.getText().toString() + "");
-                        startActivity(regIntent);
+
                     } else {
 
                     }
@@ -134,7 +139,8 @@ public class ChangePasswordMobileNumberActivity extends AppCompatActivity implem
                 t.printStackTrace();
                 Log.e("Postcode_Response", t.getMessage() + "");
             }
-        });
+        });*/
+
     }
 
     public void GetOTP() {
@@ -158,6 +164,8 @@ public class ChangePasswordMobileNumberActivity extends AppCompatActivity implem
                             Toast.makeText(ChangePasswordMobileNumberActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
                             otp = object.getData().getOtp() + "";
                             sendVerificationCode(et_mobno.getText().toString());
+                            email = object.getData().getUser().getEmail();
+                            password = object.getData().getUser().getPassword();
 //                        token = object.getData().getToken() + "";
                         } else {
                             Toast.makeText(ChangePasswordMobileNumberActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
@@ -254,7 +262,6 @@ public class ChangePasswordMobileNumberActivity extends AppCompatActivity implem
             }
         });
     }
-
 
 
     protected void hideProgressDialog() {

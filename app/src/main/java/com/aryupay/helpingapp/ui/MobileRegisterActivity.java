@@ -150,44 +150,75 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
 
                 if (response.isSuccessful()) {
                     if (one == true) {
-                        HashMap<String, String> hashMap = new HashMap<>();
 
-                        hashMap.put("name", name + "");
-                        hashMap.put("password", password + "");
+                        auth.signInWithEmailAndPassword(email + "", "123456")
+                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (one == true) {
+                                            hideProgressDialog();
+                                            FirebaseUser firebaseUser = auth.getCurrentUser();
+                                            String userid = firebaseUser.getUid();
+                                            databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userid);
 
-                        showProgressDialog();
-                        Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
-                        loginModelCall.enqueue(new Callback<LoginModel>() {
+                                            HashMap<String, String> hashMap = new HashMap<>();
+                                            hashMap.put("id", userid);
+                                            hashMap.put("user_id", user_id + "");
+                                            hashMap.put("username", name + "");
+                                            hashMap.put("imageURL", "default");
+                                            hashMap.put("status", "offline");
+                                            hashMap.put("phone", mobile + "");
+                                            hashMap.put("search", name.toLowerCase());
+                                            databaseReference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        HashMap<String, String> hashMap = new HashMap<>();
 
-                            @Override
-                            public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
-                                LoginModel object = response.body();
-                                Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+                                                        hashMap.put("name", name + "");
+                                                        hashMap.put("password", password + "");
 
-                                hideProgressDialog();
+                                                        showProgressDialog();
+                                                        Call<LoginModel> loginModelCall = RetrofitHelper.createService(RetrofitHelper.Service.class).LoginModel(hashMap);
+                                                        loginModelCall.enqueue(new Callback<LoginModel>() {
 
-                                if (response.isSuccessful()) {
-                                    PrefUtils.setUser(object, MobileRegisterActivity.this);
-                                    Intent loginIntent = new Intent(MobileRegisterActivity.this, HomeActivity.class);
-                                    loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(loginIntent);
-                                } else {
-                                    try {
-                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                                        Toast.makeText(MobileRegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
-                                    } catch (Exception e) {
+                                                            @Override
+                                                            public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
+                                                                LoginModel object = response.body();
+                                                                Log.e("TAG", "Login_Response : " + new Gson().toJson(response.body()));
+
+                                                                hideProgressDialog();
+
+                                                                if (response.isSuccessful()) {
+                                                                    PrefUtils.setUser(object, MobileRegisterActivity.this);
+                                                                    Intent loginIntent = new Intent(MobileRegisterActivity.this, HomeActivity.class);
+                                                                    loginIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                                                    startActivity(loginIntent);
+                                                                } else {
+                                                                    try {
+                                                                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                                        Toast.makeText(MobileRegisterActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                                                    } catch (Exception e) {
+                                                                    }
+                                                                }
+                                                            }
+
+                                                            @Override
+                                                            public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
+                                                                hideProgressDialog();
+                                                                t.printStackTrace();
+                                                                Log.e("Login_Response", t.getMessage() + "");
+                                                            }
+                                                        });
+
+                                                    }
+                                                }
+                                            });
+                                        } else {
+
+                                        }
                                     }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
-                                hideProgressDialog();
-                                t.printStackTrace();
-                                Log.e("Login_Response", t.getMessage() + "");
-                            }
-                        });
-
+                                });
 
 
                     } else {
@@ -215,6 +246,7 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
             }
         });
     }
+
     public boolean isValidPhone(CharSequence phone) {
         if (TextUtils.isEmpty(phone)) {
             return false;
@@ -222,9 +254,10 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
             return android.util.Patterns.PHONE.matcher(phone).matches();
         }
     }
+
     public void GetOTP() {
 
-        if(isValidPhone(et_mobno.getText().toString())){
+        if (isValidPhone(et_mobno.getText().toString())) {
 
 
             HashMap<String, String> hashMap = new HashMap<>();
@@ -259,9 +292,9 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
                     Log.e("Postcode_Response", t.getMessage() + "");
                 }
             });
-        }else {
+        } else {
 
-            Toast.makeText(getApplicationContext(),"Phone number is not valid",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Phone number is not valid", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -287,7 +320,7 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
 
             //Getting the code sent by SMS
-             code = phoneAuthCredential.getSmsCode();
+            code = phoneAuthCredential.getSmsCode();
             Toast.makeText(MobileRegisterActivity.this, "OTP Verified...", Toast.LENGTH_SHORT).show();
             //sometime the code is not detected automatically
             //in this case the code will be null
@@ -295,7 +328,6 @@ public class MobileRegisterActivity extends AppCompatActivity implements View.On
             otp_view.setText(code);
             //verifying the code
             verifyVerificationCode(code);
-
 
 
         }

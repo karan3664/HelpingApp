@@ -75,6 +75,7 @@
                         android:layout_gravity="center"
                         android:background="@drawable/general_cat_bg"
                         android:gravity="center">
+
                         <TextView
                             android:id="@+id/catName"
                             android:layout_width="match_parent"
@@ -246,7 +247,16 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
+                    android:src="@drawable/favourite_star"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/unfavStar"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
                     android:src="@drawable/unfavourite_star" />
+
 
                 <LinearLayout
                     android:layout_width="wrap_content"
