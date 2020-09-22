@@ -279,6 +279,15 @@
                                     android:layout_height="20dp"
                                     android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
+                                    android:visibility="gone"
+                                    android:src="@drawable/favourite_star" />
+
+                                <ImageView
+                                    android:id="@+id/ivUnFav"
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
                                     android:src="@drawable/unfavourite_star" />
 
                                 <RelativeLayout
@@ -557,11 +566,11 @@
                                             android:id="@+id/tv_name"
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
+                                            android:ellipsize="end"
+                                            android:maxLines="1"
                                             android:text="Deep Singh Baghel"
                                             android:textColor="@color/white_color"
                                             android:textSize="@dimen/_16sdp"
-                                            android:ellipsize="end"
-                                            android:maxLines="1"
                                             android:textStyle="bold" />
 
                                         <RelativeLayout
@@ -731,9 +740,9 @@
                                     android:layout_width="0.5dp"
                                     android:layout_height="match_parent"
                                     android:layout_marginLeft="5dp"
+                                    android:layout_marginTop="5dp"
                                     android:layout_marginRight="5dp"
                                     android:layout_marginBottom="@dimen/_5sdp"
-                                    android:layout_marginTop="5dp"
                                     android:background="@color/pink_color" />
 
                                 <LinearLayout
@@ -771,9 +780,9 @@
                                     android:layout_width="0.5dp"
                                     android:layout_height="match_parent"
                                     android:layout_marginLeft="5dp"
+                                    android:layout_marginTop="5dp"
                                     android:layout_marginRight="5dp"
                                     android:layout_marginBottom="@dimen/_5sdp"
-                                    android:layout_marginTop="5dp"
                                     android:background="@color/pink_color" />
 
                                 <LinearLayout

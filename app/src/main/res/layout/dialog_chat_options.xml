@@ -26,6 +26,7 @@
             android:gravity="end"
             android:text="Delete CHAT"
             android:textAllCaps="true"
+            android:visibility="gone"
             android:textColor="#707070"
             android:textSize="15dp" />
 
@@ -38,6 +39,7 @@
             android:fontFamily="@font/segoe_ui"
             android:gravity="end"
             android:text="Block User"
+            android:visibility="gone"
             android:textAllCaps="true"
             android:textColor="#707070"
             android:textSize="15dp" />

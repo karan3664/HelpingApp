@@ -45,9 +45,9 @@
                         android:id="@+id/tvName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="by username"
                         android:ellipsize="end"
                         android:maxLines="1"
+                        android:text="by username"
                         android:textColor="@color/dark_grey"
                         android:textSize="@dimen/_9sdp">
 
@@ -59,9 +59,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/_5sdp"
                         android:layout_toRightOf="@id/tvName"
-                        android:text="2 hours ago"
                         android:ellipsize="end"
                         android:maxLines="1"
+                        android:text="2 hours ago"
                         android:textColor="@color/dark_grey"
                         android:textSize="@dimen/_9sdp">
 
@@ -83,8 +83,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvHeading"
-                    android:maxLines="2"
                     android:ellipsize="end"
+                    android:maxLines="2"
                     android:text="@string/loremipsum"
                     android:textColor="@color/black_color"
                     android:textSize="@dimen/_10sdp" />
@@ -101,7 +101,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_2sdp"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
                     <RelativeLayout
                         android:id="@+id/rvLikeComment"
@@ -131,6 +132,26 @@
                             android:textSize="@dimen/_8sdp">
 
                         </TextView>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rvUnLikeComment"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_18sdp"
+                        android:background="@drawable/add_ping_edittext_bg"
+                        android:gravity="center"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/ivUnLike"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:layout_marginTop="@dimen/_2sdp"
+                            android:src="@drawable/like">
+
+                        </ImageView>
+
+
                     </RelativeLayout>
 
                 </LinearLayout>
@@ -183,9 +204,9 @@
                     android:id="@+id/llReport"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_15sdp"
                     android:layout_weight="1"
-                    android:layout_gravity="center"
                     android:gravity="center_vertical">
 
                     <RelativeLayout
@@ -196,8 +217,8 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/report"
                             android:gravity="center"
+                            android:text="@string/report"
                             android:textColor="@color/sky_blue_color"
                             android:textSize="@dimen/_10sdp">
 

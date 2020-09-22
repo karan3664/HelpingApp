@@ -78,10 +78,10 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
     AdapterViewFlipper adapterViewFlipper;
     TextView tvName, catName, tvTime, tvSubHeading, tvHeading, tvTotalView, tvTotalLikes, tvTotalComment, tvLocation;
-    RelativeLayout btnComment, btnChat;
-    String token, blogid, id, image_path;
+    RelativeLayout btnComment, btnChat, rlCategory;
+    String token, blogid, id, image_path, catname;
     LoginModel loginModel;
-    ImageView userProfile, ivLike, ivFav, ivCall, ivCallP;
+    ImageView userProfile, ivLike, ivFav, ivUnFav, ivCall, ivCallP;
     CircleImageView ivProfileImage;
     TextView tv_name, tvBiotxt, tv_bio, tvAgetxt, tv_gender, tv_location, profession,
             tvEmailId, tvMobileNo, tvFollowers, tvFollowing, tvHelping, tvReviewNo;
@@ -124,6 +124,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         token = loginModel.getData().getToken() + "";
         Intent i = getIntent();
         blogid = i.getStringExtra("blogid");
+        catname = i.getStringExtra("catname");
         mUsers = new ArrayList<>();
         adapterViewFlipper = findViewById(R.id.adapterViewFlipper);
         llDetailContain = findViewById(R.id.llDetailContain);
@@ -142,12 +143,14 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         userProfile = findViewById(R.id.userProfile);
         ivLike = findViewById(R.id.ivLike);
         ivFav = findViewById(R.id.ivFav);
+        ivUnFav = findViewById(R.id.ivUnFav);
         ivCall = findViewById(R.id.ivCall);
         ivCallP = findViewById(R.id.ivCallP);
         nesDetailBlog = findViewById(R.id.nsvDetailBlog);
         nesProfile = findViewById(R.id.nesProfile);
         ivOptionBlog = findViewById(R.id.ivOptionBlog);
         ivClose = findViewById(R.id.ivClose);
+        rlCategory = findViewById(R.id.rlCategory);
 
         //Comment Section
 
@@ -166,6 +169,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
         ivLike.setOnClickListener(this);
         ivFav.setOnClickListener(this);
+        ivUnFav.setOnClickListener(this);
         ivCall.setOnClickListener(this);
         btnChat.setOnClickListener(this);
         btnComment.setOnClickListener(this);
@@ -236,7 +240,11 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+//                onBackPressed();
+                Intent intent = new Intent();
+                intent.putExtra("catname", catname + "");
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
 
@@ -314,6 +322,14 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     tvTotalLikes.setText(object.getData().getLikes() + "");
                     tvTotalView.setText(object.getData().getViews() + "");
                     catName.setText(object.getData().getCategory() + "");
+                    if (object.getData().getCategory().matches("information")) {
+                        rlCategory.setBackgroundResource(R.drawable.information_cat_bg);
+                    } else if (object.getData().getCategory().matches("urgent")) {
+                        rlCategory.setBackgroundResource(R.drawable.urgent_cat_bg);
+
+                    } else {
+
+                    }
                     if (object.getData().getUserdetail() != null) {
                         calls = object.getData().getUserdetail().getContact() + "";
                     }
@@ -322,6 +338,8 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     FlipperAdapter adapter = new FlipperAdapter(DetailBlogsActivity.this, heros);
                     if (object.getData().getFav() == true) {
                         ivFav.setImageResource(R.drawable.favourite_star);
+                        ivFav.setVisibility(View.VISIBLE);
+                        ivUnFav.setVisibility(View.GONE);
                     }
                     //adding it to adapterview flipper
                     adapterViewFlipper.setAdapter(adapter);
@@ -498,7 +516,40 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
     }
 
     public void AddFavBlog() {
-        ivFav.setImageResource(R.drawable.favourite_star);
+        ivUnFav.setVisibility(View.VISIBLE);
+        ivFav.setVisibility(View.GONE);
+        showProgressDialog();
+        Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).favourite(blogid, "Bearer " + token);
+        marqueCall.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                JsonObject object = response.body();
+                hideProgressDialog();
+                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                if (response.isSuccessful()) {
+                    BlogDetails();
+                    Toast.makeText(DetailBlogsActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        JSONObject jObjError = new JSONObject(response.errorBody().string());
+                        Toast.makeText(DetailBlogsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                t.printStackTrace();
+                hideProgressDialog();
+                Log.e("ChatV_Response", t.getMessage() + "");
+            }
+        });
+    }
+
+    public void RemoveFavBlog() {
+        ivFav.setVisibility(View.VISIBLE);
+        ivUnFav.setVisibility(View.GONE);
         showProgressDialog();
         Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).favourite(blogid, "Bearer " + token);
         marqueCall.enqueue(new Callback<JsonObject>() {
@@ -615,6 +666,9 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.ivFav:
                 AddFavBlog();
+                break;
+            case R.id.ivUnFav:
+                RemoveFavBlog();
                 break;
             case R.id.ivCall:
                 if (calls != null) {
@@ -791,14 +845,54 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 }
             });
             if (datum.getCommentLike().booleanValue() == false) {
-                holder.rvLikeComment.setBackgroundResource(R.drawable.add_ping_edittext_bg);
+//                holder.rvLikeComment.setBackgroundResource(R.drawable.add_ping_edittext_bg);
+                holder.rvLikeComment.setVisibility(View.VISIBLE);
+                holder.rvUnLikeComment.setVisibility(View.GONE);
             } else {
 
             }
             holder.rvLikeComment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    holder.rvLikeComment.setVisibility(View.GONE);
+                    holder.rvUnLikeComment.setVisibility(View.VISIBLE);
+                    showProgressDialog();
+                    Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).like_comment(datum.getId() + "", "Bearer " + token);
+                    marqueCall.enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                            JsonObject object = response.body();
+                            hideProgressDialog();
+                            Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                            if (response.isSuccessful()) {
 
+                                BlogDetails();
+                                ProfileCall();
+                                Toast.makeText(DetailBlogsActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    Toast.makeText(DetailBlogsActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                            t.printStackTrace();
+                            hideProgressDialog();
+                            Log.e("ChatV_Response", t.getMessage() + "");
+                        }
+                    });
+                }
+            });
+            holder.rvUnLikeComment.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+                    holder.rvLikeComment.setVisibility(View.VISIBLE);
+                    holder.rvUnLikeComment.setVisibility(View.GONE);
                     showProgressDialog();
                     Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).like_comment(datum.getId() + "", "Bearer " + token);
                     marqueCall.enqueue(new Callback<JsonObject>() {
@@ -842,7 +936,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
             CircleImageView ivEmployee;
             TextView tvName, tvTime, tvHeading, tvTotalLikes;
-            RelativeLayout rlReply, rvLikeComment;
+            RelativeLayout rlReply, rvLikeComment, rvUnLikeComment;
             LinearLayout llReport;
 
             public MyViewHolder(View view) {
@@ -859,6 +953,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 rlReply = view.findViewById(R.id.rlReply);
                 llReport = view.findViewById(R.id.llReport);
                 rvLikeComment = view.findViewById(R.id.rvLikeComment);
+                rvUnLikeComment = view.findViewById(R.id.rvUnLikeComment);
 
 
             }

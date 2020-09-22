@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
@@ -36,6 +37,9 @@ import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -268,6 +272,7 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
                 chipInformation.setChipBackgroundColorResource(R.color.dark_grey);
                 chipGeneral.setChipBackgroundColorResource(R.color.dark_grey);
                 chipFav.setChipBackgroundColorResource(R.color.phone_login_color);
+//                chipFav.setTextColor(R.color.white_color);
                 CategoryBlogList("fav");
                 break;
             case R.id.edtSearch:
@@ -312,20 +317,95 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
 
 //            Uri uri = Uri.parse(BuildConstants.Main_Image + datum.getThmbnailImage());
 //            holder.imageView_Spotlight.setImageURI(uri);
-
+            if (datum.getFav() == true) {
+                holder.favStar.setVisibility(View.VISIBLE);
+                holder.unfavStar.setVisibility(View.GONE);
+//                holder.favStar.setImageResource(R.drawable.favourite_star);
+            }
             holder.tvName.setText(datum.getName() + "");
             holder.tvHeading.setText(datum.getHeading() + "");
             holder.tvSubHeading.setText(datum.getDescription() + "");
             holder.tvLocation.setText(datum.getLocation() + "");
             holder.tvTime.setText(datum.getTime() + "");
-            if (datum.getCategory().matches("general")) {
-                holder.rlCategory.setBackgroundResource(R.drawable.general_cat_bg);
+            if (datum.getCategory().matches("information")) {
+                holder.rlCategory.setBackgroundResource(R.drawable.information_cat_bg);
             } else if (datum.getCategory().matches("urgent")) {
-//                holder.rlCategory.setBackgroundColor(R.drawable.urgent_bg);
+                holder.rlCategory.setBackgroundResource(R.drawable.urgent_cat_bg);
 
             } else {
 
             }
+
+            holder.favStar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.favStar.setVisibility(View.GONE);
+                    holder.unfavStar.setVisibility(View.VISIBLE);
+                    showProgressDialog();
+                    Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).favourite(datum.getId() + "", "Bearer " + token);
+                    marqueCall.enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                            JsonObject object = response.body();
+                            hideProgressDialog();
+                            Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                            if (response.isSuccessful()) {
+//                                BlogDetails();
+                                Toast.makeText(getContext(), response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    Toast.makeText(getContext(), jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                            t.printStackTrace();
+                            hideProgressDialog();
+                            Log.e("ChatV_Response", t.getMessage() + "");
+                        }
+                    });
+                }
+            });
+            holder.unfavStar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.favStar.setVisibility(View.VISIBLE);
+                    holder.unfavStar.setVisibility(View.GONE);
+                    showProgressDialog();
+                    Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).favourite(datum.getId() + "", "Bearer " + token);
+                    marqueCall.enqueue(new Callback<JsonObject>() {
+                        @Override
+                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                            JsonObject object = response.body();
+                            hideProgressDialog();
+                            Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                            if (response.isSuccessful()) {
+//                                BlogDetails();
+                                Toast.makeText(getContext(), response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                try {
+                                    JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                    Toast.makeText(getContext(), jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                            t.printStackTrace();
+                            hideProgressDialog();
+                            Log.e("ChatV_Response", t.getMessage() + "");
+                        }
+                    });
+                }
+            });
             holder.catName.setText(datum.getCategory() + "");
             holder.tvTotalComment.setText(datum.getComments() + "");
             holder.tvTotalView.setText(datum.getViews() + "");
@@ -358,7 +438,7 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
             CircleImageView ivEmployee;
             TextView tvName, catName, tvTime, tvSubHeading, tvHeading, tvTotalView, tvTotalLikes, tvTotalComment, tvLocation;
             RelativeLayout rlCategory;
-            ImageView favStar;
+            ImageView favStar, unfavStar;
             CardView CVReview;
 
             public MyViewHolder(View view) {
@@ -378,7 +458,7 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
                 rlCategory = view.findViewById(R.id.rlCategory);
                 favStar = view.findViewById(R.id.favStar);
                 CVReview = view.findViewById(R.id.CVReview);
-
+                unfavStar = view.findViewById(R.id.unfavStar);
             }
 
         }

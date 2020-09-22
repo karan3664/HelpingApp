@@ -1,7 +1,9 @@
 package com.aryupay.helpingapp.ui.profile;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,12 +15,21 @@ import android.widget.TextView;
 
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
+import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.Target;
+import com.google.gson.Gson;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OpenOptionsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,12 +39,14 @@ public class OpenOptionsActivity extends AppCompatActivity implements View.OnCli
     LoginModel loginModel;
     ImageView ivClose, iv_editprofile;
     RelativeLayout rvOpenEditProfile, rvBack;
+    String  token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_open_options);
         loginModel = PrefUtils.getUser(OpenOptionsActivity.this);
+        token = loginModel.getData().getToken();
         ivProfileImage = findViewById(R.id.ivProfileImage);
         ivClose = findViewById(R.id.ivClose);
         llHelpSupport = findViewById(R.id.llHelpSupport);
@@ -43,24 +56,66 @@ public class OpenOptionsActivity extends AppCompatActivity implements View.OnCli
         rvOpenEditProfile = findViewById(R.id.rvOpenEditProfile);
         rvBack = findViewById(R.id.rvBack);
         tv_name.setText(loginModel.getData().getUser().getFullname() + "");
-        if (loginModel.getData().getUser().getUserDetail().getPhoto() != null) {
-            Glide.with(this)
-                    .load(BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
-                    .placeholder(R.drawable.placeholder)
-                    .centerCrop()
-                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-//                    .transition(DrawableTransitionOptions.withCrossFade(500))
-                    .into(ivProfileImage);
-            Log.e("Profile=>", BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage" + ""));
-        }
+//        Log.e("Profile=>", new Gson().toJson(loginModel.getData().getUser()) +"");
+
+//        if (loginModel.getData().getUser().getUserDetail().getPhoto() != null) {
+//            Glide.with(this)
+//                    .load(BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
+//                    .placeholder(R.drawable.placeholder)
+//                    .centerCrop()
+//                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+////                    .transition(DrawableTransitionOptions.withCrossFade(500))
+//                    .into(ivProfileImage);
+//        }
         ivClose.setOnClickListener(this);
         llSettings.setOnClickListener(this);
         llHelpSupport.setOnClickListener(this);
         iv_editprofile.setOnClickListener(this);
         rvOpenEditProfile.setOnClickListener(this);
         rvBack.setOnClickListener(this);
+        ProfileCall();
     }
+    private void ProfileCall() {
 
+
+        Call<MyProfileModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).MyProfileModel("Bearer " + token);
+        marqueCall.enqueue(new Callback<MyProfileModel>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(@NonNull Call<MyProfileModel> call, @NonNull Response<MyProfileModel> response) {
+                MyProfileModel object = response.body();
+
+                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                if (object != null) {
+
+
+
+
+
+                    if (object.getData().getUser().getUserDetail().getPhoto() != null) {
+                        Glide.with(OpenOptionsActivity.this)
+                                .load(BuildConstants.Main_Image + object.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
+                                .placeholder(R.drawable.placeholder)
+                                .centerCrop()
+//                    .transition(DrawableTransitionOptions.withCrossFade(500))
+                                .into(ivProfileImage);
+//                        Log.e("Profile=>", BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage" + ""));
+                    }
+
+                } else {
+//                    Toast.makeText(getContext(), "No Chat Found", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MyProfileModel> call, @NonNull Throwable t) {
+                t.printStackTrace();
+
+                Log.e("ChatV_Response", t.getMessage() + "");
+            }
+        });
+
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

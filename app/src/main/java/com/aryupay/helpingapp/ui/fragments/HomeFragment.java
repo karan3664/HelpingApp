@@ -616,7 +616,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 public void onClick(View view) {
                     Intent i = new Intent(getContext(), DetailBlogsActivity.class);
                     i.putExtra("blogid", datum.getId() + "");
-                    startActivity(i);
+                    i.putExtra("catname", datum.getCategory() + "");
+                    startActivityForResult(i, 1);
+//                    startActivity(i);
                 }
             });
         }
@@ -671,6 +673,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 //                city_id = returnString;
 //                spin_cities.setText(returnStringName);
                 tvLoc.setText(returnStringName);
+
+            }
+        } else if (requestCode == 1) {
+            if (resultCode == getActivity().RESULT_OK) {
+
+                // Get String data from Intent
+                String returnStringName = data.getStringExtra("catname");
+                if (returnStringName != null) {
+                    CategoryBlogList(returnStringName);
+                } else {
+                    BlogList();
+                }
+
 
             }
         }
