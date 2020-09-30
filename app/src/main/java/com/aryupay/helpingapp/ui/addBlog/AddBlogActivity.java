@@ -19,7 +19,9 @@ import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.addblog.AddBlogModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.ui.HomeActivity;
 import com.aryupay.helpingapp.ui.LoginActivity;
+import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.google.gson.Gson;
@@ -71,16 +73,20 @@ public class AddBlogActivity extends AppCompatActivity implements View.OnClickLi
                 showCategoryDialog(view);
                 break;
             case R.id.btnNext:
-//                Intent i = new Intent(AddBlogActivity.this, AddBlogImagesActivity.class);
-//                i.putExtra("id",  "205");
-//                startActivity(i);
+//                Intent ia = new Intent(AddBlogActivity.this, AddBlogImagesActivity.class);
+//                ia.putExtra("id",  "311");
+//                startActivity(ia);
                 AddBlog();
                 break;
             case R.id.btnBack:
                 onBackPressed();
                 break;
             case R.id.ivBack:
-                onBackPressed();
+//                onBackPressed();
+                Intent i = new Intent(AddBlogActivity.this, HomeActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+//                finish();
                 break;
         }
     }

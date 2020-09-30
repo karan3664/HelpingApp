@@ -19,6 +19,7 @@ import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.phonesignup.PhoneSignupModel;
 import com.aryupay.helpingapp.ui.HomeActivity;
 
+import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.ui.MobileRegisterActivity;
 import com.aryupay.helpingapp.ui.RegisterActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
@@ -158,22 +159,22 @@ public class ChangePasswordMobileNumberActivity extends AppCompatActivity implem
                     final OTPModel object = response.body();
                     hideProgressDialog();
 
-                    if (object != null) {
-                        Log.e("TAG", "Postcode_Response : " + new Gson().toJson(response.body()));
-                        if (response.isSuccessful()) {
-                            Toast.makeText(ChangePasswordMobileNumberActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
-                            otp = object.getData().getOtp() + "";
-                            sendVerificationCode(et_mobno.getText().toString());
+                    if (response.isSuccessful()) {
+                        Toast.makeText(ChangePasswordMobileNumberActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
+                        otp = object.getData().getOtp() + "";
+                        sendVerificationCode(et_mobno.getText().toString());
+                        if (object.getData().getUser() != null) {
                             email = object.getData().getUser().getEmail();
                             password = object.getData().getUser().getPassword();
-//                        token = object.getData().getToken() + "";
-                        } else {
-                            Toast.makeText(ChangePasswordMobileNumberActivity.this, object.getMessage() + "", Toast.LENGTH_SHORT).show();
-
                         }
 
+//                        token = object.getData().getToken() + "";
                     } else {
-
+                        try {
+                            JSONObject jObjError = new JSONObject(response.errorBody().string());
+                            Toast.makeText(ChangePasswordMobileNumberActivity.this, jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                        } catch (Exception e) {
+                        }
                     }
                 }
 

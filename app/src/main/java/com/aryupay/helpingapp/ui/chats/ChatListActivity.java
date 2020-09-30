@@ -42,6 +42,7 @@ import com.aryupay.helpingapp.modal.chats.chatDetails.ChatDetailModel;
 import com.aryupay.helpingapp.modal.chats.chatList.ChatListModel;
 import com.aryupay.helpingapp.modal.chats.chatList.Datum;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.ui.HomeActivity;
 import com.aryupay.helpingapp.ui.chats.Model.Chat;
 import com.aryupay.helpingapp.ui.chats.fragments.ChatsFragment;
 import com.aryupay.helpingapp.ui.chats.fragments.ProfileFragment;
@@ -116,14 +117,18 @@ public class ChatListActivity extends AppCompatActivity {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                Intent ia = new Intent(ChatListActivity.this, HomeActivity.class);
+                startActivity(ia);
+                finish();
             }
         });
 
         rlSearchPing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                Intent i = new Intent(ChatListActivity.this, HomeActivity.class);
+                startActivity(i);
+                finish();
             }
         });
 

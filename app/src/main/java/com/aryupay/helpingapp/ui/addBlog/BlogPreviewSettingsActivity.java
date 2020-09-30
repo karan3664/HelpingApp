@@ -19,6 +19,7 @@ import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.login.LoginModel;
+import com.aryupay.helpingapp.ui.HomeActivity;
 import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
@@ -245,15 +246,19 @@ public class BlogPreviewSettingsActivity extends AppCompatActivity implements Vi
         switch (view.getId()) {
             case R.id.btnDone:
                 Intent i = new Intent(BlogPreviewSettingsActivity.this, DetailBlogsActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 i.putExtra("blogid", id + "");
                 startActivity(i);
-                finish();
+//                finish();
                 break;
             case R.id.btnBack:
                 onBackPressed();
                 break;
             case R.id.ivClose:
-                onBackPressed();
+                Intent ii = new Intent(BlogPreviewSettingsActivity.this, HomeActivity.class);
+                ii.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(ii);
+//                finish();
                 break;
         }
     }

@@ -33,8 +33,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aryupay.helpingapp.R;
+import com.aryupay.helpingapp.adapter.FlipperAdapter;
 import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
+import com.aryupay.helpingapp.modal.blogdetails.BlogDetailsModel;
 import com.aryupay.helpingapp.modal.bloglist.Blog;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.bloglist.Image;
@@ -518,19 +520,47 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             holder.favStar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.e("BlogId=>", datum.getId() + "");
                     holder.favStar.setVisibility(View.GONE);
                     holder.unfavStar.setVisibility(View.VISIBLE);
                     showProgressDialog();
-                    Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).favourite(datum.getId() + "", "Bearer " + token);
-                    marqueCall.enqueue(new Callback<JsonObject>() {
+                    Call<BlogDetailsModel> marqueCal = RetrofitHelper.createService(RetrofitHelper.Service.class).BlogDetailsModel(datum.getId() + "", "Bearer " + token);
+                    marqueCal.enqueue(new Callback<BlogDetailsModel>() {
+                        @SuppressLint("SetTextI18n")
                         @Override
-                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                            JsonObject object = response.body();
+                        public void onResponse(@NonNull Call<BlogDetailsModel> call, @NonNull Response<BlogDetailsModel> response) {
+                            BlogDetailsModel object = response.body();
                             hideProgressDialog();
                             Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                             if (response.isSuccessful()) {
+                                showProgressDialog();
+                                Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).favourite(datum.getId() + "", "Bearer " + token);
+                                marqueCall.enqueue(new Callback<JsonObject>() {
+                                    @Override
+                                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                                        JsonObject object = response.body();
+                                        hideProgressDialog();
+                                        Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                                        if (response.isSuccessful()) {
 //                                BlogDetails();
-                                Toast.makeText(getContext(), response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+
+                                        } else {
+                                            try {
+                                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                Toast.makeText(getContext(), jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                            } catch (Exception e) {
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                                        t.printStackTrace();
+                                        hideProgressDialog();
+                                        Log.e("ChatV_Response", t.getMessage() + "");
+                                    }
+                                });
 
                             } else {
                                 try {
@@ -542,30 +572,60 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         }
 
                         @Override
-                        public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                        public void onFailure(@NonNull Call<BlogDetailsModel> call, @NonNull Throwable t) {
                             t.printStackTrace();
                             hideProgressDialog();
                             Log.e("ChatV_Response", t.getMessage() + "");
                         }
                     });
+
                 }
             });
             holder.unfavStar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Log.e("BlogId=>", datum.getId() + "");
                     holder.favStar.setVisibility(View.VISIBLE);
                     holder.unfavStar.setVisibility(View.GONE);
+
                     showProgressDialog();
-                    Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).favourite(datum.getId() + "", "Bearer " + token);
-                    marqueCall.enqueue(new Callback<JsonObject>() {
+                    Call<BlogDetailsModel> marqueCal = RetrofitHelper.createService(RetrofitHelper.Service.class).BlogDetailsModel(datum.getId() + "", "Bearer " + token);
+                    marqueCal.enqueue(new Callback<BlogDetailsModel>() {
+                        @SuppressLint("SetTextI18n")
                         @Override
-                        public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                            JsonObject object = response.body();
+                        public void onResponse(@NonNull Call<BlogDetailsModel> call, @NonNull Response<BlogDetailsModel> response) {
+                            BlogDetailsModel object = response.body();
                             hideProgressDialog();
                             Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
                             if (response.isSuccessful()) {
+                                showProgressDialog();
+                                Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).favourite(datum.getId() + "", "Bearer " + token);
+                                marqueCall.enqueue(new Callback<JsonObject>() {
+                                    @Override
+                                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+                                        JsonObject object = response.body();
+                                        hideProgressDialog();
+                                        Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
+                                        if (response.isSuccessful()) {
 //                                BlogDetails();
-                                Toast.makeText(getContext(), response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getContext(), response.body().get("message") + "", Toast.LENGTH_SHORT).show();
+
+                                        } else {
+                                            try {
+                                                JSONObject jObjError = new JSONObject(response.errorBody().string());
+                                                Toast.makeText(getContext(), jObjError.getString("error") + "", Toast.LENGTH_LONG).show();
+                                            } catch (Exception e) {
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                                        t.printStackTrace();
+                                        hideProgressDialog();
+                                        Log.e("ChatV_Response", t.getMessage() + "");
+                                    }
+                                });
 
                             } else {
                                 try {
@@ -577,12 +637,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         }
 
                         @Override
-                        public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+                        public void onFailure(@NonNull Call<BlogDetailsModel> call, @NonNull Throwable t) {
                             t.printStackTrace();
                             hideProgressDialog();
                             Log.e("ChatV_Response", t.getMessage() + "");
                         }
                     });
+
                 }
             });
             holder.tvName.setText(datum.getName() + "");
@@ -618,6 +679,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     i.putExtra("blogid", datum.getId() + "");
                     i.putExtra("catname", datum.getCategory() + "");
                     startActivityForResult(i, 1);
+//                    getActivity().finish();
 //                    startActivity(i);
                 }
             });
@@ -677,7 +739,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
         } else if (requestCode == 1) {
             if (resultCode == getActivity().RESULT_OK) {
-
+                chipSearch.setText("ALL");
+                chipSearch.setChipIconEnabled(false);
+                chipSearch.setChipBackgroundColorResource(R.color.sky_blue_color);
                 // Get String data from Intent
                 String returnStringName = data.getStringExtra("catname");
                 if (returnStringName != null) {

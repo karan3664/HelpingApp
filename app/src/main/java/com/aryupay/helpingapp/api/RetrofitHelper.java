@@ -6,6 +6,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.aryupay.helpingapp.modal.addblog.AddBlogModel;
+import com.aryupay.helpingapp.modal.addblog.FileUploadModel;
 import com.aryupay.helpingapp.modal.blogdetails.BlogDetailsModel;
 import com.aryupay.helpingapp.modal.blogdetails.CommentsBlogModel;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
@@ -86,10 +87,11 @@ public class RetrofitHelper {
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+//        HttpLoggingInterceptor.Level.BODY
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.connectTimeout(20000, TimeUnit.SECONDS);
-        httpClient.readTimeout(120, TimeUnit.SECONDS);
-        httpClient.writeTimeout(2000, TimeUnit.SECONDS);
+        httpClient.connectTimeout(300, TimeUnit.SECONDS);
+        httpClient.readTimeout(30, TimeUnit.SECONDS);
+        httpClient.writeTimeout(30, TimeUnit.SECONDS);
         httpClient.addInterceptor(new Interceptor() {
             @Override
             public Response intercept(@NonNull Chain chain) throws IOException {
@@ -327,10 +329,10 @@ public class RetrofitHelper {
 
         @Multipart
         @POST("file/{blog_id}")
-        Call<JsonObject> upload(
+        Call<FileUploadModel> upload(
                 @Path("blog_id") String blog_id,
                 @Header("Authorization") String authorization,
-                @PartMap Map<String, RequestBody> map
+                @Part MultipartBody.Part file
         );
 
 

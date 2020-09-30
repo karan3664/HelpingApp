@@ -9,7 +9,7 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_margin="10dp"
             android:fontFamily="@font/segoe_ui"
             android:gravity="center"
             android:text="Please select a problem to continue"
@@ -28,117 +29,107 @@
 
 
         <FrameLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp">
 
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="180dp"
                 android:layout_marginTop="@dimen/_5sdp"
+
                 android:background="@drawable/add_ping_edittext_bg">
 
-                <LinearLayout
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipReportCommentGroup"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:orientation="vertical">
+                    android:layout_height="150dp"
+                    android:layout_margin="10dp"
+                    app:chipSpacing="0dp"
+                    app:singleSelection="true">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip1"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/segoe_ui"
+                        android:gravity="center"
+                        android:text="Nudity"
+                        android:textSize="8dp" />
 
-                        <com.google.android.material.chip.ChipGroup
-                            android:id="@+id/chipReportCommentGroup"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:chipSpacing="0dp"
-                            app:singleSelection="true">
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip2"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/segoe_ui"
+                        android:gravity="center"
+                        android:text="Violence"
+                        android:textSize="8dp" />
 
-                            <com.google.android.material.chip.Chip
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:id="@+id/chip1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/segoe_ui"
-                                android:gravity="center"
-                                android:text="Nudity"
-                                android:textSize="8dp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip3"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/segoe_ui"
+                        android:gravity="center"
+                        android:text="Spam"
+                        android:textSize="8dp" />
 
-                            <com.google.android.material.chip.Chip
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:id="@+id/chip2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/segoe_ui"
-                                android:gravity="center"
-                                android:text="Violence"
-                                android:textSize="8dp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip4"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/segoe_ui"
+                        android:gravity="center"
+                        android:text="Harassment"
+                        android:textSize="8dp" />
 
-                            <com.google.android.material.chip.Chip
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:id="@+id/chip3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/segoe_ui"
-                                android:gravity="center"
-                                android:text="Spam"
-                                android:textSize="8dp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip5"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/segoe_ui"
+                        android:gravity="center"
+                        android:text="Hate Speech"
+                        android:textSize="8dp" />
 
-                            <com.google.android.material.chip.Chip
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:id="@+id/chip4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/segoe_ui"
-                                android:gravity="center"
-                                android:text="Harassment"
-                                android:textSize="8dp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip6"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/segoe_ui"
+                        android:gravity="center"
+                        android:text="Terrorism"
+                        android:textSize="8dp" />
 
-                            <com.google.android.material.chip.Chip
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:id="@+id/chip5"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/segoe_ui"
-                                android:gravity="center"
-                                android:text="Hate Speech"
-                                android:textSize="8dp" />
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip7"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/segoe_ui"
+                        android:gravity="center"
+                        android:text="Something else"
+                        android:textSize="8dp" />
 
-                            <com.google.android.material.chip.Chip
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:id="@+id/chip6"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/segoe_ui"
-                                android:gravity="center"
-                                android:text="Terrorism"
-                                android:textSize="8dp" />
-
-                            <com.google.android.material.chip.Chip
-                                style="@style/Widget.MaterialComponents.Chip.Choice"
-                                android:id="@+id/chip7"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/segoe_ui"
-                                android:gravity="center"
-                                android:text="Something else"
-                                android:textSize="8dp" />
-                        </com.google.android.material.chip.ChipGroup>
+                </com.google.android.material.chip.ChipGroup>
 
 
-                    </LinearLayout>
-
-
-                </LinearLayout>
             </RelativeLayout>
 
             <Button
@@ -146,7 +137,7 @@
                 android:layout_width="69dp"
                 android:layout_height="17dp"
                 android:layout_gravity="center|bottom"
-                android:layout_marginTop="140dp"
+                android:layout_marginTop="175dp"
                 android:background="@drawable/send_msg_btn_bg"
                 android:backgroundTint="@color/pink_color"
                 android:gravity="center"
@@ -157,6 +148,7 @@
             </Button>
         </FrameLayout>
 
-    </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

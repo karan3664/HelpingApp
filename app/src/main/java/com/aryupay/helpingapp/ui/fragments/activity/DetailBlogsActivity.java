@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,7 @@ import com.aryupay.helpingapp.modal.chats.chatDetails.ChatDetailModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.other_user.OtherUserProfileModel;
 
+import com.aryupay.helpingapp.ui.HomeActivity;
 import com.aryupay.helpingapp.ui.chats.ChatListActivity;
 import com.aryupay.helpingapp.ui.chats.MessageActivity;
 import com.aryupay.helpingapp.ui.chats.Model.User;
@@ -87,6 +89,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
             tvEmailId, tvMobileNo, tvFollowers, tvFollowing, tvHelping, tvReviewNo;
     ImageView iv_editprofile, ivOptionBlog, ivShare, ivOption, ivCloseProfile, ivClose;
     Button btnFollow;
+    LinearLayout llClose;
     RecyclerView rvReviews;
     LinearLayout llFollowers, llFollowing, llHelping;
     private List<User> mUsers;
@@ -198,7 +201,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         tvHelping = findViewById(R.id.tvHelping);
         tvReviewNo = findViewById(R.id.tvReviewNo);
         iv_editprofile = findViewById(R.id.iv_editprofile);
-//        ivClose = findViewById(R.id.ivClose);
+        llClose = findViewById(R.id.llClose);
         ivCloseProfile = findViewById(R.id.ivCloseProfile);
         ivShare = findViewById(R.id.ivShare);
         ivOption = findViewById(R.id.ivOption);
@@ -234,17 +237,33 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
         ivCloseProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onBackPressed();
+                Intent i = new Intent(DetailBlogsActivity.this, HomeActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+//                finish();
+            }
+        });
+        llClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(DetailBlogsActivity.this, HomeActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+//                finish();
             }
         });
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                onBackPressed();
-                Intent intent = new Intent();
-                intent.putExtra("catname", catname + "");
-                setResult(RESULT_OK, intent);
-                finish();
+                Intent i = new Intent(DetailBlogsActivity.this, HomeActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+//                finish();
+//                Intent intent = new Intent();
+//                intent.putExtra("catname", catname + "");
+//                setResult(RESULT_OK, intent);
+//                finish();
             }
         });
 
@@ -744,7 +763,12 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 //            holder.imageView_Spotlight.setImageURI(uri);
 
             holder.tvName.setText(datum.getFullname() + "");
-            holder.tvHeading.setText(datum.getComments() + "");
+            if (datum.getComments() != null) {
+                holder.tvHeading.setText(datum.getComments() + "");
+            } else {
+                holder.tvHeading.setText("");
+            }
+
             holder.tvTime.setText(datum.getCreatedAt() + "");
 
 //            holder.tvTotalComment.setText(Comments.get(position) + "");
@@ -1090,7 +1114,12 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
             final com.aryupay.helpingapp.modal.other_user.Comment datum = moviesList.get(position);
             holder.tvName.setText(datum.getFullname() + "");
-            holder.tvHeading.setText(datum.getComment() + "");
+            if (datum.getComment() != null) {
+                holder.tvHeading.setText(datum.getComment() + "");
+            } else {
+                holder.tvHeading.setText("");
+            }
+//            if (timeArrayList != null)
             holder.tvTime.setText(timeArrayList.get(position) + "");
 
 
@@ -1501,5 +1530,19 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
 
         dialogs.show();
         dialogs.getWindow().setAttributes(lp);
+    }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch(keyCode){
+            case KeyEvent.KEYCODE_BACK:
+                // do something here
+                Intent i = new Intent(DetailBlogsActivity.this, HomeActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

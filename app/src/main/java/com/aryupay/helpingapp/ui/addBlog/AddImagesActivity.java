@@ -20,6 +20,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -53,6 +54,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -101,8 +103,8 @@ public class AddImagesActivity extends AppCompatActivity {
         imageRecyclerView = findViewById(R.id.recycler_view);
         selectedImageRecyclerView = findViewById(R.id.selected_recycler_view);
         done = findViewById(R.id.done);
-        btnNext = findViewById(R.id.btnNext);
-        btnBack = findViewById(R.id.btnBack);
+//        btnNext = findViewById(R.id.btnNext);
+//        btnBack = findViewById(R.id.btnBack);
         selectedImageList = new ArrayList<>();
         imageList = new ArrayList<>();
 
@@ -112,7 +114,7 @@ public class AddImagesActivity extends AppCompatActivity {
                 for (int i = 0; i < selectedImageList.size(); i++) {
                     Toast.makeText(getApplicationContext(), selectedImageList.get(i), Toast.LENGTH_LONG).show();
                     ImageNameFile = selectedImageList.get(i);
-                    uploadFile(new File(selectedImageList.get(i)));
+//                    uploadFile(new File(selectedImageList.get(i)));
 
 
                 }
@@ -352,118 +354,17 @@ public class AddImagesActivity extends AppCompatActivity {
         return true;
     }
 
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == STORAGE_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            init();
-//            getAllImages();
-//            setImageList();
-//            setSelectedImageList();
-//        }
-//    }
-
-
-    private void uploadFile(File file) {
-
-//        Log.e("FILE==>", file.getName() + "");
-//        File file = new File(image.getAbsolutePath());
-//        if (!file.exists()) {
-//            Toast.makeText(AddImagesActivity.this, "Failed to upload pic", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        File file = null;
-//        File fileImage = null;
-
-        try {
-            file = new File(String.valueOf(file));
-//            fileImage = new File(final_thumbnail_video);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == STORAGE_PERMISSION && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            init();
+            getAllImages();
+            setImageList();
+            setSelectedImageList();
         }
-
-        RequestBody requestBody = null;
-//        RequestBody thumbnailimage = null;
-        try {
-            assert file != null;
-//            assert fileImage != null;
-            requestBody = RequestBody.create(MediaType.parse("*/*"), file);
-//            thumbnailimage = RequestBody.create(MediaType.parse("*/*"), fileImage);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Map<String, RequestBody> map = new HashMap<>();
-        map.put("file[]\"; filename=\"" + file.getName() + "\"", requestBody);
-//
-//        String fileExtension
-//                = MimeTypeMap.getFileExtensionFromUrl(Uri.fromFile(file).toString());
-//        String mimeType
-//                = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
-
-//        RequestBody fbody = RequestBody.create(MediaType.parse(mimeType), file);
-//        MultipartBody.Part body = MultipartBody.Part.createFormData("file[]", file.getName(), fbody);
-        Log.e("MAP", map + "");
-        Call<JsonObject> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).upload(id, "Bearer " + token, map);
-        marqueCall.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
-                JsonObject object = response.body();
-                hideProgressDialog();
-                Log.e("TAG", "ChatV_Response : " + new Gson().toJson(response.body()));
-                if (response.isSuccessful()) {
-                    Toast.makeText(AddImagesActivity.this, response.body().get("message") + "", Toast.LENGTH_SHORT).show();
-
-                    Intent addImage = new Intent(AddImagesActivity.this, AddLocationActivity.class);
-
-                    addImage.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(addImage);
-                } else {
-                    try {
-                        JSONObject jObjError = new JSONObject(response.errorBody().string());
-                        Toast.makeText(AddImagesActivity.this, jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        Toast.makeText(AddImagesActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-                t.printStackTrace();
-                hideProgressDialog();
-                Log.e("ChatV_Response", t.getMessage() + "");
-            }
-        });
-       /* String token = "Bearer " + sharedData.getToken();
-
-        Call<JsonObject> call = apiInterface.uploadFile(map, body, token);
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
-                if (response.isSuccessful()) {
-                    Log.d("file upload", response.body().toString());
-
-                } else {
-                    try {
-                        JsonObject object = new JsonParser().parse(response.errorBody().toString()).getAsJsonObject();
-                        Toast.makeText(AddImagesActivity.this, object.get("error").getAsString(), Toast.LENGTH_SHORT).show();
-                    } catch (JsonParseException e) {
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-
-                t.printStackTrace();
-            }
-        });
-*/
     }
+
+
 
     protected void hideProgressDialog() {
         viewDialog.dismiss();

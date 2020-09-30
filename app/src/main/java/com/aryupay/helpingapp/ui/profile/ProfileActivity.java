@@ -39,6 +39,7 @@ import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.profile.my_profile.Comment;
 import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
+import com.aryupay.helpingapp.ui.HomeActivity;
 import com.aryupay.helpingapp.ui.fragments.ChatFragment;
 import com.aryupay.helpingapp.ui.fragments.HomeFragment;
 import com.aryupay.helpingapp.ui.fragments.MyPingFragment;
@@ -90,6 +91,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     protected ViewDialog viewDialog;
     ArrayList<Comment> commentArrayLis = new ArrayList<>();
     String report = "";
+    LinearLayout llClose;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -118,6 +120,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         tvReviewNo = findViewById(R.id.tvReviewNo);
         iv_editprofile = findViewById(R.id.iv_editprofile);
         ivClose = findViewById(R.id.ivClose);
+        llClose = findViewById(R.id.llClose);
         ivShare = findViewById(R.id.ivShare);
         ivOption = findViewById(R.id.ivOption);
         rvReviews = findViewById(R.id.rvReviews);
@@ -167,6 +170,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         iv_editprofile.setOnClickListener(this);
         ivClose.setOnClickListener(this);
+        llClose.setOnClickListener(this);
         ivOption.setOnClickListener(this);
         ivShare.setOnClickListener(this);
 
@@ -198,7 +202,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 startActivity(i);
                 break;
             case R.id.ivClose:
-                onBackPressed();
+                Intent ia = new Intent(ProfileActivity.this, HomeActivity.class);
+                startActivity(ia);
+                finish();
+                break;
+            case R.id.llClose:
+                Intent ii = new Intent(ProfileActivity.this, HomeActivity.class);
+                startActivity(ii);
+                finish();
                 break;
             case R.id.llFollowers:
                 Intent fol = new Intent(ProfileActivity.this, FollowerFollowingHelpingActivity.class);

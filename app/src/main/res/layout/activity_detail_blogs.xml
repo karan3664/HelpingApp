@@ -279,8 +279,8 @@
                                     android:layout_height="20dp"
                                     android:layout_marginLeft="5dp"
                                     android:layout_marginRight="5dp"
-                                    android:visibility="gone"
-                                    android:src="@drawable/favourite_star" />
+                                    android:src="@drawable/favourite_star"
+                                    android:visibility="gone" />
 
                                 <ImageView
                                     android:id="@+id/ivUnFav"
@@ -490,11 +490,17 @@
                             android:layout_marginLeft="@dimen/_10sdp"
                             android:layout_marginTop="@dimen/_15sdp">
 
-                            <ImageView
-                                android:id="@+id/ivCloseProfile"
-                                android:layout_width="@dimen/_15sdp"
-                                android:layout_height="@dimen/_15sdp"
-                                android:src="@drawable/close"></ImageView>
+                            <LinearLayout
+                                android:id="@+id/llClose"
+                                android:layout_width="100dp"
+                                android:layout_height="match_parent">
+
+                                <ImageView
+                                    android:id="@+id/ivCloseProfile"
+                                    android:layout_width="@dimen/_15sdp"
+                                    android:layout_height="@dimen/_15sdp"
+                                    android:src="@drawable/close" />
+                            </LinearLayout>
 
 
                             <ImageView
@@ -503,9 +509,7 @@
                                 android:layout_height="@dimen/_15sdp"
                                 android:layout_alignParentRight="true"
                                 android:layout_marginRight="@dimen/_10sdp"
-                                android:src="@drawable/option">
-
-                            </ImageView>
+                                android:src="@drawable/option" />
                         </RelativeLayout>
 
                         <FrameLayout
@@ -875,12 +879,12 @@
 
                                 <RelativeLayout
                                     android:layout_width="wrap_content"
-
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="end"
                                     android:layout_marginLeft="@dimen/_10sdp"
                                     android:layout_marginRight="@dimen/_10sdp"
-                                    android:gravity="end">
+                                    android:gravity="end"
+                                    android:visibility="gone">
 
                                     <LinearLayout
                                         android:id="@+id/llRating"
