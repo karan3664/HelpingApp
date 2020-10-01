@@ -18,6 +18,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -26,18 +28,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aryupay.helpingapp.R;
+import com.aryupay.helpingapp.adapter.AutoCompleteAdapter;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.city.CityModel;
 import com.aryupay.helpingapp.modal.location.LocationModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceResponse;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,7 +65,8 @@ public class SelectLocationActivity extends AppCompatActivity {
     private MyCustomAdapter myCustomAdapter;
     ArrayList<LocationModel> datumArrayList = new ArrayList<>();
     protected ViewDialog viewDialog;
-    EditText et_search;
+    //    EditText ;
+
     LoginModel loginModel;
     String token;
     String cityId, cityName, city;
@@ -57,6 +74,8 @@ public class SelectLocationActivity extends AppCompatActivity {
     TextView tvCurrentCity;
     ImageButton bt_clear;
     ImageView ivBack;
+    private static String TAG = SelectLocationActivity.class.getSimpleName();
+    TextView places;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +85,11 @@ public class SelectLocationActivity extends AppCompatActivity {
         token = loginModel.getData().getToken();
         viewDialog = new ViewDialog(SelectLocationActivity.this);
         viewDialog.setCancelable(false);
-        et_search = findViewById(R.id.et_search);
+
         tvCurrentCity = findViewById(R.id.tvCurrentCity);
         llCurrentCity = findViewById(R.id.llCurrentCity);
         rvCityList = findViewById(R.id.rvCityList);
-        bt_clear = findViewById(R.id.bt_clear);
+
         ivBack = findViewById(R.id.ivBack);
         LinearLayoutManager layoutManager = new LinearLayoutManager(SelectLocationActivity.this);
         rvCityList.setLayoutManager(layoutManager);
@@ -79,27 +98,46 @@ public class SelectLocationActivity extends AppCompatActivity {
         city = preferences.getString("location", "");
         FollowerList();
         tvCurrentCity.setText(city);
-        et_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        String apiKey = getString(R.string.api_key);
+        places = findViewById(R.id.place);
 
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), apiKey);
+        }
+
+        // Initialize the AutocompleteSupportFragment.
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
+                getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS, Place.Field.ADDRESS_COMPONENTS));
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                places.setText(place.getName() + ", " + place.getAddressComponents().asList().get(1).getName() + " ");
+                Log.e(TAG, "Place1: " + place.getName() + ", ");
+                Log.e(TAG, "Place2: " + place.getAddressComponents().asList().get(0).getName() + ", ");
+                Log.e(TAG, "Place3: " + place.getAddressComponents().asList().get(2).getName() + ", ");
+                Log.e(TAG, "Place4: " + place.getAddressComponents());
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                SearchList(charSequence.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
             }
         });
 
-        bt_clear.setOnClickListener(new View.OnClickListener() {
+        places.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FollowerList();
+                Intent intent = new Intent();
+//                    intent.putExtra("id", cityModel.get() + "");
+                intent.putExtra("cityname", places.getText().toString() + "");
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
         ivBack.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +193,7 @@ public class SelectLocationActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void SearchList(String s) {
         HashMap<String, String> hashMap = new HashMap<>();

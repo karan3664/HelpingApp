@@ -46,7 +46,6 @@ import retrofit2.Response;
 public class OtherFollowersFragment extends Fragment {
 
 
-
     protected ViewDialog viewDialog;
     RecyclerView rvFollowers;
     private MyCustomAdapter myCustomAdapter;
@@ -116,10 +115,11 @@ public class OtherFollowersFragment extends Fragment {
         FollowerList();
         return rootView;
     }
+
     private void FollowerList() {
 
         showProgressDialog();
-        Call<FollowersModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).others_followers(user_id,"Bearer " + token);
+        Call<FollowersModel> marqueCall = RetrofitHelper.createService(RetrofitHelper.Service.class).others_followers(user_id, "Bearer " + token);
         marqueCall.enqueue(new Callback<FollowersModel>() {
             @Override
             public void onResponse(@NonNull Call<FollowersModel> call, @NonNull Response<FollowersModel> response) {
@@ -198,11 +198,13 @@ public class OtherFollowersFragment extends Fragment {
             }
 
             if (datum.getPhoto() != null) {
-                Glide.with(getContext())
-                        .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
+                if (datum.getPhoto().getPath() != null) {
+                    Glide.with(getContext())
+                            .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
 //                        .centerCrop()
-                        .placeholder(R.drawable.placeholder)
-                        .into(holder.civProfile);
+                            .placeholder(R.drawable.placeholder)
+                            .into(holder.civProfile);
+                }
             }
 
             holder.rlCategory.setOnClickListener(new View.OnClickListener() {

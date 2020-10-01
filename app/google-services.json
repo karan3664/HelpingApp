@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "426985050820-eq2ctsood8ihcoafat4ee6hc1u4r3vpa.apps.googleusercontent.com",
+          "client_id": "426985050820-q4847bev8o9ascc7mtvp19s1urd75m5a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.aryupay.helpingapp",
-            "certificate_hash": "38b5a6943398df1af06590fcdbf9bf875b85c1be"
+            "certificate_hash": "b0c5510115d6338d5560b89c14ce7d94230c9690"
           }
         },
         {
@@ -29,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCCaaEuxoFg09Bc7rSV9JH7E0ydvk472MI"
+          "current_key": "AIzaSyC42kAkud3-_A8o28a9u5PFPU9oedC8Rt4"
         }
       ],
       "services": {
