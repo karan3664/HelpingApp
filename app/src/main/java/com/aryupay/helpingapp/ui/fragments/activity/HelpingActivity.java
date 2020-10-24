@@ -24,7 +24,6 @@ import com.aryupay.helpingapp.modal.bloglist.Image;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.myping.Datum;
 import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
-import com.aryupay.helpingapp.ui.fragments.MyPingFragment;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
@@ -279,7 +278,7 @@ public class HelpingActivity extends AppCompatActivity implements View.OnClickLi
                 Glide.with(HelpingActivity.this)
                         .load(BuildConstants.Main_Image + datum.getImages().getPath().replace("public", "storage"))
 //                        .centerCrop()
-                        .placeholder(R.drawable.placeholder)
+                        .placeholder(R.drawable.place_holder)
                         .into(holder.ivEmployee);
             }
 

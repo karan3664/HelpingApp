@@ -30,9 +30,6 @@ import android.widget.Toast;
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
-import com.aryupay.helpingapp.modal.bloglist.Blog;
-import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
-import com.aryupay.helpingapp.modal.bloglist.Image;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.search.my_ping.Datum;
 import com.aryupay.helpingapp.modal.search.my_ping.SearchMyPingModel;
@@ -41,8 +38,6 @@ import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -266,7 +261,7 @@ public class SearchMyPingActivity extends AppCompatActivity {
                 Glide.with(SearchMyPingActivity.this)
                         .load(BuildConstants.Main_Image + datum.getImages().getPath().replace("public", "storage"))
 //                        .centerCrop()
-                        .placeholder(R.drawable.placeholder)
+                        .placeholder(R.drawable.place_holder)
                         .into(holder.ivEmployee);
             }
 

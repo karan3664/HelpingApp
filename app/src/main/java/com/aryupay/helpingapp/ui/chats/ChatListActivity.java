@@ -350,7 +350,7 @@ public class ChatListActivity extends AppCompatActivity {
                     Glide.with(ChatListActivity.this)
                             .load(BuildConstants.Main_Image + datum.getPhoto().replace("public", "storage"))
 //                        .centerCrop()
-                            .placeholder(R.drawable.placeholder)
+                            .place_holder(R.drawable.place_holder)
                             .into(holder.civProfile);
                 }
 
@@ -358,7 +358,7 @@ public class ChatListActivity extends AppCompatActivity {
                 Glide.with(ChatListActivity.this)
                         .load("")
 //                        .centerCrop()
-                        .placeholder(R.drawable.placeholder)
+                        .place_holder(R.drawable.place_holder)
                         .into(holder.civProfile);
             }
 

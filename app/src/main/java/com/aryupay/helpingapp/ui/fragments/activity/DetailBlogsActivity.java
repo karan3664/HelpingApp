@@ -52,7 +52,6 @@ import com.aryupay.helpingapp.modal.other_user.OtherUserProfileModel;
 
 import com.aryupay.helpingapp.ui.HomeActivity;
 import com.aryupay.helpingapp.ui.chats.ChatListActivity;
-import com.aryupay.helpingapp.ui.chats.MessageActivity;
 import com.aryupay.helpingapp.ui.chats.Model.User;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
@@ -396,13 +395,13 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                         Glide.with(DetailBlogsActivity.this)
                                 .load(BuildConstants.Main_Image + object.getData().getUserdetail().getPhoto().replace("public", "storage"))
 //                                .centerCrop()
-                                .placeholder(R.drawable.placeholder)
+                                .placeholder(R.drawable.place_holder)
                                 .into(userProfile);
 
                         Glide.with(DetailBlogsActivity.this)
                                 .load(BuildConstants.Main_Image + object.getData().getUserdetail().getPhoto().replace("public", "storage"))
 //                                .centerCrop()
-                                .placeholder(R.drawable.placeholder)
+                                .placeholder(R.drawable.place_holder)
                                 .into(userProfileComment);
                     }
 
@@ -781,7 +780,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     Glide.with(DetailBlogsActivity.this)
                             .load(BuildConstants.Main_Image + datum.getPhoto().getPhoto().replace("public", "storage"))
 //                        .centerCrop()
-                            .placeholder(R.drawable.placeholder)
+                            .placeholder(R.drawable.place_holder)
                             .into(holder.ivEmployee);
                 }
             }
@@ -1059,7 +1058,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                     if (object.getData().getUserDetail().getPhoto() != null) {
                         Glide.with(DetailBlogsActivity.this)
                                 .load(BuildConstants.Main_Image + object.getData().getUserDetail().getPhoto().replace("public", "storage"))
-                                .placeholder(R.drawable.placeholder)
+                                .placeholder(R.drawable.place_holder)
                                 .centerCrop()
 //                    .transition(DrawableTransitionOptions.withCrossFade(500))
                                 .into(ivProfileImage);
@@ -1130,7 +1129,7 @@ public class DetailBlogsActivity extends AppCompatActivity implements View.OnCli
                 Glide.with(DetailBlogsActivity.this)
                         .load(BuildConstants.Main_Image + datum.getPhoto().replace("public", "storage"))
 //                        .centerCrop()
-                        .placeholder(R.drawable.placeholder)
+                        .placeholder(R.drawable.place_holder)
                         .into(holder.ivEmployee);
             }
 

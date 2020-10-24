@@ -193,7 +193,7 @@ public class FollowersFragment extends Fragment {
                     Glide.with(getContext())
                             .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
 //                        .centerCrop()
-                            .placeholder(R.drawable.placeholder)
+                            .placeholder(R.drawable.place_holder)
                             .into(holder.civProfile);
                 }
             }

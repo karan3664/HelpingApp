@@ -20,7 +20,6 @@ import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.ui.HomeActivity;
-import com.aryupay.helpingapp.ui.LoginActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
@@ -79,7 +78,7 @@ public class BlogPreviewSettingsActivity extends AppCompatActivity implements Vi
             Glide.with(this)
                     .load(BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
                     .centerCrop()
-                    .placeholder(R.drawable.placeholder)
+                    .placeholder(R.drawable.place_holder)
                     .into(ivProfile);
         }
         cb_show_contact.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

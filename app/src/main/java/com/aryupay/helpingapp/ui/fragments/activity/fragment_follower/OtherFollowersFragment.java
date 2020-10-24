@@ -25,7 +25,6 @@ import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.profile.followers.Datum;
 import com.aryupay.helpingapp.modal.profile.followers.FollowersModel;
-import com.aryupay.helpingapp.ui.profile.ui.FollowersFragment;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
@@ -202,7 +201,7 @@ public class OtherFollowersFragment extends Fragment {
                     Glide.with(getContext())
                             .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
 //                        .centerCrop()
-                            .placeholder(R.drawable.placeholder)
+                            .placeholder(R.drawable.place_holder)
                             .into(holder.civProfile);
                 }
             }

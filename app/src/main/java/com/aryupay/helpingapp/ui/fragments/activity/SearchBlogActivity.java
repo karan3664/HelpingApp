@@ -3,9 +3,7 @@ package com.aryupay.helpingapp.ui.fragments.activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.cardview.widget.CardView;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,16 +34,11 @@ import com.aryupay.helpingapp.modal.bloglist.Blog;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.bloglist.Image;
 import com.aryupay.helpingapp.modal.login.LoginModel;
-import com.aryupay.helpingapp.ui.fragments.HomeFragment;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -276,7 +269,7 @@ public class SearchBlogActivity extends AppCompatActivity {
                 Glide.with(SearchBlogActivity.this)
                         .load(BuildConstants.Main_Image + Images.get(position).getPath().replace("public", "storage"))
 //                        .centerCrop()
-                        .placeholder(R.drawable.placeholder)
+                        .placeholder(R.drawable.place_holder)
                         .into(holder.ivEmployee);
             }
 

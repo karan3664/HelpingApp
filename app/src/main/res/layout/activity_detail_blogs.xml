@@ -228,7 +228,7 @@
                                     android:id="@+id/userProfile"
                                     android:layout_width="29dp"
                                     android:layout_height="28dp"
-                                    android:src="@drawable/placeholder" />
+                                    android:src="@drawable/place_holder" />
 
                                 <TextView
                                     android:layout_width="wrap_content"
@@ -401,7 +401,7 @@
                                 android:layout_height="21dp"
                                 android:layout_gravity="center"
                                 android:layout_marginLeft="10dp"
-                                android:src="@drawable/placeholder" />
+                                android:src="@drawable/place_holder" />
 
                             <TextView
                                 android:layout_width="wrap_content"

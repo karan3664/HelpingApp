@@ -20,11 +20,7 @@ import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.Target;
 import com.google.gson.Gson;
-
-import java.time.LocalDate;
-import java.time.Period;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -61,7 +57,7 @@ public class OpenOptionsActivity extends AppCompatActivity implements View.OnCli
 //        if (loginModel.getData().getUser().getUserDetail().getPhoto() != null) {
 //            Glide.with(this)
 //                    .load(BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
-//                    .placeholder(R.drawable.placeholder)
+//                    .place_holder(R.drawable.place_holder)
 //                    .centerCrop()
 //                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
 ////                    .transition(DrawableTransitionOptions.withCrossFade(500))
@@ -95,7 +91,7 @@ public class OpenOptionsActivity extends AppCompatActivity implements View.OnCli
                     if (object.getData().getUser().getUserDetail().getPhoto() != null) {
                         Glide.with(OpenOptionsActivity.this)
                                 .load(BuildConstants.Main_Image + object.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
-                                .placeholder(R.drawable.placeholder)
+                                .placeholder(R.drawable.place_holder)
                                 .centerCrop()
 //                    .transition(DrawableTransitionOptions.withCrossFade(500))
                                 .into(ivProfileImage);

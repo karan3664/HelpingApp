@@ -29,7 +29,7 @@
                     android:id="@+id/ivEmployee"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_50sdp"
-                    android:src="@drawable/placeholder">
+                    android:src="@drawable/place_holder">
 
                 </de.hdodenhof.circleimageview.CircleImageView>
 
@@ -113,7 +113,7 @@
                 android:id="@+id/civProfile"
                 android:layout_width="46dp"
                 android:layout_height="46dp"
-                android:src="@drawable/placeholder" />
+                android:src="@drawable/place_holder" />
 
             <TextView
                 android:id="@+id/tvName"

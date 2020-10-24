@@ -94,6 +94,6 @@
         android:id="@+id/profile_image"
         android:layout_width="37dp"
         android:layout_height="37dp"
-        android:src="@drawable/placeholder" />
+        android:src="@drawable/place_holder" />
 
 </LinearLayout>

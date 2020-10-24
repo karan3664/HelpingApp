@@ -141,7 +141,7 @@ public class AutoCompleteAdapter extends ArrayAdapter<AutocompletePrediction> im
                         .setLocationBias(bounds)
 //                        .setLocationRestriction(bounds)
                         .setSessionToken(AutocompleteSessionToken.newInstance())
-                        .setTypeFilter(TypeFilter.ADDRESS);
+                        .setTypeFilter(TypeFilter.ESTABLISHMENT);
 
         Task<FindAutocompletePredictionsResponse> results =
                 placesClient.findAutocompletePredictions(requestBuilder.build());

@@ -61,7 +61,7 @@
                         android:layout_height="@dimen/_65sdp"
                         android:layout_marginLeft="@dimen/_15sdp"
                         android:layout_marginTop="@dimen/_3sdp"
-                        android:src="@drawable/placeholder">
+                        android:src="@drawable/place_holder">
 
                     </de.hdodenhof.circleimageview.CircleImageView>
 

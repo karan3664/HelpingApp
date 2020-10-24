@@ -22,15 +22,12 @@ import android.widget.Toast;
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
-import com.aryupay.helpingapp.modal.bloglist.Blog;
-import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.bloglist.Image;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.myping.Datum;
 import com.aryupay.helpingapp.modal.myping.MyPingBlogModel;
 import com.aryupay.helpingapp.ui.HomeActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
-import com.aryupay.helpingapp.ui.fragments.activity.SearchBlogActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.SearchMyPingActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
@@ -42,7 +39,6 @@ import com.google.gson.JsonObject;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -414,7 +410,7 @@ public class MyPingFragment extends Fragment implements View.OnClickListener {
                 Glide.with(getContext())
                         .load(BuildConstants.Main_Image + datum.getImages().getPath().replace("public", "storage"))
 //                        .centerCrop()
-                        .placeholder(R.drawable.placeholder)
+                        .placeholder(R.drawable.place_holder)
                         .into(holder.ivEmployee);
             }
 

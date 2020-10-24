@@ -22,29 +22,20 @@ import android.widget.TextView;
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
-import com.aryupay.helpingapp.modal.bloglist.Blog;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.notification.Datum;
 import com.aryupay.helpingapp.modal.notification.NotificationsModel;
 
-import com.aryupay.helpingapp.modal.search.my_ping.SearchMyPingModel;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
-import com.aryupay.helpingapp.ui.fragments.activity.SearchBlogActivity;
-import com.aryupay.helpingapp.ui.fragments.activity.SearchMyPingActivity;
-import com.aryupay.helpingapp.ui.profile.NotificationsActivity;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -166,7 +157,7 @@ public class NotificationsAllActivity extends AppCompatActivity {
                     Glide.with(NotificationsAllActivity.this)
                             .load(BuildConstants.Main_Image + jsonObject.getString("path").toString().replace("public", "storage"))
 //                        .centerCrop()
-                            .placeholder(R.drawable.placeholder)
+                            .placeholder(R.drawable.place_holder)
                             .into(holder.ivEmployee);
                 }
 

@@ -3,6 +3,7 @@ package com.aryupay.helpingapp.ui;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -76,6 +77,10 @@ public class SelectLocationActivity extends AppCompatActivity {
     ImageView ivBack;
     private static String TAG = SelectLocationActivity.class.getSimpleName();
     TextView places;
+    AppCompatAutoCompleteTextView autoCompleteTextView;
+    AutoCompleteAdapter adapter;
+
+    PlacesClient placesClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +94,7 @@ public class SelectLocationActivity extends AppCompatActivity {
         tvCurrentCity = findViewById(R.id.tvCurrentCity);
         llCurrentCity = findViewById(R.id.llCurrentCity);
         rvCityList = findViewById(R.id.rvCityList);
+        bt_clear = findViewById(R.id.bt_clear);
 
         ivBack = findViewById(R.id.ivBack);
         LinearLayoutManager layoutManager = new LinearLayoutManager(SelectLocationActivity.this);
@@ -100,12 +106,18 @@ public class SelectLocationActivity extends AppCompatActivity {
         tvCurrentCity.setText(city);
         String apiKey = getString(R.string.api_key);
         places = findViewById(R.id.place);
-
+        // Setup Places Client
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), apiKey);
         }
 
-        // Initialize the AutocompleteSupportFragment.
+        placesClient = Places.createClient(this);
+        initAutoCompleteTextView();
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), apiKey);
+        }
+
+      /*  // Initialize the AutocompleteSupportFragment.
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
 
@@ -129,7 +141,7 @@ public class SelectLocationActivity extends AppCompatActivity {
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
-
+*/
         places.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,6 +156,12 @@ public class SelectLocationActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 onBackPressed();
+            }
+        });
+        bt_clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                autoCompleteTextView.setText("");
             }
         });
         HashMap<String, String> hashMap = new HashMap<>();
@@ -194,6 +212,64 @@ public class SelectLocationActivity extends AppCompatActivity {
         });
     }
 
+    private void initAutoCompleteTextView() {
+
+        autoCompleteTextView = findViewById(R.id.auto);
+        autoCompleteTextView.setThreshold(1);
+        autoCompleteTextView.setOnItemClickListener(autocompleteClickListener);
+        adapter = new AutoCompleteAdapter(this, placesClient);
+        autoCompleteTextView.setAdapter(adapter);
+    }
+
+    private AdapterView.OnItemClickListener autocompleteClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            try {
+                final AutocompletePrediction item = adapter.getItem(i);
+                String placeID = null;
+                if (item != null) {
+                    placeID = item.getPlaceId();
+                }
+
+//                To specify which data types to return, pass an array of Place.Fields in your FetchPlaceRequest
+//                Use only those fields which are required.
+
+                List<Place.Field> placeFields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS
+                        , Place.Field.ADDRESS_COMPONENTS);
+
+                FetchPlaceRequest request = null;
+                if (placeID != null) {
+                    request = FetchPlaceRequest.builder(placeID, placeFields)
+                            .build();
+                }
+
+                if (request != null) {
+                    placesClient.fetchPlace(request).addOnSuccessListener(new OnSuccessListener<FetchPlaceResponse>() {
+                        @SuppressLint("SetTextI18n")
+                        @Override
+                        public void onSuccess(FetchPlaceResponse task) {
+//                            responseView.setText(task.getPlace().getName() + "\n" + task.getPlace().getAddress());
+                            places.setText(task.getPlace().getAddressComponents().asList().get(1).getName() + ", " + task.getPlace().getAddressComponents().asList().get(2).getName() + " ");
+                            Log.e(TAG, "Place1: " + task.getPlace().getName() + ", ");
+                            Log.e(TAG, "Place2: " + task.getPlace().getAddressComponents().asList().get(0).getName() + ", ");
+                            Log.e(TAG, "Place3: " + task.getPlace().getAddressComponents().asList().get(2).getName() + ", ");
+                            Log.e(TAG, "Place4: " + task.getPlace().getAddressComponents());
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            e.printStackTrace();
+                            places.setText(e.getMessage());
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
 
     private void SearchList(String s) {
         HashMap<String, String> hashMap = new HashMap<>();

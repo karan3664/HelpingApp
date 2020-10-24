@@ -279,7 +279,7 @@ public class Tools {
                     .load(drawable)
                     .networkPolicy(NetworkPolicy.NO_CACHE)
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
-//                    .placeholder(R.drawable.madamtoon_grey_icon)
+//                    .place_holder(R.drawable.madamtoon_grey_icon)
 //                    .error(R.drawable.madamtoon_grey_icon)
                     .into(img);
 

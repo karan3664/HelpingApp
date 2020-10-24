@@ -23,8 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -33,17 +31,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aryupay.helpingapp.R;
-import com.aryupay.helpingapp.adapter.FlipperAdapter;
 import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
 import com.aryupay.helpingapp.modal.blogdetails.BlogDetailsModel;
 import com.aryupay.helpingapp.modal.bloglist.Blog;
 import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.bloglist.Image;
-import com.aryupay.helpingapp.modal.location.LocationModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.ui.NotificationsAllActivity;
-import com.aryupay.helpingapp.ui.SearchCityActivity;
 import com.aryupay.helpingapp.ui.SelectLocationActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.DetailBlogsActivity;
 import com.aryupay.helpingapp.ui.fragments.activity.SearchBlogActivity;
@@ -660,7 +655,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 Glide.with(getContext())
                         .load(BuildConstants.Main_Image + Images.get(position).getPath().replace("public", "storage"))
 //                        .centerCrop()
-                        .placeholder(R.drawable.placeholder)
+                        .placeholder(R.drawable.place_holder)
                         .into(holder.ivEmployee);
             }
             if (datum.getCategory().matches("information")) {

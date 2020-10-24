@@ -3,7 +3,6 @@ package com.aryupay.helpingapp.ui.profile;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,10 +22,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,23 +31,14 @@ import android.widget.Toast;
 import com.aryupay.helpingapp.R;
 import com.aryupay.helpingapp.api.BuildConstants;
 import com.aryupay.helpingapp.api.RetrofitHelper;
-import com.aryupay.helpingapp.modal.bloglist.Blog;
-import com.aryupay.helpingapp.modal.bloglist.BlogListModel;
 import com.aryupay.helpingapp.modal.login.LoginModel;
 import com.aryupay.helpingapp.modal.profile.my_profile.Comment;
 import com.aryupay.helpingapp.modal.profile.my_profile.MyProfileModel;
 import com.aryupay.helpingapp.ui.HomeActivity;
-import com.aryupay.helpingapp.ui.fragments.ChatFragment;
-import com.aryupay.helpingapp.ui.fragments.HomeFragment;
-import com.aryupay.helpingapp.ui.fragments.MyPingFragment;
 import com.aryupay.helpingapp.ui.fragments.activity.HelpingActivity;
-import com.aryupay.helpingapp.ui.profile.ui.FollowersFragment;
-import com.aryupay.helpingapp.ui.profile.ui.FollowingFragment;
 import com.aryupay.helpingapp.utils.PrefUtils;
 import com.aryupay.helpingapp.utils.ViewDialog;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -60,14 +48,9 @@ import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import org.json.JSONObject;
 
-import java.text.ParseException;
-
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -156,7 +139,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             Glide.with(this)
                     .load(BuildConstants.Main_Image + loginModel.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
                     .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .placeholder(R.drawable.placeholder)
+                    .placeholder(R.drawable.place_holder)
                     .centerCrop()
 //                    .transition(DrawableTransitionOptions.withCrossFade(500))
                     .into(ivProfileImage);
@@ -296,7 +279,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     if (object.getData().getUser().getUserDetail().getPhoto() != null) {
                         Glide.with(ProfileActivity.this)
                                 .load(BuildConstants.Main_Image + object.getData().getUser().getUserDetail().getPhoto().replace("public", "storage"))
-                                .placeholder(R.drawable.placeholder)
+                                .placeholder(R.drawable.place_holder)
                                 .centerCrop()
 //                    .transition(DrawableTransitionOptions.withCrossFade(500))
                                 .into(ivProfileImage);
@@ -365,7 +348,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                         Glide.with(ProfileActivity.this)
                                 .load(BuildConstants.Main_Image + datum.getPhoto().getPath().replace("public", "storage"))
 //                        .centerCrop()
-                                .placeholder(R.drawable.placeholder)
+                                .placeholder(R.drawable.place_holder)
                                 .into(holder.ivEmployee);
                     }
 
