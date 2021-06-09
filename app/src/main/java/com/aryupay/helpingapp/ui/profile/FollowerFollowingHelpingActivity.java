@@ -34,7 +34,7 @@ public class FollowerFollowingHelpingActivity extends AppCompatActivity {
     LoginModel loginModel;
     TextView tvMyPing;
     ImageView ivBack;
-EditText edtSearch;
+    EditText edtSearch;
     RelativeLayout rlSearch;
 
     @Override
@@ -80,6 +80,7 @@ EditText edtSearch;
             }
         });
     }
+
     public void onTabSelected(ActionBar.Tab tab,
                               FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
